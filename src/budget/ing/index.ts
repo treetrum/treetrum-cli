@@ -1,0 +1,95 @@
+import puppeteer, { Page } from "puppeteer";
+import moment from "moment";
+import axios from "axios";
+import qs from "query-string";
+import fetch from "node-fetch";
+import parse from "csv-parse/lib/sync";
+import stringify from "csv-stringify/lib/sync";
+import parseDate from "date-fns/parse";
+import Dinero from "dinero.js";
+import { ING_DATE_FORMAT } from "./constants";
+
+export const fetchTransactions = async (
+    accountNumber: string,
+    page: Page,
+    days: number = 14
+) => {
+    const url =
+        "https://www.ing.com.au/api/ExportTransactions/Service/ExportTransactionsService.svc/json/ExportTransactions/ExportTransactions";
+    const data = {
+        // @ts-ignore
+        "X-AuthToken": await page.evaluate(`(() => instance.client.token)()`),
+        AccountNumber: accountNumber,
+        Format: "csv",
+        FilterStartDate: moment()
+            .subtract(days, "days")
+            .format(ING_DATE_FORMAT),
+        FilterEndDate: moment().add(1, "days").format(ING_DATE_FORMAT),
+        IsSpecific: "false",
+    };
+    return axios
+        .post(url, qs.stringify(data))
+        .then((response) => response.data);
+};
+
+export const fetchAccounts = async (
+    page: puppeteer.Page
+): Promise<{ name: string; accountNumber: string }[]> => {
+    const url =
+        "https://www.ing.com.au/api/EStatementAccounts/Service/EStatementAccountsService.svc/json/EStatementAccounts/EStatementAccounts";
+
+    const headers = {
+        "content-type": "application/json",
+        "x-authtoken": await page.evaluate(`(() => instance.client.token)()`),
+        "x-messagesignature": await page.evaluate(`(() =>
+            document.querySelector("ing-key-store").signMessage(
+                "X-AuthToken:" + instance.client.token
+            )
+        )()`),
+    } as any;
+
+    const data: { Response: { Accounts: any[] } } = await fetch(url, {
+        method: "POST",
+        headers,
+    }).then((res) => res.json());
+
+    return data.Response.Accounts.map((acc) => ({
+        name: acc.AccountNameDisplay,
+        accountNumber: acc.AccountNumber,
+    }));
+};
+
+interface CsvRow {
+    Date: string;
+    Description: string;
+    Credit: string;
+    Debit: string;
+}
+
+export const transformTransactions = (
+    csvData: string,
+    priceModifier: number = 1
+): string => {
+    const data: CsvRow[] = parse(csvData, { columns: true });
+
+    const transformed = data.map((row: CsvRow) => {
+        const { Credit, Debit } = row;
+        const Amount = Credit !== "" ? Credit : Debit;
+
+        const amountAsInteger = parseInt(`${parseFloat(Amount) * 100}`);
+
+        const transformedAmount = Dinero({ amount: amountAsInteger })
+            .multiply(priceModifier)
+            .toFormat("0.00");
+
+        const parsedDate = parseDate(row.Date, "dd/mm/yyyy", new Date());
+
+        return {
+            Date: parsedDate.toISOString(),
+            Description: row.Description,
+            Amount: transformedAmount,
+        };
+    });
+
+    return stringify(transformed, { header: true });
+};
