@@ -6,6 +6,7 @@ import fetch from "node-fetch";
 import parse from "csv-parse/lib/sync";
 import stringify from "csv-stringify/lib/sync";
 import parseDate from "date-fns/parse";
+import formatDate from "date-fns/format";
 import Dinero from "dinero.js";
 import { ING_DATE_FORMAT } from "./constants";
 
@@ -48,15 +49,22 @@ export const fetchAccounts = async (
         )()`),
     } as any;
 
-    const data: { Response: { Accounts: any[] } } = await fetch(url, {
+    const res = await fetch(url, {
         method: "POST",
         headers,
-    }).then((res) => res.json());
+    });
 
-    return data.Response.Accounts.map((acc) => ({
-        name: acc.AccountNameDisplay,
-        accountNumber: acc.AccountNumber,
-    }));
+    try {
+        const data: { Response: { Accounts: any[] } } = await res.json();
+        return data.Response.Accounts.map((acc) => ({
+            name: acc.AccountNameDisplay,
+            accountNumber: acc.AccountNumber,
+        }));
+    } catch (error) {
+        console.error("Something went wrong when parsing JSON from response");
+        console.log(await res.text());
+        throw error;
+    }
 };
 
 interface CsvRow {
@@ -73,6 +81,8 @@ export const transformTransactions = (
     const data: CsvRow[] = parse(csvData, { columns: true });
 
     const transformed = data.map((row: CsvRow) => {
+        console.log("Transforming row");
+        console.log(row);
         const { Credit, Debit } = row;
         const Amount = Credit !== "" ? Credit : Debit;
 
@@ -85,8 +95,11 @@ export const transformTransactions = (
         const parsedDate = parseDate(row.Date, "dd/mm/yyyy", new Date());
 
         return {
-            Date: parsedDate.toISOString(),
-            Description: row.Description,
+            Date: formatDate(parsedDate, "yyyy-mm-dd"),
+            // Removes the unique data from each row (receipt number, date,
+            // etc.). Doing this allows YNAB to remember transaction
+            // descriptions and auto associate with a payee
+            Description: row.Description.split(" - Receipt")[0],
             Amount: transformedAmount,
         };
     });

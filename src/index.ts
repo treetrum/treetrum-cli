@@ -1,9 +1,8 @@
 import { Command } from "commander";
-import chalk from "chalk";
 import { budget } from "./budget";
 const program = new Command();
 
-program.version("0.0.1");
+program.version("0.1.0");
 
 program
     .command("budget")

@@ -7,6 +7,26 @@ import { fetchAccounts, fetchTransactions, transformTransactions } from "./ing";
 import { homedir } from "os";
 import prompts from "prompts";
 import path from "path";
+import { login as loginToAmex, downloadStatementData, transform } from "./amex";
+
+const log = (message: string) => console.log(message);
+const success = () => console.log(chalk.green("Success!"));
+
+const performAction = async <T>(
+    name: string,
+    action: Promise<T>
+): Promise<T> => {
+    log(name);
+    const response = await action;
+    success();
+    return response;
+};
+
+const performActionSync = <T>(name: string, action: T): T => {
+    log(name);
+    success();
+    return action;
+};
 
 // @ts-ignore
 const isPkg = typeof process.pkg !== "undefined";
@@ -25,7 +45,7 @@ if (env.error || !env.parsed) {
     throw env.error;
 }
 
-const { ING_USER, ING_PW } = env.parsed;
+const { ING_USER, ING_PW, AMEX_USER, AMEX_PW } = env.parsed;
 
 const downloadIngData = async (browser: puppeteer.Browser) => {
     console.log("Launching Puppeteer");
@@ -64,14 +84,36 @@ const downloadIngData = async (browser: puppeteer.Browser) => {
             response.modifier
         );
 
-        console.log(chalk.green("Success"));
+        success();
 
         console.log(`Writing CSV to ${account.name}.csv`);
-
         fs.writeFileSync(`${account.name}.csv`, transformed);
-
-        console.log(chalk.green("Success"));
+        success();
     }
+};
+
+export const downloadAmexData = async (browser: puppeteer.Browser) => {
+    const page = await browser.newPage();
+
+    await performAction(
+        "Logging in to American Express",
+        loginToAmex(page, AMEX_USER, AMEX_PW)
+    );
+
+    const statementXls = await performAction(
+        "Downloading statement data",
+        downloadStatementData(page)
+    );
+
+    const statementCsv = await performAction(
+        "Transforming amex statement data to csv",
+        transform(statementXls)
+    );
+
+    performActionSync(
+        "Writing statement to amex.csv",
+        fs.writeFileSync("amex.csv", statementCsv)
+    );
 };
 
 export const budget = async () => {
@@ -81,6 +123,7 @@ export const budget = async () => {
             executablePath: chromiumExecutablePath,
         });
         await downloadIngData(browser);
+        await downloadAmexData(browser);
         browser.close();
     } catch (error) {
         console.log(chalk.red("Something went wrong 😭"));
