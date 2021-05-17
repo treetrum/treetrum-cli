@@ -58,37 +58,42 @@ const downloadIngData = async (browser: puppeteer.Browser) => {
     console.log(chalk.green("Successfully fetched accounts"));
 
     for (const account of accounts) {
-        console.log(`Fetching transactions for ${account.name}`);
-        const transactions = await fetchTransactions(
-            account.accountNumber,
-            page
-        );
-        const response = await prompts([
-            {
-                type: "confirm",
-                name: "addModifier",
-                message: `Would you like to add a modifier to the account: ${account.name}`,
-                initial: false,
-            },
-            {
-                type: (prev) => (prev ? "number" : null),
-                name: "modifier",
-                message: `Modifier amount: ${account.name}`,
-                float: true,
-                initial: 1,
-            },
-        ]);
+        try {
+            console.log(`Fetching transactions for ${account.name}`);
+            const transactions = await fetchTransactions(
+                account.accountNumber,
+                page
+            );
+            const response = await prompts([
+                {
+                    type: "confirm",
+                    name: "addModifier",
+                    message: `Would you like to add a modifier to the account: ${account.name}`,
+                    initial: false,
+                },
+                {
+                    type: (prev) => (prev ? "number" : null),
+                    name: "modifier",
+                    message: `Modifier amount: ${account.name}`,
+                    float: true,
+                    initial: 1,
+                },
+            ]);
+            const transformed = transformTransactions(
+                transactions,
+                response.modifier
+            );
+            success();
 
-        const transformed = transformTransactions(
-            transactions,
-            response.modifier
-        );
-
-        success();
-
-        console.log(`Writing CSV to ${account.name}.csv`);
-        fs.writeFileSync(`${account.name}.csv`, transformed);
-        success();
+            console.log(`Writing CSV to ${account.name}.csv`);
+            fs.writeFileSync(`${account.name}.csv`, transformed);
+            success();
+        } catch (error) {
+            console.log(
+                chalk.red(`Failed to fetch account details for ${account.name}`)
+            );
+            console.error(error);
+        }
     }
 };
 

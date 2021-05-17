@@ -81,8 +81,6 @@ export const transformTransactions = (
     const data: CsvRow[] = parse(csvData, { columns: true });
 
     const transformed = data.map((row: CsvRow) => {
-        console.log("Transforming row");
-        console.log(row);
         const { Credit, Debit } = row;
         const Amount = Credit !== "" ? Credit : Debit;
 
