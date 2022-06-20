@@ -37,7 +37,7 @@ export const fetchAccounts = async (
     page: puppeteer.Page
 ): Promise<{ name: string; accountNumber: string }[]> => {
     const url =
-        "https://www.ing.com.au/api/EStatementAccounts/Service/EStatementAccountsService.svc/json/EStatementAccounts/EStatementAccounts";
+        "https://www.ing.com.au/api/Dashboard/Service/DashboardService.svc/json/Dashboard/loaddashboard";
 
     const headers = {
         "content-type": "application/json",
@@ -55,14 +55,37 @@ export const fetchAccounts = async (
     });
 
     try {
-        const data: { Response: { Accounts: any[] } } = await res.json();
-        return data.Response.Accounts.map((acc) => ({
-            name: acc.AccountNameDisplay,
-            accountNumber: acc.AccountNumber,
-        }));
+        if (!res.ok) {
+            throw new Error(`${res.status}: ${res.statusText}`);
+        }
+        const data: {
+            Response: {
+                Categories: {
+                    Accounts: { AccountName: string; AccountNumber: string }[];
+                }[];
+            };
+        } = await res.json();
+
+        const accounts: {
+            name: string;
+            accountNumber: string;
+        }[] = [];
+
+        data.Response.Categories.forEach((category) => {
+            category.Accounts.forEach((acc) => {
+                accounts.push({
+                    name: acc.AccountName,
+                    accountNumber: acc.AccountNumber,
+                });
+            });
+        });
+
+        return accounts.sort((a, b) => a.name.localeCompare(b.name));
     } catch (error) {
-        console.error("Something went wrong when parsing JSON from response");
-        console.log(await res.text());
+        console.error(
+            "Something went wrong when parsing JSON from response",
+            error
+        );
         throw error;
     }
 };
