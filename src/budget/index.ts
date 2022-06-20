@@ -124,7 +124,7 @@ export const downloadAmexData = async (browser: puppeteer.Browser) => {
 export const budget = async () => {
     try {
         const browser = await puppeteer.launch({
-            headless: true,
+            headless: false,
             executablePath: chromiumExecutablePath,
         });
         await downloadIngData(browser);
