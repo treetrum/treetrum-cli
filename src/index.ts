@@ -9,6 +9,9 @@ program
     .description(
         "Download all budget data from ING & American Express accounts"
     )
-    .action(budget);
+    .option("--headless", "Should puppeteer be run in headless mode", false)
+    .action(({ headless }) => {
+        budget({ headless });
+    });
 
 program.parse(process.argv);
