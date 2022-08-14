@@ -9,7 +9,7 @@
         "build": "tsc && pkg --target latest-macos-x64 dist/index.js -o ./lib/treetrum",
         "postbuild": "cp -R ./node_modules/puppeteer/.local-chromium/ lib/chromium",
         "prelink": "rm -rf /usr/local/bin/treetrum && rm -rf /usr/local/bin/chromium",
-        "link": "ln -s $(pwd)/lib/treetrum /usr/local/bin/ && ln -s $(pwd)/lib/chromium /usr/local/bin/"
+        "link": "ln -s $(pwd)/lib/treetrum /usr/local/bin/treetrum && ln -s $(pwd)/lib/chromium /usr/local/bin/chromium"
     },
     "keywords": [],
     "author": "",
