@@ -7,7 +7,7 @@ program.version("0.1.0");
 program
     .command("budget")
     .description(
-        "Download all budget data from ING & American Express accounts"
+        "Download all budget data from Up, ING and American Express accounts"
     )
     .option("--headless", "Should puppeteer be run in headless mode", false)
     .action(({ headless }) => {

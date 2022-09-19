@@ -4,10 +4,11 @@ import { login as loginToIng } from "./ing/login";
 import fs from "fs";
 import * as dotenv from "dotenv";
 import { fetchAccounts, fetchTransactions, transformTransactions } from "./ing";
-import { homedir } from "os";
 import prompts from "prompts";
 import path from "path";
 import { login as loginToAmex, downloadStatementData, transform } from "./amex";
+import { fetchUpTransactions } from "./up";
+import { dataArrayToCSVString } from "./utils";
 
 const log = (message: string) => console.log(message);
 const success = () => console.log(chalk.green("Success!"));
@@ -45,7 +46,7 @@ if (env.error || !env.parsed) {
     throw env.error;
 }
 
-const { ING_USER, ING_PW, AMEX_USER, AMEX_PW } = env.parsed;
+const { ING_USER, ING_PW, AMEX_USER, AMEX_PW, UP_TOKEN } = env.parsed;
 
 const downloadIngData = async (browser: puppeteer.Browser) => {
     console.log("Launching Puppeteer");
@@ -121,8 +122,25 @@ export const downloadAmexData = async (browser: puppeteer.Browser) => {
     );
 };
 
+const downloadUpData = async () => {
+    const accountTransactions = await performAction(
+        "Fetching 'Up' accounts/transactions",
+        fetchUpTransactions(UP_TOKEN)
+    );
+
+    for (const [accountName, transactions] of Object.entries(
+        accountTransactions
+    )) {
+        const csvString = dataArrayToCSVString(transactions);
+        console.log(`Writing CSV to ${accountName}.csv`);
+        fs.writeFileSync(`${accountName}.csv`, csvString);
+        success();
+    }
+};
+
 export const budget = async (opts: { headless: boolean }) => {
     try {
+        await downloadUpData();
         const browser = await puppeteer.launch({
             headless: opts.headless,
             executablePath: chromiumExecutablePath,
