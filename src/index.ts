@@ -10,8 +10,13 @@ program
         "Download all budget data from Up, ING and American Express accounts"
     )
     .option("--headless", "Should puppeteer be run in headless mode", false)
-    .action(({ headless }) => {
-        budget({ headless });
+    .option(
+        "--outdir <path>",
+        "Where budget files should be output",
+        "/Users/sam/Desktop"
+    )
+    .action(({ headless, outdir }) => {
+        budget({ headless, outdir });
     });
 
 program.parse(process.argv);

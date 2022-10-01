@@ -5,10 +5,11 @@ import fs from "fs";
 import * as dotenv from "dotenv";
 import { fetchAccounts, fetchTransactions, transformTransactions } from "./ing";
 import prompts from "prompts";
-import path from "path";
 import { login as loginToAmex, downloadStatementData, transform } from "./amex";
 import { fetchUpTransactions } from "./up";
 import { dataArrayToCSVString } from "./utils";
+import { fetchUbankTransactions } from "./ubank";
+import path from "path";
 
 const log = (message: string) => console.log(message);
 const success = () => console.log(chalk.green("Success!"));
@@ -29,26 +30,16 @@ const performActionSync = <T>(name: string, action: T): T => {
     return action;
 };
 
-// @ts-ignore
-const isPkg = typeof process.pkg !== "undefined";
-let chromiumExecutablePath = isPkg
-    ? puppeteer
-          .executablePath()
-          .replace(
-              /^.*?\/node_modules\/puppeteer\/\.local-chromium/,
-              path.join(path.dirname(process.execPath), "chromium")
-          )
-    : puppeteer.executablePath();
-
 // Recursively go up directories until a .env is found
 const env = dotenv.config({ path: require("find-config")(".env") });
 if (env.error || !env.parsed) {
     throw env.error;
 }
 
-const { ING_USER, ING_PW, AMEX_USER, AMEX_PW, UP_TOKEN } = env.parsed;
+const { ING_USER, ING_PW, AMEX_USER, AMEX_PW, UP_TOKEN, UBANK_USER, UBANK_PW } =
+    env.parsed;
 
-const downloadIngData = async (browser: puppeteer.Browser) => {
+const downloadIngData = async (browser: puppeteer.Browser, outdir: string) => {
     console.log("Launching Puppeteer");
     const page = await browser.newPage();
     console.log("Logging in to ING");
@@ -87,7 +78,10 @@ const downloadIngData = async (browser: puppeteer.Browser) => {
             success();
 
             console.log(`Writing CSV to ${account.name}.csv`);
-            fs.writeFileSync(`${account.name}.csv`, transformed);
+            fs.writeFileSync(
+                path.join(outdir, `${account.name}.csv`),
+                transformed
+            );
             success();
         } catch (error) {
             console.log(
@@ -98,7 +92,10 @@ const downloadIngData = async (browser: puppeteer.Browser) => {
     }
 };
 
-export const downloadAmexData = async (browser: puppeteer.Browser) => {
+export const downloadAmexData = async (
+    browser: puppeteer.Browser,
+    outdir: string
+) => {
     const page = await browser.newPage();
 
     await performAction(
@@ -118,11 +115,11 @@ export const downloadAmexData = async (browser: puppeteer.Browser) => {
 
     performActionSync(
         "Writing statement to amex.csv",
-        fs.writeFileSync("amex.csv", statementCsv)
+        fs.writeFileSync(path.join(outdir, "amex.csv"), statementCsv)
     );
 };
 
-const downloadUpData = async () => {
+const downloadUpData = async (outdir: string) => {
     const accountTransactions = await performAction(
         "Fetching 'Up' accounts/transactions",
         fetchUpTransactions(UP_TOKEN)
@@ -133,20 +130,37 @@ const downloadUpData = async () => {
     )) {
         const csvString = dataArrayToCSVString(transactions);
         console.log(`Writing CSV to ${accountName}.csv`);
-        fs.writeFileSync(`${accountName}.csv`, csvString);
+        fs.writeFileSync(path.join(outdir, `${accountName}.csv`), csvString);
         success();
     }
 };
 
-export const budget = async (opts: { headless: boolean }) => {
+const downloadUbankData = async (outdir: string) => {
+    const accountTransactions = await performAction(
+        "Fetching 'UBank' data",
+        fetchUbankTransactions(UBANK_USER, UBANK_PW)
+    );
+
+    for (const [accountName, transactions] of Object.entries(
+        accountTransactions
+    )) {
+        const csvString = dataArrayToCSVString(transactions);
+        console.log(`Writing CSV to ${accountName}.csv`);
+        fs.writeFileSync(path.join(outdir, `${accountName}.csv`), csvString);
+        success();
+    }
+};
+
+export const budget = async (opts: { headless: boolean; outdir: string }) => {
     try {
-        await downloadUpData();
+        await downloadUbankData(opts.outdir);
+        await downloadUpData(opts.outdir);
         const browser = await puppeteer.launch({
             headless: opts.headless,
-            executablePath: chromiumExecutablePath,
+            executablePath: "/opt/homebrew/bin/chromium",
         });
-        await downloadIngData(browser);
-        await downloadAmexData(browser);
+        await downloadIngData(browser, opts.outdir);
+        await downloadAmexData(browser, opts.outdir);
         browser.close();
     } catch (error) {
         console.log(chalk.red("Something went wrong 😭"));
