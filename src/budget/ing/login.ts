@@ -14,9 +14,9 @@ export async function login(
 
     await page.type("#cifField", clientNumber);
 
-    const randomisedKeys = await page.$$eval(".pin > img", (imgs) =>
-        imgs.map((img) => (img as HTMLImageElement).src.slice(22))
-    );
+    const randomisedKeys = (await page.evaluate(`(() => {
+        return Array.from(document.querySelectorAll(".pin > img")).map((img) => img.src.slice(22));
+    })()`)) as string[];
     const keyMap = generateKeyMap(randomisedKeys);
 
     for (const char of accessCode.split("")) {
