@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
 import { login as loginToIng } from "./ing/login";
 import fs from "fs";
 import * as dotenv from "dotenv";
@@ -8,8 +8,10 @@ import prompts from "prompts";
 import { login as loginToAmex, downloadStatementData, transform } from "./amex";
 import { fetchUpTransactions } from "./up";
 import { dataArrayToCSVString } from "./utils";
-import { fetchUbankTransactions } from "./ubank";
+import { fetchUbankTransactionsPuppeteer } from "./ubank";
 import path from "path";
+import { Page } from "puppeteer";
+import StealthPlugin from "./stealth-plugin";
 
 const log = (message: string) => console.log(message);
 const success = () => console.log(chalk.green("Success!"));
@@ -39,9 +41,7 @@ if (env.error || !env.parsed) {
 const { ING_USER, ING_PW, AMEX_USER, AMEX_PW, UP_TOKEN, UBANK_USER, UBANK_PW } =
     env.parsed;
 
-const downloadIngData = async (browser: puppeteer.Browser, outdir: string) => {
-    console.log("Launching Puppeteer");
-    const page = await browser.newPage();
+const downloadIngData = async (page: Page, outdir: string) => {
     console.log("Logging in to ING");
     await loginToIng(page, ING_USER, ING_PW);
     console.log(chalk.green("Successfully logged into ING"));
@@ -92,12 +92,7 @@ const downloadIngData = async (browser: puppeteer.Browser, outdir: string) => {
     }
 };
 
-export const downloadAmexData = async (
-    browser: puppeteer.Browser,
-    outdir: string
-) => {
-    const page = await browser.newPage();
-
+export const downloadAmexData = async (page: Page, outdir: string) => {
     await performAction(
         "Logging in to American Express",
         loginToAmex(page, AMEX_USER, AMEX_PW)
@@ -135,10 +130,10 @@ const downloadUpData = async (outdir: string) => {
     }
 };
 
-const downloadUbankData = async (outdir: string) => {
+const downloadUbankData = async (page: Page, outdir: string) => {
     const accountTransactions = await performAction(
         "Fetching 'UBank' data",
-        fetchUbankTransactions(UBANK_USER, UBANK_PW)
+        fetchUbankTransactionsPuppeteer(page, UBANK_USER, UBANK_PW)
     );
 
     for (const [accountName, transactions] of Object.entries(
@@ -153,14 +148,26 @@ const downloadUbankData = async (outdir: string) => {
 
 export const budget = async (opts: { headless: boolean; outdir: string }) => {
     try {
-        await downloadUbankData(opts.outdir);
-        await downloadUpData(opts.outdir);
+        puppeteer.use(StealthPlugin());
         const browser = await puppeteer.launch({
             headless: opts.headless,
             executablePath: "/opt/homebrew/bin/chromium",
         });
-        await downloadIngData(browser, opts.outdir);
-        await downloadAmexData(browser, opts.outdir);
+
+        // Create a page, then minimise it
+        console.log("Launching Puppeteer");
+        const page = await browser.newPage();
+        const session = await page.target().createCDPSession();
+        const { windowId } = await session.send("Browser.getWindowForTarget");
+        await session.send("Browser.setWindowBounds", {
+            windowId,
+            bounds: { windowState: "minimized" },
+        });
+
+        await downloadUbankData(page, opts.outdir);
+        await downloadUpData(opts.outdir);
+        await downloadIngData(page, opts.outdir);
+        await downloadAmexData(page, opts.outdir);
         browser.close();
     } catch (error) {
         console.log(chalk.red("Something went wrong 😭"));

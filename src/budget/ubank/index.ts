@@ -1,9 +1,23 @@
-import fetch, { RequestInit } from "node-fetch";
+import nodeFetch, { RequestInit, Response } from "node-fetch";
 import prompts from "prompts";
 import { Account, GetAccountsResponse } from "./types/GetAccountsResponse";
-import { GetTransactionsResponse } from "./types/GetTransactionsResponse";
+import {
+    GetTransactionsResponse,
+    Transaction,
+} from "./types/GetTransactionsResponse";
 import moment from "moment";
 import cookie from "cookie";
+import { Page } from "puppeteer";
+
+export const transformUbankTransaction = (t: Transaction) => {
+    return {
+        Date: moment(t.completed).format("YYYY-MM-DD"),
+        Description: t.shortDescription,
+        Amount: t.value.amount,
+    };
+};
+
+type SimpleTransaction = Awaited<ReturnType<typeof transformUbankTransaction>>;
 
 class UBankClient {
     baseUrl = "https://www.ubank.com.au/app/v1";
@@ -21,8 +35,20 @@ class UBankClient {
         this.password = password;
     }
 
-    request = async <ResponseType>(path: string, init?: RequestInit) => {
-        const config = {
+    updateCookies = (response: Response) => {
+        if (response.headers.has("set-cookie")) {
+            const newCookies = cookie.parse(
+                response.headers.get("set-cookie") ?? ""
+            );
+            this.cookie = {
+                ...this.cookie,
+                ...newCookies,
+            };
+        }
+    };
+
+    getConfig = (init?: RequestInit) => {
+        const config: RequestInit = {
             ...init,
             headers: {
                 "x-device-meta": this.deviceMeta,
@@ -35,23 +61,27 @@ class UBankClient {
                 ...init?.headers,
             },
         };
-        // console.log(config);
-        const response = await fetch(`${this.baseUrl}/${path}`, config);
+        return config;
+    };
+
+    request = async <ResponseType>(path: string, init?: RequestInit) => {
+        const config = this.getConfig(init);
+        const url = `${this.baseUrl}/${path}`;
+        console.log("Making request", url, config);
+        const response = await nodeFetch(url, config);
         if (response.ok) {
-            if (response.headers.has("set-cookie")) {
-                const newCookies = cookie.parse(
-                    response.headers.get("set-cookie") ?? ""
-                );
-                this.cookie = {
-                    ...this.cookie,
-                    ...newCookies,
-                };
+            this.updateCookies(response);
+            const body = await response.text();
+            try {
+                const data = JSON.parse(body);
+                if (data.xsrfToken) {
+                    this.xsrfToken = data.xsrfToken;
+                }
+                return data as ResponseType;
+            } catch (error) {
+                console.log("Error parsing JSON:\n", body);
+                throw error;
             }
-            const data = await response.json();
-            if (data.xsrfToken) {
-                this.xsrfToken = data.xsrfToken;
-            }
-            return data as ResponseType;
         } else {
             const text = await response.text();
             console.error(text);
@@ -60,7 +90,6 @@ class UBankClient {
     };
 
     authenticate = async () => {
-        // Init login flow
         await this.request(
             `/login-options/${this.user}/identity:authentication:browser`
         );
@@ -113,17 +142,9 @@ class UBankClient {
                 }),
             }
         );
-        return data.transactions.map((t) => ({
-            Date: t.completed,
-            Description: t.shortDescription,
-            Amount: t.value.amount,
-        }));
+        return data.transactions.map(transformUbankTransaction);
     };
 }
-
-type SimpleTransaction = Awaited<
-    ReturnType<UBankClient["fetchAccountTransactions"]>
->[number];
 
 export const fetchUbankTransactions = async (
     user: string,
@@ -158,4 +179,123 @@ export const fetchUbankTransactions = async (
     await Promise.all(promises);
 
     return transactions;
+};
+
+export const fetchUbankTransactionsPuppeteer = async (
+    page: Page,
+    user: string,
+    password: string
+) => {
+    console.log("UBANK: Navigating to home page");
+    await page.goto("https://www.ubank.com.au/");
+
+    console.log("UBANK: Navigating to username page");
+    await page.click('[sp-automation-id="fe-block-link-button"]');
+    await page.waitForNavigation();
+    await page.type('[sp-automation-id="input-username"]', user);
+
+    console.log("UBANK: Navigating to password page");
+    await page.click("button[type=submit]");
+    await page.waitForNavigation();
+    await page.type('[sp-automation-id="input-password"]', password);
+
+    console.log("UBANK: Navigating to OTP page");
+    await page.click("button[type=submit]");
+    await page.waitForNavigation();
+
+    const { code } = await prompts([
+        {
+            type: "text",
+            name: "code",
+            message: `Enter the code sent to your phone number`,
+        },
+    ]);
+
+    await page.type('[sp-automation-id="input-otpValue"]', code);
+
+    console.log("UBANK: Navigating to logged in page");
+    await page.click("button[type=submit]");
+    await page.waitForNavigation();
+
+    const fromDate = moment().subtract(14, "days").format("YYYY-MM-DD");
+    const toDate = moment().format("YYYY-MM-DD");
+
+    // We need to fetch using a full browser session — unfortunately, this means
+    // we can't use nice JS features like spread/async-await :(
+    // @ts-expect-error
+    const accountTransactions: Record<string, Transaction[]> =
+        await page.evaluate(
+            `({ fromDate, toDate }) => {
+                const getHeaders = () => ({
+                    "x-xsrf-token": JSON.parse(
+                        window.sessionStorage.getItem("ib-session-store") ??
+                            "{}"
+                    ).key,
+                    "x-private-api-key": "ANZf5WgzmVLmTUwAQyuCq7LspXF2pd4N",
+                    "x-device-meta":
+                        '{"appVersion":"1.11.3","browserInfo":{"browserName":"Firefox","browserOs":"Mac OS","browserType":"browser","browserVersion":"104.0.0"},"channel":"production","deviceName":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:104.0) Gecko/20100101 Firefox/104.0","platform":"IB"}',
+                });
+
+                return fetch("/app/v1/accounts", {
+                    headers: getHeaders(),
+                })
+                    .then((res) => res.json())
+                    .then((response) => {
+                        const accounts = response.linkedBanks[0].accounts;
+                        console.log("accounts", accounts);
+                        return accounts;
+                    })
+                    .then((accounts) => {
+                        const accountNicknames = accounts.reduce(
+                            // @ts-expect-error
+                            (acc, curr) => {
+                                return Object.assign(acc, {
+                                    [curr.id]: "UBank | " + curr.nickname,
+                                });
+                            },
+                            {}
+                        );
+
+                        return fetch("/app/v1/accounts/transactions/search", {
+                            headers: getHeaders(),
+                            method: "POST",
+                            body: JSON.stringify({
+                                timezone: "Australia/Sydney",
+                                fromDate: fromDate,
+                                toDate: toDate,
+                                accountId: accounts.map((a) => a.id),
+                                limit: 99,
+                            }),
+                        })
+                            .then((res) => res.json())
+                            .then((response) => {
+                                const transactions = {};
+
+                                // @ts-expect-error
+                                accounts.forEach((a) => {
+                                    const nickname = accountNicknames[a.id];
+                                    // @ts-expect-error
+                                    transactions[nickname] = [];
+                                });
+
+                                // @ts-expect-error
+                                response.transactions.forEach((t) => {
+                                    const nickname =
+                                        accountNicknames[t.accountId];
+                                    // @ts-expect-error
+                                    transactions[nickname].push(t);
+                                });
+
+                                return transactions;
+                            });
+                    });
+            }`,
+            { fromDate, toDate }
+        );
+
+    const transformed: Record<string, SimpleTransaction[]> = {};
+    Object.entries(accountTransactions).forEach(([key, value]) => {
+        transformed[key] = value.map(transformUbankTransaction);
+    });
+    return transformed;
 };
