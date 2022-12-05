@@ -6,7 +6,7 @@
     "scripts": {
         "start": "ts-node src/index.ts",
         "prebuild": "rm -rf dist && rm -rf lib",
-        "build": "tsc && pkg --target latest-macos-arm64 dist/index.js -o ./lib/treetrum"
+        "build": "tsc && pkg --target latest-macos-arm64 dist/index.js -o ./lib/treetrum --public"
     },
     "keywords": [],
     "author": "",

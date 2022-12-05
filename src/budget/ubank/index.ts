@@ -222,10 +222,9 @@ export const fetchUbankTransactionsPuppeteer = async (
 
     // We need to fetch using a full browser session — unfortunately, this means
     // we can't use nice JS features like spread/async-await :(
-    // @ts-expect-error
     const accountTransactions: Record<string, Transaction[]> =
         await page.evaluate(
-            `({ fromDate, toDate }) => {
+            ({ fromDate, toDate }) => {
                 const getHeaders = () => ({
                     "x-xsrf-token": JSON.parse(
                         window.sessionStorage.getItem("ib-session-store") ??
@@ -263,6 +262,7 @@ export const fetchUbankTransactionsPuppeteer = async (
                                 timezone: "Australia/Sydney",
                                 fromDate: fromDate,
                                 toDate: toDate,
+                                // @ts-expect-error
                                 accountId: accounts.map((a) => a.id),
                                 limit: 99,
                             }),
@@ -289,7 +289,7 @@ export const fetchUbankTransactionsPuppeteer = async (
                                 return transactions;
                             });
                     });
-            }`,
+            },
             { fromDate, toDate }
         );
 
