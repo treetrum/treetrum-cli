@@ -186,12 +186,8 @@ export const fetchUbankTransactionsPuppeteer = async (
     user: string,
     password: string
 ) => {
-    console.log("UBANK: Navigating to home page");
-    await page.goto("https://www.ubank.com.au/");
-
-    console.log("UBANK: Navigating to username page");
-    await page.click('[sp-automation-id="fe-block-link-button"]');
-    await page.waitForNavigation();
+    console.log("UBANK: Navigating username login page");
+    await page.goto("https://www.ubank.com.au/welcome/login/username");
     await page.type('[sp-automation-id="input-username"]', user);
 
     console.log("UBANK: Navigating to password page");
