@@ -235,21 +235,19 @@ export const fetchUbankTransactionsPuppeteer = async (
                     headers: getHeaders(),
                 })
                     .then((res) => res.json())
-                    .then((response) => {
+                    .then((response: GetAccountsResponse) => {
                         const accounts = response.linkedBanks[0].accounts;
                         console.log("accounts", accounts);
                         return accounts;
                     })
                     .then((accounts) => {
-                        const accountNicknames = accounts.reduce(
-                            // @ts-expect-error
-                            (acc, curr) => {
-                                return Object.assign(acc, {
-                                    [curr.id]: "UBank | " + curr.nickname,
-                                });
-                            },
-                            {}
-                        );
+                        const accountNicknames = accounts.reduce<
+                            Record<string, string>
+                        >((acc, curr) => {
+                            return Object.assign(acc, {
+                                [curr.id]: "UBank | " + curr.nickname,
+                            });
+                        }, {});
 
                         return fetch("/app/v1/accounts/transactions/search", {
                             headers: getHeaders(),
@@ -258,27 +256,25 @@ export const fetchUbankTransactionsPuppeteer = async (
                                 timezone: "Australia/Sydney",
                                 fromDate: fromDate,
                                 toDate: toDate,
-                                // @ts-expect-error
                                 accountId: accounts.map((a) => a.id),
                                 limit: 99,
                             }),
                         })
                             .then((res) => res.json())
-                            .then((response) => {
-                                const transactions = {};
+                            .then((response: GetTransactionsResponse) => {
+                                const transactions: Record<
+                                    string,
+                                    Transaction[]
+                                > = {};
 
-                                // @ts-expect-error
                                 accounts.forEach((a) => {
                                     const nickname = accountNicknames[a.id];
-                                    // @ts-expect-error
                                     transactions[nickname] = [];
                                 });
 
-                                // @ts-expect-error
                                 response.transactions.forEach((t) => {
                                     const nickname =
                                         accountNicknames[t.accountId];
-                                    // @ts-expect-error
                                     transactions[nickname].push(t);
                                 });
 
