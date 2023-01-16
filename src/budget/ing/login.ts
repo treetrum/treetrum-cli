@@ -31,9 +31,7 @@ export async function login(
     await page.click("#login-btn");
 
     const authToken = await page
-        .waitForResponse(
-            "https://www.ing.com.au/STSServiceB2C/V1/SecurityTokenServiceProxy.svc/issue"
-        )
+        .waitForResponse("https://www.ing.com.au/api/token/login/issue")
         .then((res) => res.json() as Promise<TokenResponse>)
         .then((data) => data.Token);
 

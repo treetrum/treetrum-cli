@@ -164,8 +164,8 @@ export const budget = async (opts: { headless: boolean; outdir: string }) => {
             bounds: { windowState: "minimized" },
         });
 
-        await downloadUbankData(page, opts.outdir);
-        await downloadUpData(opts.outdir);
+        // await downloadUbankData(page, opts.outdir);
+        // await downloadUpData(opts.outdir);
         await downloadIngData(page, opts.outdir);
         await downloadAmexData(page, opts.outdir);
         browser.close();
