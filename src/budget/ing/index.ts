@@ -4,11 +4,19 @@ import axios from "axios";
 import qs from "query-string";
 import fetch from "node-fetch";
 import parse from "csv-parse/lib/sync";
-import stringify from "csv-stringify/lib/sync";
 import parseDate from "date-fns/parse";
 import formatDate from "date-fns/format";
 import Dinero from "dinero.js";
 import { ING_DATE_FORMAT } from "./constants";
+import {
+    Account,
+    BankConnector,
+    BankConnectorTransaction,
+} from "../BankConnector";
+import { performAction } from "../utils";
+import { getEnvVars } from "../getEnvVars";
+import { login as loginToIng } from "./login";
+import chalk from "chalk";
 
 export const fetchTransactions = async (
     accountNumber: string,
@@ -98,9 +106,8 @@ interface CsvRow {
 }
 
 export const transformTransactions = (
-    csvData: string,
-    priceModifier: number = 1
-): string => {
+    csvData: string
+): BankConnectorTransaction[] => {
     const data: CsvRow[] = parse(csvData, { columns: true });
 
     const transformed = data.map((row: CsvRow) => {
@@ -109,21 +116,67 @@ export const transformTransactions = (
 
         const amountAsInteger = parseInt(`${parseFloat(Amount) * 100}`);
 
-        const transformedAmount = Dinero({ amount: amountAsInteger })
-            .multiply(priceModifier)
-            .toFormat("0.00");
+        const transformedAmount = Dinero({ amount: amountAsInteger }).toFormat(
+            "0.00"
+        );
 
         const parsedDate = parseDate(row.Date, "dd/mm/yyyy", new Date());
 
         return {
-            Date: formatDate(parsedDate, "yyyy-mm-dd"),
+            date: formatDate(parsedDate, "yyyy-mm-dd"),
             // Removes the unique data from each row (receipt number, date,
             // etc.). Doing this allows YNAB to remember transaction
             // descriptions and auto associate with a payee
-            Description: row.Description.split(" - Receipt")[0],
-            Amount: transformedAmount,
+            description: row.Description.split(" - Receipt")[0],
+            amount: transformedAmount,
         };
     });
 
-    return stringify(transformed, { header: true });
+    return transformed;
 };
+
+export class INGConnector implements BankConnector {
+    id = "ing";
+    name = "ING";
+
+    async getAccounts(page: Page, verbose?: boolean) {
+        const { ING_PW, ING_USER } = getEnvVars();
+
+        await performAction(
+            "Logging in to ING",
+            loginToIng(page, ING_USER, ING_PW)
+        );
+
+        const accounts = await performAction(
+            "Fetching accounts",
+            fetchAccounts(page)
+        );
+
+        const outputAccounts: Account[] = [];
+        for (const account of accounts) {
+            try {
+                const transactions = await performAction(
+                    `Fetching transactions for ${account.name}`,
+                    fetchTransactions(account.accountNumber, page)
+                );
+
+                const transformed = transformTransactions(transactions);
+
+                outputAccounts.push({
+                    name: account.name,
+                    transactions: transformed,
+                });
+            } catch (error) {
+                console.log(
+                    chalk.red(
+                        `Failed to fetch account details for ${account.name}`
+                    )
+                );
+                if (verbose) {
+                    console.error(error);
+                }
+            }
+        }
+        return outputAccounts;
+    }
+}

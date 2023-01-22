@@ -20,9 +20,3 @@ export interface Account {
 export interface PaginatedResponse<T> {
     data: T[];
 }
-
-export interface UpExportTransaction {
-    Description: string;
-    Date: string;
-    Amount: string;
-}

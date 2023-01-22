@@ -1,4 +1,4 @@
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import { budget } from "./budget";
 const program = new Command();
 
@@ -11,12 +11,31 @@ program
     )
     .option("--headless", "Should puppeteer be run in headless mode", false)
     .option(
-        "--outdir <path>",
+        "-o, --outdir <path>",
         "Where budget files should be output",
         "/Users/sam/Desktop"
     )
-    .action(({ headless, outdir }) => {
-        budget({ headless, outdir });
+    .option("-b, --banks <bankNames...>", "Which banks to download data from")
+    .option("-v, --verbose", "Display more information")
+    .addOption(
+        new Option(
+            "--account-modifiers <key:value>",
+            "Comma separated 'key:value's of predefined modifier amounts per account (based on a substring match of account name). If provided, you won't be prompted for per account modifiers. Example: 'Joint Account:0.6, Orange Everyday:1'"
+        ).argParser((val) => {
+            return val
+                .split(",")
+                .map((t) => t.trim().split(":"))
+                .map((mod) => ({
+                    matcher: mod[0],
+                    modifier: parseFloat(mod[1]),
+                }));
+        })
+    )
+    .action((opts) => {
+        if (opts.verbose) {
+            console.log("Got input args", opts);
+        }
+        budget(opts);
     });
 
 program.parse(process.argv);

@@ -1,9 +1,11 @@
-import { format } from "date-fns";
 import fetch, { RequestInit } from "node-fetch";
 import { Transaction } from "./transaction-types";
-import { PaginatedResponse, Account, UpExportTransaction } from "./types";
+import { PaginatedResponse, Account } from "./types";
 import moment from "moment";
 import chalk from "chalk";
+import { BankConnector, BankConnectorTransaction } from "../BankConnector";
+import { performAction } from "../utils";
+import { getEnvVars } from "../getEnvVars";
 
 const success = () => console.log(chalk.green("Success!"));
 
@@ -46,31 +48,31 @@ class UpClient {
 
 export const fetchUpTransactions = async (
     token: string
-): Promise<Record<string, UpExportTransaction[]>> => {
+): Promise<Record<string, BankConnectorTransaction[]>> => {
     const client = new UpClient(token);
 
     try {
         const response = await client.fetchAccounts();
-        const accountsToTransactions: Record<string, UpExportTransaction[]> =
-            {};
+        const accountsToTransactions: Record<
+            string,
+            BankConnectorTransaction[]
+        > = {};
 
         for (const account of response.data) {
-            console.log(
-                `Fetching transactions for ${account.attributes.displayName}`
+            const transactions = await performAction(
+                `Fetching transactions for "Up | ${account.attributes.displayName}"`,
+                client.fetchAccountTransactions(account.id)
             );
-            const transactions = await client.fetchAccountTransactions(
-                account.id
-            );
-            success();
+
             accountsToTransactions[`Up | ${account.attributes.displayName}`] =
                 transactions.data
                     .filter((t) => t.attributes.status === "SETTLED")
-                    .map<UpExportTransaction>((t) => ({
-                        Date: moment(t.attributes.createdAt).format(
+                    .map<BankConnectorTransaction>((t) => ({
+                        date: moment(t.attributes.createdAt).format(
                             "YYYY-MM-DD"
                         ),
-                        Description: t.attributes.description,
-                        Amount: t.attributes.amount.value,
+                        description: t.attributes.description,
+                        amount: t.attributes.amount.value,
                     }));
         }
 
@@ -81,3 +83,20 @@ export const fetchUpTransactions = async (
         throw error;
     }
 };
+
+export class UpConnector implements BankConnector {
+    id = "up";
+    name = "Up";
+
+    async getAccounts() {
+        const { UP_TOKEN } = getEnvVars();
+
+        const accountTransactions = await fetchUpTransactions(UP_TOKEN);
+
+        return Object.entries(accountTransactions).map(
+            ([name, transactions]) => {
+                return { name, transactions };
+            }
+        );
+    }
+}

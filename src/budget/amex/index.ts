@@ -3,35 +3,48 @@ import xlsx from "xlsx";
 import csvParse from "csv-parse";
 import csvStringify from "csv-stringify";
 import moment from "moment";
+import { BankConnector, Transaction } from "../BankConnector";
+import { getEnvVars } from "../getEnvVars";
+import { performAction } from "../utils";
 
-export const downloadStatementData = async (page: Page) => {
+type StatementData = Buffer;
+
+export const downloadStatementData = async (
+    page: Page
+): Promise<StatementData> => {
     const twoWeeksAgo = moment().subtract(2, "weeks").format("YYYYMMDD");
     const today = moment().format("YYYYMMDD");
 
-    const res = (await page.evaluate(`(() => {
-        return new Promise((resolve, reject) => {
-            const blobPromise = fetch(
-                "https://global.americanexpress.com/myca/intl/istatement/japa/v1/excel.do?&method=createExcel&Face=en_AU&sorted_index=0&BPIndex=-1&requestType=searchDateRange&currentStartDate=${twoWeeksAgo}&currentEndDate=${today}",
-                {
-                    method: "GET",
-                    credentials: "include",
-                }
-            )
-                .then((res) => res.blob())
-                .then((data) => {
-                    const reader = new FileReader();
-                    reader.readAsBinaryString(data);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = () =>
-                        reject(new Error("Couldn't read document"));
-                });
-        });
-    })()`)) as string;
+    const output = (await page.evaluate(
+        ({ twoWeeksAgo, today }) => {
+            return new Promise((resolve, reject) => {
+                fetch(
+                    `https://global.americanexpress.com/myca/intl/istatement/japa/v1/excel.do?&method=createExcel&Face=en_AU&sorted_index=0&BPIndex=-1&requestType=searchDateRange&currentStartDate=${twoWeeksAgo}&currentEndDate=${today}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    }
+                )
+                    .then((res) => res.blob())
+                    .then((data) => {
+                        const reader = new FileReader();
+                        reader.readAsBinaryString(data);
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = () =>
+                            reject(new Error("Couldn't read document"));
+                    });
+            });
+        },
+        { twoWeeksAgo, today }
+    )) as string;
 
-    return Buffer.from(res, "binary");
+    return Buffer.from(output, "binary");
 };
 
-export const transform = (data: any): Promise<string> => {
+/** Tuple (in this order) containing: [Date, Description, Category, Amount] */
+type AmexCsvRow = string[];
+
+const transformStatementData = (data: StatementData): Promise<AmexCsvRow[]> => {
     return new Promise((res) => {
         const wb = xlsx.read(data);
         const rawCSV = xlsx.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]]);
@@ -39,33 +52,33 @@ export const transform = (data: any): Promise<string> => {
             rawCSV.indexOf("Date"),
             rawCSV.length
         );
-        const parsed = csvParse(
-            csvFromDate,
-            {},
-            (error, output: string[][]) => {
-                if (error) throw error;
-                const modifiedLines: string[][] = [];
-                if (output.length) {
-                    output.forEach((row, index) => {
-                        if (index !== 0) {
-                            row[0] = moment(row[0], "DD MMM YYYY").format(
-                                "YYYY-MM-DD"
-                            );
-                        }
-                        modifiedLines.push(row);
-                    });
-                    debugger;
-                }
-                csvStringify(
-                    modifiedLines,
-                    (stringifyError, modifiedString) => {
-                        if (stringifyError) throw stringifyError;
-                        res(modifiedString);
+        csvParse(csvFromDate, {}, (error, output: string[][]) => {
+            if (error) throw error;
+            const modifiedLines: AmexCsvRow[] = [];
+            if (output.length) {
+                output.forEach((row, index) => {
+                    if (index !== 0) {
+                        row[0] = moment(row[0], "DD MMM YYYY").format(
+                            "YYYY-MM-DD"
+                        );
                     }
-                );
+                    modifiedLines.push(row);
+                });
             }
-        );
+            res(modifiedLines);
+        });
     });
+};
+
+const transformToTransactions = async (
+    data: StatementData
+): Promise<Transaction[]> => {
+    const [headerRow, ...rows] = await transformStatementData(data);
+    const transactions = rows.map((row) => {
+        const [date, description, category, amount] = row;
+        return { date, description, amount };
+    });
+    return Promise.resolve(transactions);
 };
 
 export const login = async (
@@ -79,3 +92,41 @@ export const login = async (
     await page.click("#loginSubmit");
     await page.waitForNavigation();
 };
+
+export class AmexConnector implements BankConnector {
+    id = "amex";
+    name = "American Express";
+
+    private username: string;
+    private password: string;
+
+    constructor() {
+        const { AMEX_USER, AMEX_PW } = getEnvVars();
+        this.username = AMEX_USER;
+        this.password = AMEX_PW;
+    }
+
+    async getAccounts(page: Page) {
+        await performAction(
+            "Logging in to Amex",
+            login(page, this.username, this.password)
+        );
+
+        const statementData = await performAction(
+            "Downloading statement data",
+            downloadStatementData(page)
+        );
+
+        const transactions = await performAction(
+            "Transforming statement data",
+            transformToTransactions(statementData)
+        );
+
+        return [
+            {
+                name: "AMEX | Credit Card",
+                transactions: transactions,
+            },
+        ];
+    }
+}
