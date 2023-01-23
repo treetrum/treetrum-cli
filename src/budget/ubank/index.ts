@@ -20,7 +20,7 @@ export const transformUbankTransaction = (
 ): NormalisedTransaction => {
     return {
         date: moment(t.completed).format("YYYY-MM-DD"),
-        description: t.shortDescription,
+        description: t.shortDescription.split(" - Receipt")[0], // Removes text junk from ING transactions
         amount: t.value.amount,
     };
 };
