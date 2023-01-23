@@ -8,11 +8,7 @@ import parseDate from "date-fns/parse";
 import formatDate from "date-fns/format";
 import Dinero from "dinero.js";
 import { ING_DATE_FORMAT } from "./constants";
-import {
-    Account,
-    BankConnector,
-    BankConnectorTransaction,
-} from "../BankConnector";
+import { Account, BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
 import { getEnvVars } from "../getEnvVars";
 import { login as loginToIng } from "./login";
@@ -105,9 +101,7 @@ interface CsvRow {
     Debit: string;
 }
 
-export const transformTransactions = (
-    csvData: string
-): BankConnectorTransaction[] => {
+export const transformTransactions = (csvData: string): Transaction[] => {
     const data: CsvRow[] = parse(csvData, { columns: true });
 
     const transformed = data.map((row: CsvRow) => {

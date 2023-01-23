@@ -1,9 +1,9 @@
 import fetch, { RequestInit } from "node-fetch";
-import { Transaction } from "./transaction-types";
+import { UpTransaction } from "./transaction-types";
 import { PaginatedResponse, Account } from "./types";
 import moment from "moment";
 import chalk from "chalk";
-import { BankConnector, BankConnectorTransaction } from "../BankConnector";
+import { BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
 import { getEnvVars } from "../getEnvVars";
 
@@ -40,7 +40,7 @@ class UpClient {
         const sinceFormatted = moment()
             .subtract(sinceDaysAgo, "days")
             .toISOString();
-        return this.fetchJson<PaginatedResponse<Transaction>>(
+        return this.fetchJson<PaginatedResponse<UpTransaction>>(
             `/accounts/${accountId}/transactions?filter[since]=${sinceFormatted}`
         );
     }
@@ -48,15 +48,12 @@ class UpClient {
 
 export const fetchUpTransactions = async (
     token: string
-): Promise<Record<string, BankConnectorTransaction[]>> => {
+): Promise<Record<string, Transaction[]>> => {
     const client = new UpClient(token);
 
     try {
         const response = await client.fetchAccounts();
-        const accountsToTransactions: Record<
-            string,
-            BankConnectorTransaction[]
-        > = {};
+        const accountsToTransactions: Record<string, Transaction[]> = {};
 
         for (const account of response.data) {
             const transactions = await performAction(
@@ -67,7 +64,7 @@ export const fetchUpTransactions = async (
             accountsToTransactions[`Up | ${account.attributes.displayName}`] =
                 transactions.data
                     .filter((t) => t.attributes.status === "SETTLED")
-                    .map<BankConnectorTransaction>((t) => ({
+                    .map<Transaction>((t) => ({
                         date: moment(t.attributes.createdAt).format(
                             "YYYY-MM-DD"
                         ),

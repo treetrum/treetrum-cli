@@ -4,10 +4,10 @@ export interface GetTransactionsResponse {
     nextPageId: string;
     totalCount: number;
     totalAmount: string;
-    transactions: Transaction[];
+    transactions: UbankTransaction[];
 }
 
-export interface Transaction {
+export interface UbankTransaction {
     id: string;
     cbsId: string;
     bankId: string;

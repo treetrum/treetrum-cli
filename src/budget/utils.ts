@@ -1,9 +1,7 @@
 import chalk from "chalk";
 import stringify from "csv-stringify/lib/sync";
-import { BankConnectorTransaction, Transaction } from "./BankConnector";
+import { Transaction } from "./BankConnector";
 import Dinero from "dinero.js";
-import parseDate from "date-fns/parse";
-import formatDate from "date-fns/format";
 
 export const dataArrayToCSVString = (data: Record<string, any>[]) => {
     return stringify(data, { header: true });
@@ -34,9 +32,9 @@ export const performActionSync = <T>(name: string, action: T): T => {
 };
 
 export const applyPriceModifier = (
-    transactions: BankConnectorTransaction[],
+    transactions: Transaction[],
     priceModifier: number = 1
-): BankConnectorTransaction[] => {
+): Transaction[] => {
     return transactions.map((transaction) => {
         const { amount } = transaction;
 

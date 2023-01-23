@@ -3,21 +3,16 @@ import prompts from "prompts";
 import { Account, GetAccountsResponse } from "./types/GetAccountsResponse";
 import {
     GetTransactionsResponse,
-    Transaction,
+    UbankTransaction,
 } from "./types/GetTransactionsResponse";
 import moment from "moment";
 import cookie from "cookie";
 import { Page } from "puppeteer";
-import {
-    BankConnector,
-    Transaction as NormalisedTransaction,
-} from "../BankConnector";
+import { BankConnector, Transaction } from "../BankConnector";
 import { getEnvVars } from "../getEnvVars";
 import { performAction } from "../utils";
 
-export const transformUbankTransaction = (
-    t: Transaction
-): NormalisedTransaction => {
+export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
     return {
         date: moment(t.completed).format("YYYY-MM-DD"),
         description: t.shortDescription.split(" - Receipt")[0], // Removes text junk from ING transactions
@@ -174,7 +169,7 @@ export const fetchUbankTransactions = async (
 
     const accounts = await client.fetchAccounts();
 
-    const transactions: Record<string, NormalisedTransaction[]> = {};
+    const transactions: Record<string, Transaction[]> = {};
 
     const promises = accounts.map(async (account) => {
         console.log(`Fetching transactions for ${account.nickname}`);
@@ -224,7 +219,7 @@ export const fetchUbankTransactionsPuppeteer = async (
 
     // We need to fetch using a full browser session — unfortunately, this means
     // we can't use nice JS features like spread/async-await :(
-    const accountTransactions: Record<string, Transaction[]> =
+    const accountTransactions: Record<string, UbankTransaction[]> =
         await page.evaluate(
             async ({ fromDate, toDate }) => {
                 const getHeaders = () => ({
@@ -271,7 +266,7 @@ export const fetchUbankTransactionsPuppeteer = async (
                     }
                 ).then((res) => res.json());
 
-                const transactions: Record<string, Transaction[]> = {};
+                const transactions: Record<string, UbankTransaction[]> = {};
 
                 accounts.forEach((a) => {
                     const nickname = accountNicknames[a.id];
@@ -288,7 +283,7 @@ export const fetchUbankTransactionsPuppeteer = async (
             { fromDate, toDate }
         );
 
-    const transformed: Record<string, NormalisedTransaction[]> = {};
+    const transformed: Record<string, Transaction[]> = {};
     Object.entries(accountTransactions).forEach(([key, value]) => {
         transformed[key] = value.map(transformUbankTransaction);
     });

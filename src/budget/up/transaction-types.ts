@@ -1,4 +1,4 @@
-export interface Transaction {
+export interface UpTransaction {
     type: string;
     id: string;
     attributes: Attributes;

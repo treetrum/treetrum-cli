@@ -8,8 +8,6 @@ export type Transaction = {
     amount: string;
 };
 
-export type BankConnectorTransaction = Transaction;
-
 export type Account = {
     name: string;
     transactions: Transaction[];
