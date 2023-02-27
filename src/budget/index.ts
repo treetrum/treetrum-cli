@@ -40,22 +40,26 @@ export const budget = async (opts: {
         });
 
         const connectors: BankConnector[] = [
-            new UpConnector(),
             new UbankConnector(),
+            new UpConnector(),
             new AmexConnector(),
             new INGConnector(),
-        ];
-
-        const getAccountsRequests = connectors.map((c) => {
+        ].filter((c) => {
             if (!opts.banks || opts.banks.includes(c.id)) {
-                return c.getAccounts(page, opts.verbose);
+                return true;
             }
-            return Promise.resolve([]);
+            return false;
         });
 
-        const accounts = (await Promise.all(getAccountsRequests)).reduce<
-            Account[]
-        >((total, accounts) => [...total, ...accounts], []);
+        // Fetch each account type in serial (because most need the same browser window)
+        let accounts: Account[] = [];
+        for (const connector of connectors) {
+            let connectorAccounts = await connector.getAccounts(
+                page,
+                opts.verbose
+            );
+            accounts.push(...connectorAccounts);
+        }
 
         console.log("=======================================");
         console.log("=== FINISHED FETCHING ACCOUNTS DATA ===");
