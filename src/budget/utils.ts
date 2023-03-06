@@ -35,6 +35,10 @@ export const applyPriceModifier = (
     transactions: Transaction[],
     priceModifier: number = 1
 ): Transaction[] => {
+    if (priceModifier === 1) {
+        return transactions;
+    }
+
     return transactions.map((transaction) => {
         const { amount } = transaction;
 
