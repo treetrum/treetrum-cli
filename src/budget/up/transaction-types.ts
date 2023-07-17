@@ -10,7 +10,7 @@ export interface Attributes {
     status: "HELD" | "SETTLED";
     rawText: string;
     description: string;
-    message: null;
+    message?: string;
     isCategorizable: boolean;
     holdInfo: HoldInfo;
     roundUp: null;

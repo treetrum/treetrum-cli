@@ -6,6 +6,7 @@ export type Transaction = {
     description: string;
     date: string;
     amount: string;
+    memo?: string;
 };
 
 export type Account = {

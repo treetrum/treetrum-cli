@@ -68,8 +68,9 @@ export const fetchUpTransactions = async (
                         date: moment(t.attributes.createdAt).format(
                             "YYYY-MM-DD"
                         ),
-                        description: t.attributes.description,
                         amount: t.attributes.amount.value,
+                        description: t.attributes.description,
+                        memo: t.attributes.message,
                     }));
         }
 

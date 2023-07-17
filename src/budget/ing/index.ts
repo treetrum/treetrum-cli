@@ -34,7 +34,11 @@ export const fetchTransactions = async (
     };
     return axios
         .post(url, qs.stringify(data))
-        .then((response) => response.data);
+        .then((response) => response.data)
+        .then((csvData) => {
+            const data: CsvRow[] = parse(csvData, { columns: true });
+            return data;
+        });
 };
 
 export const fetchAccounts = async (
@@ -101,9 +105,7 @@ interface CsvRow {
     Debit: string;
 }
 
-export const transformTransactions = (csvData: string): Transaction[] => {
-    const data: CsvRow[] = parse(csvData, { columns: true });
-
+export const transformTransactions = (data: CsvRow[]): Transaction[] => {
     const transformed = data.map((row: CsvRow) => {
         const { Credit, Debit } = row;
         const Amount = Credit !== "" ? Credit : Debit;
@@ -153,6 +155,9 @@ export class INGConnector implements BankConnector {
                     `Fetching transactions for ${account.name}`,
                     fetchTransactions(account.accountNumber, page)
                 );
+
+                console.log("Got transactions");
+                console.log(transactions);
 
                 const transformed = transformTransactions(transactions);
 
