@@ -18,7 +18,7 @@ export interface BankConnector {
     /** Unique ID of the connector (used in CLI commands) */
     id: string;
 
-    /** Human readbale name of the connector */
+    /** Human readable name of the connector */
     name: string;
 
     /** Returns an array of {@link Account}s, each of which contains an array of transactions */

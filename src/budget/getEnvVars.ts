@@ -8,7 +8,7 @@ type ENV_KEYS =
     | "ING_PW"
     | "AMEX_USER"
     | "AMEX_PW"
-    | "UP_TOKEN"
+    | "UP_TOKEN_1PR"
     | "UBANK_USER"
     | "UBANK_PW";
 

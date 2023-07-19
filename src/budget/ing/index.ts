@@ -156,9 +156,6 @@ export class INGConnector implements BankConnector {
                     fetchTransactions(account.accountNumber, page)
                 );
 
-                console.log("Got transactions");
-                console.log(transactions);
-
                 const transformed = transformTransactions(transactions);
 
                 outputAccounts.push({
