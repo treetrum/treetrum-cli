@@ -2,11 +2,7 @@ import { Page } from "puppeteer";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 
-export async function login(
-    page: Page,
-    clientNumber: string,
-    accessCode: string
-): Promise<string> {
+export async function login(page: Page, clientNumber: string, accessCode: string): Promise<string> {
     await page.goto("https://www.ing.com.au/securebanking/");
     await page.waitForSelector("#loginInput");
 
@@ -47,9 +43,7 @@ function generateKeyMap(randomisedKeys: string[]) {
     return randomisedKeys.map((base64str, i) => {
         const img = PNG.sync.read(Buffer.from(base64str, "base64"));
         for (let j = 0; j < keypadImages.length; j++) {
-            if (
-                pixelmatch(img.data, keypadImages[j].data, null, 180, 110) < 10
-            ) {
+            if (pixelmatch(img.data, keypadImages[j].data, null, 180, 110) < 10) {
                 return String(j);
             }
         }

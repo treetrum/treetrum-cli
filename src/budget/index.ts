@@ -1,11 +1,7 @@
 import chalk from "chalk";
 import puppeteer from "puppeteer-extra";
 import fs from "fs";
-import {
-    applyPriceModifier,
-    performActionSync,
-    transactionsToCsvString,
-} from "./utils";
+import { applyPriceModifier, performActionSync, transactionsToCsvString } from "./utils";
 import path from "path";
 import StealthPlugin from "./stealth-plugin";
 import { Account, BankConnector } from "./BankConnector";
@@ -59,10 +55,7 @@ export const budget = async (opts: {
         let accounts: Account[] = [];
         for (const connector of connectors) {
             console.log(`Fetching transactions for ${connector.name}`);
-            let connectorAccounts = await connector.getAccounts(
-                page,
-                opts.verbose
-            );
+            let connectorAccounts = await connector.getAccounts(page, opts.verbose);
             accounts.push(...connectorAccounts);
         }
 
@@ -76,9 +69,7 @@ export const budget = async (opts: {
                 opts.accountModifiers.forEach((mod) => {
                     if (account.name.toLowerCase().includes(mod.matcher)) {
                         modifier = mod.modifier;
-                        console.log(
-                            `Applying modifier to "${account.name}" (${modifier})`
-                        );
+                        console.log(`Applying modifier to "${account.name}" (${modifier})`);
                     }
                 });
             } else {
@@ -93,10 +84,7 @@ export const budget = async (opts: {
                 ]);
                 modifier = response.modifier;
             }
-            const transactions = applyPriceModifier(
-                account.transactions,
-                modifier
-            );
+            const transactions = applyPriceModifier(account.transactions, modifier);
 
             performActionSync(
                 `Writing CSV to ${account.name}.csv`,

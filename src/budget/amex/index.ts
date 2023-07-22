@@ -9,9 +9,7 @@ import { performAction } from "../utils";
 
 type StatementData = Buffer;
 
-export const downloadStatementData = async (
-    page: Page
-): Promise<StatementData> => {
+export const downloadStatementData = async (page: Page): Promise<StatementData> => {
     const twoWeeksAgo = moment().subtract(2, "weeks").format("YYYYMMDD");
     const today = moment().format("YYYYMMDD");
 
@@ -30,8 +28,7 @@ export const downloadStatementData = async (
                         const reader = new FileReader();
                         reader.readAsBinaryString(data);
                         reader.onload = () => resolve(reader.result);
-                        reader.onerror = () =>
-                            reject(new Error("Couldn't read document"));
+                        reader.onerror = () => reject(new Error("Couldn't read document"));
                     });
             });
         },
@@ -48,19 +45,14 @@ const transformStatementData = (data: StatementData): Promise<AmexCsvRow[]> => {
     return new Promise((res) => {
         const wb = xlsx.read(data);
         const rawCSV = xlsx.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]]);
-        const csvFromDate = rawCSV.substring(
-            rawCSV.indexOf("Date"),
-            rawCSV.length
-        );
+        const csvFromDate = rawCSV.substring(rawCSV.indexOf("Date"), rawCSV.length);
         csvParse(csvFromDate, {}, (error, output: string[][]) => {
             if (error) throw error;
             const modifiedLines: AmexCsvRow[] = [];
             if (output.length) {
                 output.forEach((row, index) => {
                     if (index !== 0) {
-                        row[0] = moment(row[0], "DD MMM YYYY")
-                            .toDate()
-                            .toISOString();
+                        row[0] = moment(row[0], "DD MMM YYYY").toDate().toISOString();
                     }
                     modifiedLines.push(row);
                 });
@@ -70,9 +62,7 @@ const transformStatementData = (data: StatementData): Promise<AmexCsvRow[]> => {
     });
 };
 
-const transformToTransactions = async (
-    data: StatementData
-): Promise<Transaction[]> => {
+const transformToTransactions = async (data: StatementData): Promise<Transaction[]> => {
     const [headerRow, ...rows] = await transformStatementData(data);
     const transactions = rows.map((row): Transaction => {
         const [date, description, category, amount] = row;
@@ -85,11 +75,7 @@ const transformToTransactions = async (
     return Promise.resolve(transactions);
 };
 
-export const login = async (
-    page: puppeteer.Page,
-    userId: string,
-    password: string
-) => {
+export const login = async (page: puppeteer.Page, userId: string, password: string) => {
     await page.goto("https://www.americanexpress.com/en-au/account/login");
     await page.type("#eliloUserID", userId);
     await page.type("#eliloPassword", password);
@@ -111,10 +97,7 @@ export class AmexConnector implements BankConnector {
     }
 
     async getAccounts(page: Page) {
-        await performAction(
-            "Logging in to Amex",
-            login(page, this.username, this.password)
-        );
+        await performAction("Logging in to Amex", login(page, this.username, this.password));
 
         const statementData = await performAction(
             "Downloading statement data",

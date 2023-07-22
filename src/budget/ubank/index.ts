@@ -1,10 +1,7 @@
 import nodeFetch, { RequestInit, Response } from "node-fetch";
 import prompts from "prompts";
 import { Account, GetAccountsResponse } from "./types/GetAccountsResponse";
-import {
-    GetTransactionsResponse,
-    UbankTransaction,
-} from "./types/GetTransactionsResponse";
+import { GetTransactionsResponse, UbankTransaction } from "./types/GetTransactionsResponse";
 import moment from "moment";
 import cookie from "cookie";
 import { Page } from "puppeteer";
@@ -38,9 +35,7 @@ class UBankClient {
 
     updateCookies = (response: Response) => {
         if (response.headers.has("set-cookie")) {
-            const newCookies = cookie.parse(
-                response.headers.get("set-cookie") ?? ""
-            );
+            const newCookies = cookie.parse(response.headers.get("set-cookie") ?? "");
             this.cookie = {
                 ...this.cookie,
                 ...newCookies,
@@ -91,9 +86,7 @@ class UBankClient {
     };
 
     authenticate = async () => {
-        await this.request(
-            `/login-options/${this.user}/identity:authentication:browser`
-        );
+        await this.request(`/login-options/${this.user}/identity:authentication:browser`);
 
         // Send password
         const { deviceUuid } = await this.request<{ deviceUuid: string }>(
@@ -122,35 +115,24 @@ class UBankClient {
         return accounts;
     };
 
-    fetchAccountTransactions = async (
-        account: Account,
-        sinceDaysAgo: number = 14
-    ) => {
-        const fromDate = moment()
-            .subtract(sinceDaysAgo, "days")
-            .format("YYYY-MM-DD");
+    fetchAccountTransactions = async (account: Account, sinceDaysAgo: number = 14) => {
+        const fromDate = moment().subtract(sinceDaysAgo, "days").format("YYYY-MM-DD");
         const toDate = moment().format("YYYY-MM-DD");
-        const data = await this.request<GetTransactionsResponse>(
-            "/accounts/transactions/search",
-            {
-                method: "POST",
-                body: JSON.stringify({
-                    timezone: "Australia/Sydney",
-                    fromDate: fromDate,
-                    toDate: toDate,
-                    accountId: [account.id],
-                    limit: 99,
-                }),
-            }
-        );
+        const data = await this.request<GetTransactionsResponse>("/accounts/transactions/search", {
+            method: "POST",
+            body: JSON.stringify({
+                timezone: "Australia/Sydney",
+                fromDate: fromDate,
+                toDate: toDate,
+                accountId: [account.id],
+                limit: 99,
+            }),
+        });
         return data.transactions.map(transformUbankTransaction);
     };
 }
 
-export const fetchUbankTransactions = async (
-    user: string,
-    password: string
-) => {
+export const fetchUbankTransactions = async (user: string, password: string) => {
     const client = new UBankClient(user, password);
     const sendOtp = await client.authenticate();
 
@@ -173,8 +155,9 @@ export const fetchUbankTransactions = async (
 
     const promises = accounts.map(async (account) => {
         console.log(`Fetching transactions for ${account.nickname}`);
-        transactions[`UBank | ${account.nickname}`] =
-            await client.fetchAccountTransactions(account);
+        transactions[`UBank | ${account.nickname}`] = await client.fetchAccountTransactions(
+            account
+        );
     });
 
     await Promise.all(promises);
@@ -219,69 +202,67 @@ export const fetchUbankTransactionsPuppeteer = async (
 
     // We need to fetch using a full browser session — unfortunately, this means
     // we can't use nice JS features like spread/async-await :(
-    const accountTransactions: Record<string, UbankTransaction[]> =
-        await page.evaluate(
-            async ({ fromDate, toDate }) => {
-                const getHeaders = () => ({
-                    "x-xsrf-token": JSON.parse(
-                        window.sessionStorage.getItem("ib-session-store") ??
-                            "{}"
-                    ).key,
-                    "x-private-api-key": "ANZf5WgzmVLmTUwAQyuCq7LspXF2pd4N",
-                    "x-device-meta":
-                        '{"appVersion":"1.11.3","browserInfo":{"browserName":"Firefox","browserOs":"Mac OS","browserType":"browser","browserVersion":"104.0.0"},"channel":"production","deviceName":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:104.0) Gecko/20100101 Firefox/104.0","platform":"IB"}',
+    const accountTransactions: Record<string, UbankTransaction[]> = await page.evaluate(
+        async ({ fromDate, toDate }) => {
+            const getHeaders = () => ({
+                "x-xsrf-token": JSON.parse(
+                    window.sessionStorage.getItem("ib-session-store") ?? "{}"
+                ).key,
+                "x-private-api-key": "ANZf5WgzmVLmTUwAQyuCq7LspXF2pd4N",
+                "x-device-meta":
+                    '{"appVersion":"1.11.3","browserInfo":{"browserName":"Firefox","browserOs":"Mac OS","browserType":"browser","browserVersion":"104.0.0"},"channel":"production","deviceName":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:104.0) Gecko/20100101 Firefox/104.0","platform":"IB"}',
+            });
+
+            const { linkedBanks }: GetAccountsResponse = await fetch(
+                "/app/v1/accounts?externalRefresh=false&refresh=false&type=all",
+                { headers: getHeaders() }
+            ).then((res) => res.json());
+
+            const accountNicknames: Record<string, string> = {};
+            const accounts: Account[] = [];
+
+            linkedBanks.forEach((b) => {
+                b.accounts.forEach((account) => {
+                    accountNicknames[account.id] = `${b.shortBankName} | ${
+                        account.nickname || account.label
+                    }`;
                 });
+                accounts.push(...b.accounts);
+            });
 
-                const { linkedBanks }: GetAccountsResponse = await fetch(
-                    "/app/v1/accounts?externalRefresh=false&refresh=false&type=all",
-                    { headers: getHeaders() }
-                ).then((res) => res.json());
+            console.log("accounts", accounts);
 
-                const accountNicknames: Record<string, string> = {};
-                const accounts: Account[] = [];
+            const response: GetTransactionsResponse = await fetch(
+                "/app/v1/accounts/transactions/search",
+                {
+                    headers: getHeaders(),
+                    method: "POST",
+                    body: JSON.stringify({
+                        timezone: "Australia/Sydney",
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        accountId: accounts.map((a) => a.id),
+                        limit: 99,
+                    }),
+                }
+            ).then((res) => res.json());
 
-                linkedBanks.forEach((b) => {
-                    b.accounts.forEach((account) => {
-                        accountNicknames[account.id] = `${b.shortBankName} | ${
-                            account.nickname || account.label
-                        }`;
-                    });
-                    accounts.push(...b.accounts);
-                });
+            const transactions: Record<string, UbankTransaction[]> = {};
 
-                console.log("accounts", accounts);
+            accounts.forEach((a) => {
+                const nickname = accountNicknames[a.id];
+                transactions[nickname] = [];
+            });
 
-                const response: GetTransactionsResponse = await fetch(
-                    "/app/v1/accounts/transactions/search",
-                    {
-                        headers: getHeaders(),
-                        method: "POST",
-                        body: JSON.stringify({
-                            timezone: "Australia/Sydney",
-                            fromDate: fromDate,
-                            toDate: toDate,
-                            accountId: accounts.map((a) => a.id),
-                            limit: 99,
-                        }),
-                    }
-                ).then((res) => res.json());
+            response.transactions.forEach((t) => {
+                const nickname = accountNicknames[t.accountId];
+                transactions[nickname].push(t);
+            });
 
-                const transactions: Record<string, UbankTransaction[]> = {};
-
-                accounts.forEach((a) => {
-                    const nickname = accountNicknames[a.id];
-                    transactions[nickname] = [];
-                });
-
-                response.transactions.forEach((t) => {
-                    const nickname = accountNicknames[t.accountId];
-                    transactions[nickname].push(t);
-                });
-
-                return transactions;
-            },
-            { fromDate, toDate }
-        );
+            return transactions;
+        },
+        { fromDate, toDate }
+    );
 
     const transformed: Record<string, Transaction[]> = {};
     Object.entries(accountTransactions).forEach(([key, value]) => {
@@ -309,10 +290,8 @@ export class UbankConnector implements BankConnector {
             fetchUbankTransactionsPuppeteer(page, this.user, this.pw)
         );
 
-        return Object.entries(accountTransactions).map(
-            ([name, transactions]) => {
-                return { name, transactions };
-            }
-        );
+        return Object.entries(accountTransactions).map(([name, transactions]) => {
+            return { name, transactions };
+        });
     }
 }

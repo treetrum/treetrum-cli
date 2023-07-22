@@ -30,9 +30,7 @@ export class UpClient {
     }
 
     fetchAccountTransactions(accountId: string, sinceDaysAgo: number = 14) {
-        const sinceFormatted = moment()
-            .subtract(sinceDaysAgo, "days")
-            .toISOString();
+        const sinceFormatted = moment().subtract(sinceDaysAgo, "days").toISOString();
         return this.fetchJson<PaginatedResponse<UpTransaction>>(
             `/accounts/${accountId}/transactions?filter[since]=${sinceFormatted}`
         );

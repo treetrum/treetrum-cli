@@ -79,7 +79,7 @@ export class AnzConnector implements BankConnector {
                 state: await this.getAnzAppState(),
                 accountId: account.accountId,
                 requestId: uuidv1(),
-            },
+            }
         );
         return transactions.data.transactionList;
     }

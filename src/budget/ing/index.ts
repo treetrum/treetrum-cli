@@ -14,11 +14,7 @@ import { getEnvVars } from "../getEnvVars";
 import { login as loginToIng } from "./login";
 import chalk from "chalk";
 
-export const fetchTransactions = async (
-    accountNumber: string,
-    page: Page,
-    days: number = 14
-) => {
+export const fetchTransactions = async (accountNumber: string, page: Page, days: number = 14) => {
     const url =
         "https://www.ing.com.au/api/ExportTransactions/Service/ExportTransactionsService.svc/json/ExportTransactions/ExportTransactions";
     const data = {
@@ -26,9 +22,7 @@ export const fetchTransactions = async (
         "X-AuthToken": await page.evaluate(`(() => instance.client.token)()`),
         AccountNumber: accountNumber,
         Format: "csv",
-        FilterStartDate: moment()
-            .subtract(days, "days")
-            .format(ING_DATE_FORMAT),
+        FilterStartDate: moment().subtract(days, "days").format(ING_DATE_FORMAT),
         FilterEndDate: moment().add(1, "days").format(ING_DATE_FORMAT),
         IsSpecific: "false",
     };
@@ -90,10 +84,7 @@ export const fetchAccounts = async (
 
         return accounts.sort((a, b) => a.name.localeCompare(b.name));
     } catch (error) {
-        console.error(
-            "Something went wrong when parsing JSON from response",
-            error
-        );
+        console.error("Something went wrong when parsing JSON from response", error);
         throw error;
     }
 };
@@ -112,9 +103,7 @@ export const transformTransactions = (data: CsvRow[]): Transaction[] => {
 
         const amountAsInteger = parseInt(`${parseFloat(Amount) * 100}`);
 
-        const transformedAmount = Dinero({ amount: amountAsInteger }).toFormat(
-            "0.00"
-        );
+        const transformedAmount = Dinero({ amount: amountAsInteger }).toFormat("0.00");
 
         const parsedDate = parseDate(row.Date, "dd/mm/yyyy", new Date());
 
@@ -138,15 +127,9 @@ export class INGConnector implements BankConnector {
     async getAccounts(page: Page, verbose?: boolean) {
         const { ING_PW, ING_USER } = getEnvVars();
 
-        await performAction(
-            "Logging in to ING",
-            loginToIng(page, ING_USER, ING_PW)
-        );
+        await performAction("Logging in to ING", loginToIng(page, ING_USER, ING_PW));
 
-        const accounts = await performAction(
-            "Fetching accounts",
-            fetchAccounts(page)
-        );
+        const accounts = await performAction("Fetching accounts", fetchAccounts(page));
 
         const outputAccounts: Account[] = [];
         for (const account of accounts) {
@@ -163,11 +146,7 @@ export class INGConnector implements BankConnector {
                     transactions: transformed,
                 });
             } catch (error) {
-                console.log(
-                    chalk.red(
-                        `Failed to fetch account details for ${account.name}`
-                    )
-                );
+                console.log(chalk.red(`Failed to fetch account details for ${account.name}`));
                 if (verbose) {
                     console.error(error);
                 }

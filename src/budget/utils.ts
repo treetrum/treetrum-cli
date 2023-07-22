@@ -22,10 +22,7 @@ export const log = (message: string) => console.log(message);
 
 export const success = () => console.log(chalk.green("✅ Success!"));
 
-export const performAction = async <T>(
-    name: string,
-    action: Promise<T>
-): Promise<T> => {
+export const performAction = async <T>(name: string, action: Promise<T>): Promise<T> => {
     log(name);
     const response = await action;
     success();
@@ -49,9 +46,7 @@ export const applyPriceModifier = (
     return transactions.map((transaction) => {
         const { amount } = transaction;
 
-        const amountAsInteger = parseInt(
-            `${parseFloat(amount.replace("$", "")) * 100}`
-        );
+        const amountAsInteger = parseInt(`${parseFloat(amount.replace("$", "")) * 100}`);
 
         const transformedAmount = Dinero({ amount: amountAsInteger })
             .multiply(priceModifier)

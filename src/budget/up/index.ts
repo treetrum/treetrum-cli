@@ -17,16 +17,12 @@ export class UpConnector implements BankConnector {
     async getAccounts(page: Page, verbose?: boolean | undefined) {
         const token = await this.getToken();
         const accountTransactions = await this.fetchTransactions(token);
-        return Object.entries(accountTransactions).map(
-            ([name, transactions]) => {
-                return { name, transactions };
-            }
-        );
+        return Object.entries(accountTransactions).map(([name, transactions]) => {
+            return { name, transactions };
+        });
     }
 
-    private async fetchTransactions(
-        token: string
-    ): Promise<Record<string, Transaction[]>> {
+    private async fetchTransactions(token: string): Promise<Record<string, Transaction[]>> {
         const client = new UpClient(token);
 
         try {
@@ -39,9 +35,7 @@ export class UpConnector implements BankConnector {
                     client.fetchAccountTransactions(account.id)
                 );
 
-                accountsToTransactions[
-                    `Up | ${account.attributes.displayName}`
-                ] = transactions.data
+                accountsToTransactions[`Up | ${account.attributes.displayName}`] = transactions.data
                     .filter((t) => t.attributes.status === "SETTLED")
                     .map<Transaction>((t) => ({
                         date: moment(t.attributes.createdAt).toDate(),
