@@ -14,6 +14,7 @@ import { UbankConnector } from "./ubank";
 import { INGConnector } from "./ing";
 import prompts from "prompts";
 import { AmexConnector } from "./amex";
+import { AnzConnector } from "./anz";
 
 export const budget = async (opts: {
     headless: boolean;
@@ -36,7 +37,9 @@ export const budget = async (opts: {
         const { windowId } = await session.send("Browser.getWindowForTarget");
         await session.send("Browser.setWindowBounds", {
             windowId,
-            bounds: { windowState: "minimized" },
+            bounds: {
+                windowState: "minimized",
+            },
         });
 
         const connectors: BankConnector[] = [
@@ -44,6 +47,7 @@ export const budget = async (opts: {
             new UpConnector(),
             new AmexConnector(),
             new INGConnector(),
+            new AnzConnector(page),
         ].filter((c) => {
             if (!opts.banks || opts.banks.includes(c.id)) {
                 return true;
@@ -54,6 +58,7 @@ export const budget = async (opts: {
         // Fetch each account type in serial (because most need the same browser window)
         let accounts: Account[] = [];
         for (const connector of connectors) {
+            console.log(`Fetching transactions for ${connector.name}`);
             let connectorAccounts = await connector.getAccounts(
                 page,
                 opts.verbose
@@ -105,6 +110,7 @@ export const budget = async (opts: {
         browser.close();
     } catch (error) {
         console.log(chalk.red("Something went wrong 😭"));
+        console.error(error);
         if (opts.verbose) {
             console.error(error);
         }

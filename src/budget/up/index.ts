@@ -1,17 +1,17 @@
 import moment from "moment";
-import { Account, BankConnector, Transaction } from "../BankConnector";
+import { BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
 import { getEnvVars } from "../getEnvVars";
 import { UpClient } from "./up-client";
-import { read } from "@1password/op-js";
 import { Page } from "puppeteer";
+import { getOpItem } from "../OPClient";
 
 export class UpConnector implements BankConnector {
     id = "up";
     name = "Up";
 
     private async getToken() {
-        return read.parse(getEnvVars().UP_TOKEN_1PR);
+        return getOpItem(getEnvVars().UP_TOKEN_1PR);
     }
 
     async getAccounts(page: Page, verbose?: boolean | undefined) {
@@ -44,9 +44,7 @@ export class UpConnector implements BankConnector {
                 ] = transactions.data
                     .filter((t) => t.attributes.status === "SETTLED")
                     .map<Transaction>((t) => ({
-                        date: moment(t.attributes.createdAt).format(
-                            "YYYY-MM-DD"
-                        ),
+                        date: moment(t.attributes.createdAt).toDate(),
                         amount: t.attributes.amount.value,
                         description: t.attributes.description,
                         memo: t.attributes.message,

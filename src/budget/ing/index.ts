@@ -106,7 +106,7 @@ interface CsvRow {
 }
 
 export const transformTransactions = (data: CsvRow[]): Transaction[] => {
-    const transformed = data.map((row: CsvRow) => {
+    const transformed = data.map((row: CsvRow): Transaction => {
         const { Credit, Debit } = row;
         const Amount = Credit !== "" ? Credit : Debit;
 
@@ -119,7 +119,7 @@ export const transformTransactions = (data: CsvRow[]): Transaction[] => {
         const parsedDate = parseDate(row.Date, "dd/mm/yyyy", new Date());
 
         return {
-            date: formatDate(parsedDate, "yyyy-mm-dd"),
+            date: parsedDate,
             // Removes the unique data from each row (receipt number, date,
             // etc.). Doing this allows YNAB to remember transaction
             // descriptions and auto associate with a payee

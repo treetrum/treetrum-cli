@@ -10,7 +10,9 @@ type ENV_KEYS =
     | "AMEX_PW"
     | "UP_TOKEN_1PR"
     | "UBANK_USER"
-    | "UBANK_PW";
+    | "UBANK_PW"
+    | "ANZ_USER_1PR"
+    | "ANZ_PW_1PR";
 
 export const getEnvVars = () => {
     if (env.error || !env.parsed) {

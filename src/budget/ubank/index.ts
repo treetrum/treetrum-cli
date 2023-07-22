@@ -14,7 +14,7 @@ import { performAction } from "../utils";
 
 export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
     return {
-        date: moment(t.completed).format("YYYY-MM-DD"),
+        date: moment(t.completed).toDate(),
         description: t.shortDescription.split(" - Receipt")[0], // Removes text junk from ING transactions
         amount: t.value.amount,
     };

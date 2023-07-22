@@ -58,9 +58,9 @@ const transformStatementData = (data: StatementData): Promise<AmexCsvRow[]> => {
             if (output.length) {
                 output.forEach((row, index) => {
                     if (index !== 0) {
-                        row[0] = moment(row[0], "DD MMM YYYY").format(
-                            "YYYY-MM-DD"
-                        );
+                        row[0] = moment(row[0], "DD MMM YYYY")
+                            .toDate()
+                            .toISOString();
                     }
                     modifiedLines.push(row);
                 });
@@ -74,9 +74,13 @@ const transformToTransactions = async (
     data: StatementData
 ): Promise<Transaction[]> => {
     const [headerRow, ...rows] = await transformStatementData(data);
-    const transactions = rows.map((row) => {
+    const transactions = rows.map((row): Transaction => {
         const [date, description, category, amount] = row;
-        return { date, description, amount };
+        return {
+            date: moment(date).toDate(),
+            description,
+            amount,
+        };
     });
     return Promise.resolve(transactions);
 };

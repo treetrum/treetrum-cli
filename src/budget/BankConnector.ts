@@ -4,7 +4,7 @@ export type AccountName = string;
 
 export type Transaction = {
     description: string;
-    date: string;
+    date: Date;
     amount: string;
     memo?: string;
 };

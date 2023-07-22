@@ -2,13 +2,20 @@ import chalk from "chalk";
 import stringify from "csv-stringify/lib/sync";
 import { Transaction } from "./BankConnector";
 import Dinero from "dinero.js";
+import moment from "moment";
 
 export const dataArrayToCSVString = (data: Record<string, any>[]) => {
     return stringify(data, { header: true });
 };
 
 export const transactionsToCsvString = (transactions: Transaction[]) => {
-    return stringify(transactions, { header: true });
+    return stringify(
+        transactions.map((t) => ({
+            ...t,
+            date: moment(t.date).format("YYYY-MM-DD"),
+        })),
+        { header: true }
+    );
 };
 
 export const log = (message: string) => console.log(message);
