@@ -108,7 +108,7 @@ export const transformTransactions = (data: CsvRow[]): Transaction[] => {
         const parsedDate = parseDate(row.Date, "dd/mm/yyyy", new Date());
 
         return {
-            date: parsedDate,
+            date: moment(formatDate(parsedDate, "yyyy-mm-dd")).toDate(),
             // Removes the unique data from each row (receipt number, date,
             // etc.). Doing this allows YNAB to remember transaction
             // descriptions and auto associate with a payee
