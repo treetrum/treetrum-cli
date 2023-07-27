@@ -98,7 +98,7 @@ export class AnzConnector implements BankConnector {
             accounts[account.accountName] = transactions.map((t): Transaction => {
                 return {
                     date: moment(t.effectiveDate).toDate(),
-                    description: t.transactionRemarks,
+                    description: t.transactionRemarks.replaceAll(/\s+/g, " "), // trim multiple white spaces into a single one
                     amount: String(t.transactionAmount.amount),
                 };
             });
