@@ -86,13 +86,17 @@ export const budget = async (opts: {
             }
             const transactions = applyPriceModifier(account.transactions, modifier);
 
-            performActionSync(
-                `Writing CSV to ${account.name}.csv`,
-                fs.writeFileSync(
-                    path.join(opts.outdir, `${account.name}.csv`),
-                    transactionsToCsvString(transactions)
-                )
-            );
+            if (transactions.length != 0) {
+                performActionSync(
+                    `Writing CSV to ${account.name}.csv`,
+                    fs.writeFileSync(
+                        path.join(opts.outdir, `${account.name}.csv`),
+                        transactionsToCsvString(transactions)
+                    )
+                );
+            } else {
+                console.log(`⏭️ Skipping CSV creation for ${account.name} (no transactions)`);
+            }
         }
 
         browser.close();
