@@ -54,9 +54,16 @@ export const budget = async (opts: {
         // Fetch each account type in serial (because most need the same browser window)
         let accounts: Account[] = [];
         for (const connector of connectors) {
-            console.log(`Fetching transactions for ${connector.name}`);
-            let connectorAccounts = await connector.getAccounts(page, opts.verbose);
-            accounts.push(...connectorAccounts);
+            try {
+                console.log(`Fetching transactions for ${connector.name}`);
+                let connectorAccounts = await connector.getAccounts(page, opts.verbose);
+                accounts.push(...connectorAccounts);
+            } catch (error) {
+                console.log(
+                    chalk.red(`Something went wrong while fetching account: ${connector.name} 😭`)
+                );
+                console.error(error);
+            }
         }
 
         console.log("=======================================");
@@ -95,7 +102,7 @@ export const budget = async (opts: {
                     )
                 );
             } else {
-                console.log(`⏭️ Skipping CSV creation for ${account.name} (no transactions)`);
+                console.log(`⏭️  Skipping CSV creation for ${account.name} (no transactions)`);
             }
         }
 

@@ -99,7 +99,11 @@ export class AnzConnector implements BankConnector {
                 return {
                     date: moment(t.effectiveDate).toDate(),
                     description: t.transactionRemarks.replaceAll(/\s+/g, " "), // trim multiple white spaces into a single one
-                    amount: String(t.transactionAmount.amount),
+                    amount: String(
+                        // Need to manually change 'debits' to a negative amount
+                        t.transactionAmount.amount *
+                            (t.transactionAmountType.codeDescription === "Credit" ? 1 : -1)
+                    ),
                 };
             });
         }
