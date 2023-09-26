@@ -11,6 +11,7 @@ import { INGConnector } from "./ing";
 import prompts from "prompts";
 import { AmexConnector } from "./amex";
 import { AnzConnector } from "./anz";
+import { homedir } from "os";
 
 export const budget = async (opts: {
     headless: boolean;
@@ -24,6 +25,7 @@ export const budget = async (opts: {
         const browser = await puppeteer.launch({
             headless: opts.headless,
             executablePath: "/opt/homebrew/bin/chromium",
+            userDataDir: path.join(homedir(), ".treetrum_cli_puppeteer_data"),
         });
 
         // Create a page, then minimise it

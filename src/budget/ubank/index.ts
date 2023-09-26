@@ -170,33 +170,44 @@ export const fetchUbankTransactionsPuppeteer = async (
     user: string,
     password: string
 ) => {
-    console.log("UBANK: Navigating username login page");
+    console.log("UBANK: Typing username");
     await page.goto("https://www.ubank.com.au/welcome/login/username");
     await page.type('[sp-automation-id="input-username"]', user);
 
-    console.log("UBANK: Navigating to password page");
+    console.log("UBANK: Typing password");
     await page.click("button[type=submit]");
     await page.waitForNavigation();
     await page.type('[sp-automation-id="input-password"]', password);
-
-    console.log("UBANK: Navigating to OTP page");
     await page.click("button[type=submit]");
     await page.waitForNavigation();
 
-    const { code } = await prompts([
-        {
-            type: "text",
-            name: "code",
-            message: `Enter the code sent to your phone number`,
-        },
-    ]);
+    // Check for remember browser screen
+    const rememberBrowserButtonSelector = `[sp-automation-id="radio-tile-label-trustBrowser-private"]`;
+    if (await page.$(rememberBrowserButtonSelector)) {
+        console.log("UBANK: Remembering browser");
+        await page.click(rememberBrowserButtonSelector);
+        await page.click("button[type=submit]");
+        await page.waitForNavigation();
+    }
 
-    await page.type('[sp-automation-id="input-otpValue"]', code);
+    // Check for OTP screen
+    const otpFieldSelector = `[sp-automation-id="input-otpValue"]`;
+    if (await page.$(otpFieldSelector)) {
+        console.log("UBANK: Submitting OTP");
+        const { code } = await prompts([
+            {
+                type: "text",
+                name: "code",
+                message: `Enter the code sent to your phone number`,
+            },
+        ]);
+        await page.type('[sp-automation-id="input-otpValue"]', code);
+        console.log("UBANK: Navigating to logged in page");
+        await page.click("button[type=submit]");
+        await page.waitForNavigation();
+    }
 
-    console.log("UBANK: Navigating to logged in page");
-    await page.click("button[type=submit]");
-    await page.waitForNavigation();
-
+    console.log("UBANK: Logged in");
     const fromDate = moment().subtract(14, "days").format("YYYY-MM-DD");
     const toDate = moment().format("YYYY-MM-DD");
 
