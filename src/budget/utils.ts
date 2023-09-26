@@ -52,8 +52,14 @@ export const applyPriceModifier = (
             .multiply(priceModifier)
             .toFormat("0.00");
 
+        const beforeModifierDescription = `${amount} before x${priceModifier}`;
+
         return {
             ...transaction,
+            memo:
+                transaction.memo && transaction.memo.trim() !== ""
+                    ? `${beforeModifierDescription} - ${transaction.memo}`
+                    : beforeModifierDescription,
             amount: transformedAmount,
         };
     });
