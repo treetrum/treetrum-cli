@@ -3,7 +3,7 @@ import moment from "moment";
 import axios from "axios";
 import qs from "query-string";
 import fetch from "node-fetch";
-import parse from "csv-parse/lib/sync";
+import { parse } from "csv-parse/sync";
 import parseDate from "date-fns/parse";
 import formatDate from "date-fns/format";
 import Dinero from "dinero.js";

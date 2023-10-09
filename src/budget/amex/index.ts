@@ -1,78 +1,22 @@
 import puppeteer, { Page } from "puppeteer";
-import xlsx from "xlsx";
-import csvParse from "csv-parse";
-import csvStringify from "csv-stringify";
+import { parse as parseCsv } from "csv-parse/sync";
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
 import { getEnvVars } from "../getEnvVars";
 import { performAction } from "../utils";
 
-type StatementData = Buffer;
-
-export const downloadStatementData = async (page: Page): Promise<StatementData> => {
-    const twoWeeksAgo = moment().subtract(2, "weeks").format("YYYYMMDD");
-    const today = moment().format("YYYYMMDD");
-
-    const output = (await page.evaluate(
-        ({ twoWeeksAgo, today }) => {
-            return new Promise((resolve, reject) => {
-                fetch(
-                    `https://global.americanexpress.com/myca/intl/istatement/japa/v1/excel.do?&method=createExcel&Face=en_AU&sorted_index=0&BPIndex=-1&requestType=searchDateRange&currentStartDate=${twoWeeksAgo}&currentEndDate=${today}`,
-                    {
-                        method: "GET",
-                        credentials: "include",
-                    }
-                )
-                    .then((res) => res.blob())
-                    .then((data) => {
-                        const reader = new FileReader();
-                        reader.readAsBinaryString(data);
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = () => reject(new Error("Couldn't read document"));
-                    });
-            });
-        },
-        { twoWeeksAgo, today }
-    )) as string;
-
-    return Buffer.from(output, "binary");
+type AmexCsvDataRow = {
+    Date: string;
+    Description: string;
+    Amount: string;
 };
 
-/** Tuple (in this order) containing: [Date, Description, Category, Amount] */
-type AmexCsvRow = string[];
-
-const transformStatementData = (data: StatementData): Promise<AmexCsvRow[]> => {
-    return new Promise((res) => {
-        const wb = xlsx.read(data);
-        const rawCSV = xlsx.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]]);
-        const csvFromDate = rawCSV.substring(rawCSV.indexOf("Date"), rawCSV.length);
-        csvParse(csvFromDate, {}, (error, output: string[][]) => {
-            if (error) throw error;
-            const modifiedLines: AmexCsvRow[] = [];
-            if (output.length) {
-                output.forEach((row, index) => {
-                    if (index !== 0) {
-                        row[0] = moment(row[0], "DD MMM YYYY").toDate().toISOString();
-                    }
-                    modifiedLines.push(row);
-                });
-            }
-            res(modifiedLines);
-        });
-    });
-};
-
-const transformToTransactions = async (data: StatementData): Promise<Transaction[]> => {
-    const [headerRow, ...rows] = await transformStatementData(data);
-    const transactions = rows.map((row): Transaction => {
-        const [date, description, category, amount] = row;
-        return {
-            date: moment(date).toDate(),
-            description,
-            amount,
-        };
-    });
-    return Promise.resolve(transactions);
+const transformStatementData = (rawCSV: string): Transaction[] => {
+    return (parseCsv(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
+        date: moment(r.Date, "DD/MM/YYYY").toDate(),
+        description: r.Description,
+        amount: r.Amount,
+    }));
 };
 
 export const login = async (page: puppeteer.Page, userId: string, password: string) => {
@@ -81,6 +25,39 @@ export const login = async (page: puppeteer.Page, userId: string, password: stri
     await page.type("#eliloPassword", password);
     await page.click("#loginSubmit");
     await page.waitForNavigation();
+};
+
+const getTransactions = async (page: Page) => {
+    const transactionsString = await page.evaluate(() => {
+        const el = document.querySelector('[title="Make a Payment"]');
+        if (!(el instanceof HTMLAnchorElement)) {
+            return undefined;
+        }
+        const accountKey = new URL(el.href).searchParams.get("account_key");
+
+        return new Promise<string>((resolve, reject) => {
+            fetch(
+                `https://global.americanexpress.com/api/servicing/v1/financials/documents?file_format=csv&limit=50&status=posted&account_key=${accountKey}&client_id=AmexAPI`,
+                {
+                    method: "GET",
+                    credentials: "include",
+                }
+            )
+                .then((res) => res.blob())
+                .then((data) => {
+                    const reader = new FileReader();
+                    reader.readAsBinaryString(data);
+                    reader.onload = () => resolve(String(reader.result));
+                    reader.onerror = () => reject(new Error("Couldn't read document"));
+                });
+        });
+    });
+
+    if (!transactionsString) {
+        throw new Error("Couldn't get transactions");
+    }
+
+    return transformStatementData(transactionsString);
 };
 
 export class AmexConnector implements BankConnector {
@@ -99,14 +76,9 @@ export class AmexConnector implements BankConnector {
     async getAccounts(page: Page) {
         await performAction("Logging in to Amex", login(page, this.username, this.password));
 
-        const statementData = await performAction(
-            "Downloading statement data",
-            downloadStatementData(page)
-        );
-
         const transactions = await performAction(
-            "Transforming statement data",
-            transformToTransactions(statementData)
+            "Downloading statement data",
+            getTransactions(page)
         );
 
         return [
