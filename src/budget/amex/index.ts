@@ -1,5 +1,5 @@
 import puppeteer, { Page } from "puppeteer";
-import { parse as parseCsv } from "csv-parse/sync";
+import { parse } from "csv-parse/sync";
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
 import { getEnvVars } from "../getEnvVars";
@@ -12,7 +12,7 @@ type AmexCsvDataRow = {
 };
 
 const transformStatementData = (rawCSV: string): Transaction[] => {
-    return (parseCsv(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
+    return (parse(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
         date: moment(r.Date, "DD/MM/YYYY").toDate(),
         description: r.Description,
         amount: r.Amount,

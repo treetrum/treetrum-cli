@@ -5,8 +5,11 @@
     "main": "index.js",
     "scripts": {
         "start": "ts-node src/index.ts",
-        "prebuild": "rm -rf dist && rm -rf lib",
-        "build": "tsc && pkg --target latest-macos-arm64 dist/index.js -o ./lib/treetrum --public"
+        "prebuild": "rm -rf dist",
+        "build": "tsc && npm link"
+    },
+    "bin": {
+        "treetrum": "./lib/treetrum.js"
     },
     "keywords": [],
     "author": "",
@@ -20,7 +23,6 @@
         "@types/pngjs": "^3.4.2",
         "@types/prompts": "^2.0.9",
         "@types/uuid": "^9.0.2",
-        "pkg": "^5.8.0",
         "prettier": "^3.0.0",
         "ts-node": "^10.9.1",
         "typescript": "^4.8.4"
@@ -40,7 +42,7 @@
         "find-config": "^1.0.0",
         "g": "^2.0.1",
         "ing-au-login": "^2.0.3",
-        "moment": "^2.29.1",
+        "moment": "^2.29.4",
         "node-fetch": "^2.6.1",
         "pixelmatch": "^5.2.1",
         "pngjs": "^3.4.0",
