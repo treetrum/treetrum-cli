@@ -28,33 +28,44 @@ export const login = async (page: puppeteer.Page, userId: string, password: stri
 };
 
 const getTransactions = async (page: Page) => {
-    const transactionsString = await page.evaluate(() => {
-        const el = document.querySelector('[title="Make a Payment"]');
-        if (!(el instanceof HTMLAnchorElement)) {
-            return undefined;
-        }
-        const accountKey = new URL(el.href).searchParams.get("account_key");
+    const startDate = moment().subtract(30, "days").format("YYYY-MM-DD");
+    const endDate = moment().format("YYYY-MM-DD");
 
-        return new Promise<string>((resolve, reject) => {
-            fetch(
-                `https://global.americanexpress.com/api/servicing/v1/financials/documents?file_format=csv&limit=50&status=posted&account_key=${accountKey}&client_id=AmexAPI`,
-                {
-                    method: "GET",
-                    credentials: "include",
-                }
-            )
-                .then((res) => res.blob())
-                .then((data) => {
-                    const reader = new FileReader();
-                    reader.readAsBinaryString(data);
-                    reader.onload = () => resolve(String(reader.result));
-                    reader.onerror = () => reject(new Error("Couldn't read document"));
-                });
-        });
-    });
+    const transactionsString = await page.evaluate(
+        ({ startDate, endDate }) => {
+            const el = document.querySelector('[title="Make a Payment"]');
+            if (!(el instanceof HTMLAnchorElement)) {
+                return undefined;
+            }
+            const accountKey = new URL(el.href).searchParams.get("account_key") ?? "";
+            const url = new URL(
+                "https://global.americanexpress.com/api/servicing/v1/financials/documents"
+            );
+            url.searchParams.set("file_format", "csv");
+            url.searchParams.set("limit", "50");
+            url.searchParams.set("status", "posted");
+            url.searchParams.set("account_key", accountKey);
+            url.searchParams.set("client_id", "AmexAPI");
+            url.searchParams.set("start_date", startDate);
+            url.searchParams.set("end_date", endDate);
+
+            return new Promise<string>((resolve, reject) => {
+                fetch(url.toString(), { method: "GET", credentials: "include" })
+                    .then((res) => res.blob())
+                    .then((data) => {
+                        const reader = new FileReader();
+                        reader.readAsBinaryString(data);
+                        reader.onload = () => resolve(String(reader.result));
+                        reader.onerror = () => reject(new Error("Couldn't read document"));
+                    })
+                    .catch(reject);
+            });
+        },
+        { startDate, endDate }
+    );
 
     if (!transactionsString) {
-        throw new Error("Couldn't get transactions");
+        throw new Error("Transactions string was falsy");
     }
 
     return transformStatementData(transactionsString);
