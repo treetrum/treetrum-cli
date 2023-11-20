@@ -32,7 +32,7 @@ export class UpClient {
     fetchAccountTransactions(accountId: string, sinceDaysAgo: number = 14) {
         const sinceFormatted = moment().subtract(sinceDaysAgo, "days").toISOString();
         return this.fetchJson<PaginatedResponse<UpTransaction>>(
-            `/accounts/${accountId}/transactions?filter[since]=${sinceFormatted}`
+            `/accounts/${accountId}/transactions?filter[since]=${sinceFormatted}&page[size]=99`
         );
     }
 }
