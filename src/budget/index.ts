@@ -35,7 +35,7 @@ export const budget = async (opts: {
         const { windowId } = await session.send("Browser.getWindowForTarget");
         await session.send("Browser.setWindowBounds", {
             windowId,
-            bounds: { windowState: "fullscreen" },
+            bounds: { windowState: "normal" },
         });
 
         const connectors: BankConnector[] = [
