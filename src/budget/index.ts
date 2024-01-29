@@ -39,8 +39,8 @@ export const budget = async (opts: {
         });
 
         const connectors: BankConnector[] = [
-            new UbankConnector(),
             new UpConnector(),
+            new UbankConnector(),
             new AmexConnector(),
             new INGConnector(),
             new AnzConnector(page),
