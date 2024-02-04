@@ -28,7 +28,7 @@
         "typescript": "^4.8.4"
     },
     "dependencies": {
-        "@1password/op-js": "^0.1.9",
+        "@1password/op-js": "^0.1.11",
         "axios": "^0.21.1",
         "chalk": "^4.1.0",
         "commander": "^7.0.0",

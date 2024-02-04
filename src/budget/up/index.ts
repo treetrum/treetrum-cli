@@ -10,7 +10,7 @@ export class UpConnector implements BankConnector {
     id = "up";
     name = "Up";
 
-    private async getToken() {
+    private getToken() {
         return getOpItem(getEnvVars().UP_TOKEN_1PR);
     }
 

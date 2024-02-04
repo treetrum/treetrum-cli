@@ -115,8 +115,8 @@ export class AnzConnector implements BankConnector {
 
     async login() {
         console.log("Logging in to ANZ");
-        const user = getOpItem(getEnvVars().ANZ_USER_1PR);
-        const password = getOpItem(getEnvVars().ANZ_PW_1PR);
+        const user = await getOpItem(getEnvVars().ANZ_USER_1PR);
+        const password = await getOpItem(getEnvVars().ANZ_PW_1PR);
 
         console.log("Typing username");
         await this.page.goto("https://login.anz.com/internetbanking");
