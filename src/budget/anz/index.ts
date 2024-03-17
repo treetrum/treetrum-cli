@@ -131,6 +131,7 @@ export class AnzConnector implements BankConnector {
             await this.login();
         } else {
             await this.page.waitForNavigation();
+            await this.page.waitForSelector("#home-title");
             success();
         }
     }
