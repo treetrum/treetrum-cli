@@ -9,8 +9,8 @@ console.log("Found env", Object.keys(env));
 const zodEnv = z.object({
     ING_USER: z.string(),
     ING_PW: z.string(),
-    AMEX_USER: z.string(),
-    AMEX_PW: z.string(),
+    AMEX_USER_1PR: z.string(),
+    AMEX_PW_1PR: z.string(),
     UP_TOKEN_1PR: z.string(),
     UBANK_USER: z.string(),
     UBANK_PW: z.string(),

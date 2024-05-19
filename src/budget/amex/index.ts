@@ -3,6 +3,7 @@ import { parse } from "csv-parse/sync";
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
+import { getOpItem } from "../OPClient";
 
 type AmexCsvDataRow = {
     Date: string;
@@ -74,16 +75,11 @@ export class AmexConnector implements BankConnector {
     id = "amex";
     name = "American Express";
 
-    private username: string;
-    private password: string;
-
-    constructor() {
-        this.username = process.env.AMEX_USER;
-        this.password = process.env.AMEX_PW;
-    }
-
     async getAccounts(page: Page) {
-        await performAction("Logging in to Amex", login(page, this.username, this.password));
+        const username = await getOpItem(process.env.AMEX_USER_1PR);
+        const password = await getOpItem(process.env.AMEX_PW_1PR);
+
+        await performAction("Logging in to Amex", login(page, username, password));
 
         const transactions = await performAction(
             "Downloading statement data",
