@@ -1,3 +1,4 @@
+import "./env";
 import { Command, Option } from "commander";
 import { budget } from "./budget";
 const program = new Command();

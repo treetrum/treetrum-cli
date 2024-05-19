@@ -6,7 +6,6 @@ import moment from "moment";
 import cookie from "cookie";
 import { Page } from "puppeteer";
 import { BankConnector, Transaction } from "../BankConnector";
-import { getEnvVars } from "../getEnvVars";
 import { performAction } from "../utils";
 
 export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
@@ -290,9 +289,8 @@ export class UbankConnector implements BankConnector {
     private pw: string;
 
     constructor() {
-        const { UBANK_USER, UBANK_PW } = getEnvVars();
-        this.user = UBANK_USER;
-        this.pw = UBANK_PW;
+        this.user = process.env.UBANK_USER;
+        this.pw = process.env.UBANK_PW;
     }
 
     async getAccounts(page: Page) {

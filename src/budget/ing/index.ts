@@ -10,7 +10,6 @@ import Dinero from "dinero.js";
 import { ING_DATE_FORMAT } from "./constants";
 import { Account, BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
-import { getEnvVars } from "../getEnvVars";
 import { login as loginToIng } from "./login";
 import chalk from "chalk";
 
@@ -125,9 +124,10 @@ export class INGConnector implements BankConnector {
     name = "ING";
 
     async getAccounts(page: Page, verbose?: boolean) {
-        const { ING_PW, ING_USER } = getEnvVars();
-
-        await performAction("Logging in to ING", loginToIng(page, ING_USER, ING_PW));
+        await performAction(
+            "Logging in to ING",
+            loginToIng(page, process.env.ING_USER, process.env.ING_PW)
+        );
 
         const accounts = await performAction("Fetching accounts", fetchAccounts(page));
 

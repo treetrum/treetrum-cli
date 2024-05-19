@@ -2,7 +2,6 @@ import puppeteer, { Page } from "puppeteer";
 import { parse } from "csv-parse/sync";
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
-import { getEnvVars } from "../getEnvVars";
 import { performAction } from "../utils";
 
 type AmexCsvDataRow = {
@@ -79,9 +78,8 @@ export class AmexConnector implements BankConnector {
     private password: string;
 
     constructor() {
-        const { AMEX_USER, AMEX_PW } = getEnvVars();
-        this.username = AMEX_USER;
-        this.password = AMEX_PW;
+        this.username = process.env.AMEX_USER;
+        this.password = process.env.AMEX_PW;
     }
 
     async getAccounts(page: Page) {

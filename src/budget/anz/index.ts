@@ -1,7 +1,6 @@
 import moment from "moment";
 import { Page } from "puppeteer";
 import { Account, BankConnector, Transaction } from "../BankConnector";
-import { getEnvVars } from "../getEnvVars";
 import { getOpItem } from "../OPClient";
 import { success } from "../utils";
 import { SelectedAccount, Store, StoreState } from "./store-state";
@@ -121,8 +120,8 @@ export class AnzConnector implements BankConnector {
 
     async login() {
         console.log("Logging in to ANZ");
-        const user = await getOpItem(getEnvVars().ANZ_USER_1PR);
-        const password = await getOpItem(getEnvVars().ANZ_PW_1PR);
+        const user = await getOpItem(process.env.ANZ_USER_1PR);
+        const password = await getOpItem(process.env.ANZ_PW_1PR);
 
         console.log("Typing username");
         await this.page.goto("https://login.anz.com/internetbanking");

@@ -1,7 +1,6 @@
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
-import { getEnvVars } from "../getEnvVars";
 import { UpClient } from "./up-client";
 import { Page } from "puppeteer";
 import { getOpItem } from "../OPClient";
@@ -11,7 +10,7 @@ export class UpConnector implements BankConnector {
     name = "Up";
 
     private getToken() {
-        return getOpItem(getEnvVars().UP_TOKEN_1PR);
+        return getOpItem(process.env.UP_TOKEN_1PR);
     }
 
     async getAccounts(page: Page, verbose?: boolean | undefined) {
