@@ -4,8 +4,6 @@ import { z, TypeOf } from "zod";
 // Recursively go up directories until a .env is found
 const env = dotenv.config({ path: require("find-config")(".env") });
 
-console.log("Found env", Object.keys(env));
-
 const zodEnv = z.object({
     ING_USER: z.string(),
     ING_PW: z.string(),
