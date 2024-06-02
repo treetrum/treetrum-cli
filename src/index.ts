@@ -7,7 +7,7 @@ program.version("0.1.0");
 
 program
     .command("budget")
-    .description("Download all budget data from Up, ING and American Express accounts")
+    .description("Download budget data from requested bank accounts")
     .option("--headless", "Should puppeteer be run in headless mode", false)
     .option("-o, --outdir <path>", "Where budget files should be output", "/Users/sam/Desktop")
     .option("-b, --banks <bankNames...>", "Which banks to download data from")
