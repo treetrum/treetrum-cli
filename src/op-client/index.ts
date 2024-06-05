@@ -18,5 +18,5 @@ const makeAsync = <T extends (...args: any) => any>(workerPath: string): Promisi
 };
 
 export const read = {
-    parse: makeAsync<(typeof opRead)["parse"]>("./workers/read/parse.ts"),
+    parse: makeAsync<(typeof opRead)["parse"]>("./workers/read/parse.js"),
 };
