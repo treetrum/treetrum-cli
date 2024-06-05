@@ -1,4 +1,4 @@
-import { Page } from "puppeteer";
+import { Page } from "playwright";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 

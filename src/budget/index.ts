@@ -1,10 +1,8 @@
 import chalk from "chalk";
-import puppeteer from "puppeteer-extra";
 import fs from "fs";
 import { applyPriceModifier, performActionSync, transactionsToCsvString } from "./utils";
 import path from "path";
-import StealthPlugin from "./stealth-plugin";
-import { Account, BankConnector } from "./BankConnector";
+import { Account } from "./BankConnector";
 import { UpConnector } from "./up";
 import { UbankConnector } from "./ubank";
 import { INGConnector } from "./ing";
@@ -12,6 +10,9 @@ import prompts from "prompts";
 import { AmexConnector } from "./amex";
 import { AnzConnector } from "./anz";
 import { homedir } from "os";
+import { chromium } from "playwright-extra";
+import stealthPlugin from "./stealth-plugin";
+import { Listr } from "listr2";
 
 export const budget = async (opts: {
     headless: boolean;
@@ -21,50 +22,57 @@ export const budget = async (opts: {
     accountModifiers?: { matcher: string; modifier: number }[];
 }) => {
     try {
-        puppeteer.use(StealthPlugin());
-        const browser = await puppeteer.launch({
-            headless: opts.headless,
-            executablePath: "/opt/homebrew/bin/chromium",
-            userDataDir: path.join(homedir(), ".treetrum_cli_puppeteer_data"),
-        });
-
-        // Create a page, then minimise it
-        console.log("Launching Puppeteer");
-        const page = await browser.newPage();
-        const session = await page.target().createCDPSession();
-        const { windowId } = await session.send("Browser.getWindowForTarget");
-        await session.send("Browser.setWindowBounds", {
-            windowId,
-            bounds: { windowState: "normal" },
-        });
-
-        const connectors: BankConnector[] = [
+        const connectors = [
             new UpConnector(),
             new UbankConnector(),
-            new AmexConnector(),
+            new AnzConnector(),
             new INGConnector(),
-            new AnzConnector(page),
-        ].filter((c) => {
-            if (!opts.banks || opts.banks.includes(c.id)) {
+            new AmexConnector(),
+        ].filter((connector) => {
+            if (!opts.banks || opts.banks.includes(connector.id)) {
                 return true;
             }
             return false;
         });
 
-        // Fetch each account type in serial (because most need the same browser window)
+        chromium.use(stealthPlugin());
+        const context = await chromium.launchPersistentContext(
+            path.join(homedir(), ".treetrum_cli_playwright_data"),
+            { headless: opts.headless }
+        );
+
         let accounts: Account[] = [];
-        for (const connector of connectors) {
-            try {
-                console.log(`Fetching transactions for ${connector.name}`);
-                let connectorAccounts = await connector.getAccounts(page, opts.verbose);
-                accounts.push(...connectorAccounts);
-            } catch (error) {
-                console.log(
-                    chalk.red(`Something went wrong while fetching account: ${connector.name} 😭`)
-                );
-                console.error(error);
-            }
+        const tasks = new Listr(
+            connectors.map((connector) => ({
+                title: `Getting ${connector.bankName} statement data`,
+                task: async (ctx, task) => {
+                    const page = await context.newPage();
+                    connector.setup(page, task);
+                    try {
+                        let connectorAccounts = await connector.getAccounts();
+                        accounts.push(...connectorAccounts);
+                    } catch (error) {
+                        console.log(
+                            chalk.red(
+                                `Something went wrong while fetching account: ${connector.bankName} 😭`
+                            )
+                        );
+                        throw error;
+                    } finally {
+                        await page.close();
+                    }
+                },
+            })),
+            { concurrent: true, exitOnError: false }
+        );
+
+        try {
+            await tasks.run();
+        } catch (error) {
+            console.error(error);
         }
+
+        await context.close();
 
         console.log("=======================================");
         console.log("=== FINISHED FETCHING ACCOUNTS DATA ===");
@@ -105,8 +113,6 @@ export const budget = async (opts: {
                 console.log(`⏭️  Skipping CSV creation for ${account.name} (no transactions)`);
             }
         }
-
-        browser.close();
     } catch (error) {
         console.log(chalk.red("Something went wrong 😭"));
         console.error(error);

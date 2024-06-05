@@ -1,20 +1,31 @@
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
-import { performAction } from "../utils";
 import { UpClient } from "./up-client";
-import { Page } from "puppeteer";
+import { Page } from "playwright";
 import { getOpItem } from "../OPClient";
+import { Task, TaskMessages } from "../types";
 
 export class UpConnector implements BankConnector {
     id = "up";
-    name = "Up";
+    bankName = "Up";
+
+    page!: Page;
+    task!: Task;
+
+    setup(page: Page, task: Task) {
+        this.page = page;
+        this.task = task;
+    }
 
     private getToken() {
         return getOpItem(process.env.UP_TOKEN_1PR);
     }
 
-    async getAccounts(page: Page, verbose?: boolean | undefined) {
+    async getAccounts() {
+        this.task.output = TaskMessages.readingCredentials;
         const token = await this.getToken();
+
+        this.task.output = TaskMessages.downloadingTransactions;
         const accountTransactions = await this.fetchTransactions(token);
         return Object.entries(accountTransactions).map(([name, transactions]) => {
             return { name, transactions };
@@ -24,31 +35,22 @@ export class UpConnector implements BankConnector {
     private async fetchTransactions(token: string): Promise<Record<string, Transaction[]>> {
         const client = new UpClient(token);
 
-        try {
-            const response = await client.fetchAccounts();
-            const accountsToTransactions: Record<string, Transaction[]> = {};
+        const response = await client.fetchAccounts();
+        const accountsToTransactions: Record<string, Transaction[]> = {};
 
-            for (const account of response.data) {
-                const transactions = await performAction(
-                    `Fetching transactions for "Up | ${account.attributes.displayName}"`,
-                    client.fetchAccountTransactions(account.id)
-                );
+        for (const account of response.data) {
+            const transactions = await client.fetchAccountTransactions(account.id);
 
-                accountsToTransactions[`Up | ${account.attributes.displayName}`] = transactions.data
-                    .filter((t) => t.attributes.status === "SETTLED")
-                    .map<Transaction>((t) => ({
-                        date: moment(t.attributes.createdAt).toDate(),
-                        amount: t.attributes.amount.value,
-                        description: t.attributes.description,
-                        memo: t.attributes.message,
-                    }));
-            }
-
-            return accountsToTransactions;
-        } catch (error) {
-            console.error("OH NO, SOMETHING WENT WRONG :(");
-            console.error(error);
-            throw error;
+            accountsToTransactions[`Up | ${account.attributes.displayName}`] = transactions.data
+                .filter((t) => t.attributes.status === "SETTLED")
+                .map<Transaction>((t) => ({
+                    date: moment(t.attributes.createdAt).toDate(),
+                    amount: t.attributes.amount.value,
+                    description: t.attributes.description,
+                    memo: t.attributes.message,
+                }));
         }
+
+        return accountsToTransactions;
     }
 }

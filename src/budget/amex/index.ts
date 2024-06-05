@@ -1,9 +1,10 @@
-import puppeteer, { Page } from "puppeteer";
+import { Page } from "playwright";
 import { parse } from "csv-parse/sync";
 import moment from "moment";
 import { BankConnector, Transaction } from "../BankConnector";
-import { performAction } from "../utils";
 import { getOpItem } from "../OPClient";
+import { readFile } from "fs/promises";
+import { Task, TaskMessages } from "../types";
 
 type AmexCsvDataRow = {
     Date: string;
@@ -19,7 +20,7 @@ const transformStatementData = (rawCSV: string): Transaction[] => {
     }));
 };
 
-export const login = async (page: puppeteer.Page, userId: string, password: string) => {
+export const login = async (page: Page, userId: string, password: string) => {
     await page.goto("https://www.americanexpress.com/en-au/account/login");
     await page.type("#eliloUserID", userId);
     await page.type("#eliloPassword", password);
@@ -28,63 +29,40 @@ export const login = async (page: puppeteer.Page, userId: string, password: stri
 };
 
 const getTransactions = async (page: Page) => {
-    const startDate = moment().subtract(30, "days").format("YYYY-MM-DD");
-    const endDate = moment().format("YYYY-MM-DD");
+    await page.goto("https://global.americanexpress.com/activity/recent");
+    await page.getByRole("button", { name: "Download Your Transactions" }).click();
+    await page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
 
-    const transactionsString = await page.evaluate(
-        ({ startDate, endDate }) => {
-            const el = document.querySelector('[title="Make a Payment"]');
-            if (!(el instanceof HTMLAnchorElement)) {
-                return undefined;
-            }
-            const accountKey = new URL(el.href).searchParams.get("account_key") ?? "";
-            const url = new URL(
-                "https://global.americanexpress.com/api/servicing/v1/financials/documents"
-            );
-            url.searchParams.set("file_format", "csv");
-            url.searchParams.set("limit", "50");
-            url.searchParams.set("status", "posted");
-            url.searchParams.set("account_key", accountKey);
-            url.searchParams.set("client_id", "AmexAPI");
-            url.searchParams.set("start_date", startDate);
-            url.searchParams.set("end_date", endDate);
+    // Catch the download and process as string
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("link", { name: "Download", exact: true }).click();
+    const data = await readFile(await (await downloadPromise).path(), { encoding: "utf-8" });
 
-            return new Promise<string>((resolve, reject) => {
-                fetch(url.toString(), { method: "GET", credentials: "include" })
-                    .then((res) => res.blob())
-                    .then((data) => {
-                        const reader = new FileReader();
-                        reader.readAsBinaryString(data);
-                        reader.onload = () => resolve(String(reader.result));
-                        reader.onerror = () => reject(new Error("Couldn't read document"));
-                    })
-                    .catch(reject);
-            });
-        },
-        { startDate, endDate }
-    );
-
-    if (!transactionsString) {
-        throw new Error("Transactions string was falsy");
-    }
-
-    return transformStatementData(transactionsString);
+    return transformStatementData(data);
 };
 
 export class AmexConnector implements BankConnector {
     id = "amex";
-    name = "American Express";
+    bankName = "American Express";
 
-    async getAccounts(page: Page) {
+    page!: Page;
+    task!: Task;
+
+    setup(page: Page, task: Task) {
+        this.page = page;
+        this.task = task;
+    }
+
+    async getAccounts() {
+        this.task.output = TaskMessages.readingCredentials;
         const username = await getOpItem(process.env.AMEX_USER_1PR);
         const password = await getOpItem(process.env.AMEX_PW_1PR);
 
-        await performAction("Logging in to Amex", login(page, username, password));
+        this.task.output = TaskMessages.loggingIn;
+        await login(this.page, username, password);
 
-        const transactions = await performAction(
-            "Downloading statement data",
-            getTransactions(page)
-        );
+        this.task.output = TaskMessages.downloadingTransactions;
+        const transactions = await getTransactions(this.page);
 
         return [
             {

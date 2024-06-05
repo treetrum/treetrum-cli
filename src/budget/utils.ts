@@ -20,18 +20,14 @@ export const transactionsToCsvString = (transactions: Transaction[]) => {
 
 export const log = (message: string) => console.log(message);
 
-export const success = () => console.log(chalk.green("✅ Success!"));
-
 export const performAction = async <T>(name: string, action: Promise<T>): Promise<T> => {
     log(name);
     const response = await action;
-    success();
     return response;
 };
 
 export const performActionSync = <T>(name: string, action: T): T => {
     log(name);
-    success();
     return action;
 };
 

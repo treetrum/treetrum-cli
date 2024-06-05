@@ -1,26 +1,26 @@
 import moment from "moment";
-import { Page } from "puppeteer";
+import { Page } from "playwright";
 import { Account, BankConnector, Transaction } from "../BankConnector";
 import { getOpItem } from "../OPClient";
-import { success } from "../utils";
 import { SelectedAccount, Store, StoreState } from "./store-state";
 import { v1 as uuidv1 } from "uuid";
 import { TransactionItem, TransactionsResponse } from "./transaction-response";
+import { Task, TaskMessages } from "../types";
 
 export class AnzConnector implements BankConnector {
     id = "anz";
-    name = "ANZ";
+    bankName = "ANZ";
 
-    page: Page;
-    verbose: boolean | undefined;
+    page!: Page;
+    task!: Task;
 
-    constructor(page: Page, verbose?: boolean | undefined) {
+    setup(page: Page, task: Task) {
         this.page = page;
-        this.verbose = verbose;
+        this.task = task;
     }
 
-    async getAnzAppState(): Promise<StoreState> {
-        const state = await this.page.evaluate(() => {
+    async getAnzAppState(page: Page): Promise<StoreState> {
+        const state = await page.evaluate(() => {
             const isLoadedPredicate = (state: StoreState) =>
                 state.homeAccountSummary.accountDetails != null;
             const rootElement = window.document.getElementById("app-container") as any;
@@ -45,8 +45,11 @@ export class AnzConnector implements BankConnector {
         return state;
     }
 
-    async fetchTransactionsForSingleAccount(account: SelectedAccount): Promise<TransactionItem[]> {
-        const transactions = await this.page.evaluate(
+    async fetchTransactionsForSingleAccount(
+        page: Page,
+        account: SelectedAccount
+    ): Promise<TransactionItem[]> {
+        const transactions = await page.evaluate(
             ({ accountId, requestId, state }) => {
                 const headers = {
                     "Content-Type": "application/json;charset=UTF-8",
@@ -75,7 +78,7 @@ export class AnzConnector implements BankConnector {
                     .then((transactions: TransactionsResponse) => transactions);
             },
             {
-                state: await this.getAnzAppState(),
+                state: await this.getAnzAppState(page),
                 accountId: account.accountId,
                 requestId: uuidv1(),
             }
@@ -84,16 +87,15 @@ export class AnzConnector implements BankConnector {
     }
 
     async getAccounts(): Promise<Account[]> {
-        await this.login();
+        this.task.output = TaskMessages.loggingIn;
+        await this.login(this.page);
 
-        const state = await this.getAnzAppState();
+        this.task.output = TaskMessages.downloadingTransactions;
+        const state = await this.getAnzAppState(this.page);
 
         let accounts: Record<string, Transaction[]> = {};
-
         for (const account of state.homeAccountSummary.accountDetails?.data ?? []) {
-            console.log("Fetching transactions for account", account.accountName);
-            const transactions = await this.fetchTransactionsForSingleAccount(account);
-            success();
+            const transactions = await this.fetchTransactionsForSingleAccount(this.page, account);
             accounts[account.accountName] = transactions.map((t): Transaction => {
                 return {
                     date: moment(t.effectiveDate).toDate(),
@@ -109,7 +111,7 @@ export class AnzConnector implements BankConnector {
 
         return Object.entries(accounts).map(([name, transactions]) => {
             return {
-                name: `${this.name} | ${name}`,
+                name: `${this.bankName} | ${name}`,
                 transactions: transactions.filter((t) => {
                     // Filter out transactions that are not in the last 30 days
                     return moment(t.date).isAfter(moment().subtract(30, "days"));
@@ -118,26 +120,23 @@ export class AnzConnector implements BankConnector {
         });
     }
 
-    async login() {
-        console.log("Logging in to ANZ");
+    async login(page: Page) {
+        this.task.output = TaskMessages.readingCredentials;
         const user = await getOpItem(process.env.ANZ_USER_1PR);
         const password = await getOpItem(process.env.ANZ_PW_1PR);
 
-        console.log("Typing username");
-        await this.page.goto("https://login.anz.com/internetbanking");
-        await this.page.type("#customerRegistrationNumber", user);
-        console.log("Typing password");
-        await this.page.type("#password", password);
-        await this.page.click("button[type=submit]");
-        console.log("Submitting login");
+        this.task.output = TaskMessages.loggingIn;
+        await page.goto("https://login.anz.com/internetbanking");
+        await page.fill("#customerRegistrationNumber", user);
+        await page.fill("#password", password);
+        await page.click("button[type=submit]");
 
-        if (await this.page.$('[data-test-id="customerRegistrationNumber_error"]')) {
+        if (await page.$('[data-test-id="customerRegistrationNumber_error"]')) {
             console.log("Username input failed... trying again");
-            await this.login();
+            await this.login(page);
         } else {
-            await this.page.waitForNavigation();
-            await this.page.waitForSelector("#home-title");
-            success();
+            await page.waitForNavigation();
+            await page.waitForSelector("#home-title");
         }
     }
 }

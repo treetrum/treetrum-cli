@@ -1,4 +1,5 @@
-import { Page } from "puppeteer";
+import { Page } from "playwright";
+import { Task } from "./types";
 
 export type AccountName = string;
 
@@ -19,8 +20,17 @@ export interface BankConnector {
     id: string;
 
     /** Human readable name of the connector */
-    name: string;
+    bankName: string;
+
+    /** The browser page used to perform actions in this bank */
+    page: Page;
+
+    /** The Listr2 task to be used for outputs */
+    task: Task;
+
+    /** Sets up the page and task for use in later methods */
+    setup: (page: Page, task: Task) => void;
 
     /** Returns an array of {@link Account}s, each of which contains an array of transactions */
-    getAccounts: (page: Page, verbose?: boolean) => Promise<Account[]>;
+    getAccounts: () => Promise<Account[]>;
 }

@@ -1,4 +1,4 @@
-import puppeteer, { Page } from "puppeteer";
+import { Page } from "playwright";
 import moment from "moment";
 import axios from "axios";
 import qs from "query-string";
@@ -12,6 +12,7 @@ import { Account, BankConnector, Transaction } from "../BankConnector";
 import { performAction } from "../utils";
 import { login as loginToIng } from "./login";
 import chalk from "chalk";
+import { Task, TaskMessages } from "../types";
 
 export const fetchTransactions = async (accountNumber: string, page: Page, days: number = 14) => {
     const url =
@@ -35,7 +36,7 @@ export const fetchTransactions = async (accountNumber: string, page: Page, days:
 };
 
 export const fetchAccounts = async (
-    page: puppeteer.Page
+    page: Page
 ): Promise<{ name: string; accountNumber: string }[]> => {
     const url =
         "https://www.ing.com.au/api/Dashboard/Service/DashboardService.svc/json/Dashboard/loaddashboard";
@@ -121,22 +122,29 @@ export const transformTransactions = (data: CsvRow[]): Transaction[] => {
 
 export class INGConnector implements BankConnector {
     id = "ing";
-    name = "ING";
+    bankName = "ING";
 
-    async getAccounts(page: Page, verbose?: boolean) {
-        await performAction(
-            "Logging in to ING",
-            loginToIng(page, process.env.ING_USER, process.env.ING_PW)
-        );
+    page!: Page;
+    task!: Task;
 
-        const accounts = await performAction("Fetching accounts", fetchAccounts(page));
+    setup(page: Page, task: Task) {
+        this.page = page;
+        this.task = task;
+    }
+
+    async getAccounts() {
+        this.task.output = TaskMessages.loggingIn;
+        await loginToIng(this.page, process.env.ING_USER, process.env.ING_PW);
+
+        this.task.output = TaskMessages.downloadingTransactions;
+        const accounts = await fetchAccounts(this.page);
 
         const outputAccounts: Account[] = [];
         for (const account of accounts) {
             try {
                 const transactions = await performAction(
                     `Fetching transactions for ${account.name}`,
-                    fetchTransactions(account.accountNumber, page)
+                    fetchTransactions(account.accountNumber, this.page)
                 );
 
                 const transformed = transformTransactions(transactions);
@@ -147,9 +155,7 @@ export class INGConnector implements BankConnector {
                 });
             } catch (error) {
                 console.log(chalk.red(`Failed to fetch account details for ${account.name}`));
-                if (verbose) {
-                    console.error(error);
-                }
+                console.error(error);
             }
         }
         return outputAccounts;
