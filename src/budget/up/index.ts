@@ -1,9 +1,9 @@
 import moment from "moment";
-import { BankConnector, Transaction } from "../BankConnector";
-import { UpClient } from "./up-client";
 import { Page } from "playwright";
+import { BankConnector, Transaction } from "../BankConnector";
 import { getOpItem } from "../OPClient";
 import { Task, TaskMessages } from "../types";
+import { UpClient } from "./up-client";
 
 export class UpConnector implements BankConnector {
     id = "up";

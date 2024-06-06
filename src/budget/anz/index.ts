@@ -1,11 +1,11 @@
 import moment from "moment";
 import { Page } from "playwright";
+import { v1 as uuidv1 } from "uuid";
 import { Account, BankConnector, Transaction } from "../BankConnector";
 import { getOpItem } from "../OPClient";
-import { SelectedAccount, Store, StoreState } from "./store-state";
-import { v1 as uuidv1 } from "uuid";
-import { TransactionItem, TransactionsResponse } from "./transaction-response";
 import { Task, TaskMessages } from "../types";
+import { SelectedAccount, Store, StoreState } from "./store-state";
+import { TransactionItem, TransactionsResponse } from "./transaction-response";
 
 export class AnzConnector implements BankConnector {
     id = "anz";
@@ -23,6 +23,7 @@ export class AnzConnector implements BankConnector {
         const state = await page.evaluate(() => {
             const isLoadedPredicate = (state: StoreState) =>
                 state.homeAccountSummary.accountDetails != null;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rootElement = window.document.getElementById("app-container") as any;
             const store: Store =
                 rootElement._reactRootContainer._internalRoot.current.memoizedState.element.props
@@ -32,7 +33,7 @@ export class AnzConnector implements BankConnector {
                     resolve(store.getState());
                     return;
                 } else {
-                    let cancelSubscription = store.subscribe(() => {
+                    const cancelSubscription = store.subscribe(() => {
                         const state: StoreState = store.getState();
                         if (isLoadedPredicate(state)) {
                             cancelSubscription();
@@ -93,7 +94,7 @@ export class AnzConnector implements BankConnector {
         this.task.output = TaskMessages.downloadingTransactions;
         const state = await this.getAnzAppState(this.page);
 
-        let accounts: Record<string, Transaction[]> = {};
+        const accounts: Record<string, Transaction[]> = {};
         for (const account of state.homeAccountSummary.accountDetails?.data ?? []) {
             const transactions = await this.fetchTransactionsForSingleAccount(this.page, account);
             accounts[account.accountName] = transactions.map((t): Transaction => {

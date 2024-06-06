@@ -1,6 +1,7 @@
-import "./env";
 import { Command, Option } from "commander";
 import { budget } from "./budget";
+import "./env";
+
 const program = new Command();
 
 program.version("0.1.0");

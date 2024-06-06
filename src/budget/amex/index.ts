@@ -1,9 +1,9 @@
-import { Page } from "playwright";
 import { parse } from "csv-parse/sync";
+import { readFile } from "fs/promises";
 import moment from "moment";
+import { Page } from "playwright";
 import { BankConnector, Transaction } from "../BankConnector";
 import { getOpItem } from "../OPClient";
-import { readFile } from "fs/promises";
 import { Task, TaskMessages } from "../types";
 
 type AmexCsvDataRow = {

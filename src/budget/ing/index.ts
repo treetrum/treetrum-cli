@@ -1,24 +1,23 @@
-import { Page } from "playwright";
-import moment from "moment";
 import axios from "axios";
-import qs from "query-string";
-import fetch from "node-fetch";
-import { parse } from "csv-parse/sync";
-import parseDate from "date-fns/parse";
-import formatDate from "date-fns/format";
-import Dinero from "dinero.js";
-import { ING_DATE_FORMAT } from "./constants";
-import { Account, BankConnector, Transaction } from "../BankConnector";
-import { performAction } from "../utils";
-import { login as loginToIng } from "./login";
 import chalk from "chalk";
+import { parse } from "csv-parse/sync";
+import formatDate from "date-fns/format";
+import parseDate from "date-fns/parse";
+import Dinero from "dinero.js";
+import moment from "moment";
+import fetch from "node-fetch";
+import { Page } from "playwright";
+import qs from "query-string";
+import { Account, BankConnector, Transaction } from "../BankConnector";
 import { Task, TaskMessages } from "../types";
+import { performAction } from "../utils";
+import { ING_DATE_FORMAT } from "./constants";
+import { login as loginToIng } from "./login";
 
 export const fetchTransactions = async (accountNumber: string, page: Page, days: number = 14) => {
     const url =
         "https://www.ing.com.au/api/ExportTransactions/Service/ExportTransactionsService.svc/json/ExportTransactions/ExportTransactions";
     const data = {
-        // @ts-ignore
         "X-AuthToken": await page.evaluate(`(() => instance.client.token)()`),
         AccountNumber: accountNumber,
         Format: "csv",
@@ -41,7 +40,7 @@ export const fetchAccounts = async (
     const url =
         "https://www.ing.com.au/api/Dashboard/Service/DashboardService.svc/json/Dashboard/loaddashboard";
 
-    const headers = {
+    const headers: HeadersInit = {
         "content-type": "application/json",
         "x-authtoken": await page.evaluate(`(() => instance.client.token)()`),
         "x-messagesignature": await page.evaluate(`(() =>
@@ -49,7 +48,7 @@ export const fetchAccounts = async (
                 "X-AuthToken:" + instance.client.token
             )
         )()`),
-    } as any;
+    };
 
     const res = await fetch(url, {
         method: "POST",

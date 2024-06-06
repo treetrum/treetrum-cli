@@ -2,7 +2,7 @@
 
 export interface Store {
     getState: () => StoreState;
-    subscribe: any;
+    subscribe: (cb: () => void) => () => void;
 }
 
 export interface StoreState {
@@ -271,7 +271,7 @@ export interface FluffyData {
     hashedEmail?: string;
     isCSOProxyLogin?: string;
     outageExpiryTime?: number;
-    outageInfo?: any[];
+    outageInfo?: unknown[];
 }
 
 export interface TentacledData {
@@ -495,13 +495,13 @@ export interface CreditLimitIncreaseData {
 }
 
 export interface ReferenceData {
-    occupationList: any[];
-    phoneTypeList: any[];
-    employmentList: any[];
-    housingList: any[];
-    termList: any[];
-    loanList: any[];
-    incomeList: any[];
+    occupationList: unknown[];
+    phoneTypeList: unknown[];
+    employmentList: unknown[];
+    housingList: unknown[];
+    termList: unknown[];
+    loanList: unknown[];
+    incomeList: unknown[];
 }
 
 export interface HomeLoanContact {
@@ -796,9 +796,9 @@ export interface Billerlist {
 }
 
 export interface BillsNotifications {
-    bills: any[];
-    notifications: any[];
-    billerDetails: any[];
+    bills: unknown[];
+    notifications: unknown[];
+    billerDetails: unknown[];
     status: string;
 }
 
@@ -1171,7 +1171,7 @@ export interface PlTopupAcquisitionData {
 }
 
 export interface PreviousBills {
-    bills: any[];
+    bills: unknown[];
     status: string;
     error: ContactPage;
 }
@@ -1261,16 +1261,16 @@ export interface SecureMail {
 }
 
 export interface SecureMailFundsTransfer {
-    pastTransfers: any[];
-    fromAccountsList: any[];
-    toAccountsList: any[];
+    pastTransfers: unknown[];
+    fromAccountsList: unknown[];
+    toAccountsList: unknown[];
     status: null;
     error: null;
 }
 
 export interface SecureMailPayAnyone {
-    pastPayments: any[];
-    eligiblePayAnyoneAccounts: any[];
+    pastPayments: unknown[];
+    eligiblePayAnyoneAccounts: unknown[];
     countryCodes: ContactPage;
     payeesList: ContactPage;
     status: null;

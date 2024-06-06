@@ -1,24 +1,17 @@
 import chalk from "chalk";
 import fs from "fs/promises";
-import { applyPriceModifier, performActionSync, transactionsToCsvString } from "./utils";
+import { Listr } from "listr2";
+import { homedir } from "os";
 import path from "path";
-import { Account, BankConnector } from "./BankConnector";
-import { UpConnector } from "./up";
-import { UbankConnector } from "./ubank";
-import { INGConnector } from "./ing";
+import { chromium } from "playwright-extra";
 import { AmexConnector } from "./amex";
 import { AnzConnector } from "./anz";
-import { homedir } from "os";
-import { chromium } from "playwright-extra";
+import { INGConnector } from "./ing";
 import stealthPlugin from "./stealth-plugin";
-import { Listr } from "listr2";
-import { BrowserContext } from "playwright";
-
-type Ctx = {
-    connectors: BankConnector[];
-    accounts: Account[];
-    chromium?: BrowserContext;
-};
+import { Ctx } from "./types";
+import { UbankConnector } from "./ubank";
+import { UpConnector } from "./up";
+import { applyPriceModifier, transactionsToCsvString } from "./utils";
 
 export const budget = async (opts: {
     headless: boolean;
@@ -95,7 +88,7 @@ export const budget = async (opts: {
                 return task.newListr(
                     ctx.accounts.map((account) => ({
                         title: `${account.name}.csv`,
-                        skip: (ctx) => account.transactions.length === 0,
+                        skip: () => account.transactions.length === 0,
                         task: async (ctx, task) => {
                             let modifier = 1;
                             if (opts.accountModifiers) {
@@ -128,9 +121,6 @@ export const budget = async (opts: {
     } catch (error) {
         console.log(chalk.red("Something went wrong 😭"));
         console.error(error);
-        if (opts.verbose) {
-            console.error(error);
-        }
     } finally {
         await tasks.ctx.chromium?.close();
     }

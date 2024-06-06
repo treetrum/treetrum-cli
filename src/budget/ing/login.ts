@@ -1,5 +1,5 @@
-import { Page } from "playwright";
 import pixelmatch from "pixelmatch";
+import { Page } from "playwright";
 import { PNG } from "pngjs";
 
 export async function login(page: Page, clientNumber: string, accessCode: string): Promise<string> {

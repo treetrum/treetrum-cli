@@ -70,7 +70,7 @@ export interface CategoryLinks {
 }
 
 export interface Tags {
-    data: any[];
+    data: unknown[];
     links: TransactionLinks;
 }
 

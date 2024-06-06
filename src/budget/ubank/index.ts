@@ -1,12 +1,10 @@
-import nodeFetch, { RequestInit, Response } from "node-fetch";
-import prompts from "prompts";
-import { Account, GetAccountsResponse } from "./types/GetAccountsResponse";
-import { GetTransactionsResponse, UbankTransaction } from "./types/GetTransactionsResponse";
 import moment from "moment";
-import cookie from "cookie";
 import { Page } from "playwright";
+import prompts from "prompts";
 import { BankConnector, Transaction } from "../BankConnector";
 import { Task, TaskMessages } from "../types";
+import { Account, GetAccountsResponse } from "./types/GetAccountsResponse";
+import { GetTransactionsResponse, UbankTransaction } from "./types/GetTransactionsResponse";
 
 export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
     return {

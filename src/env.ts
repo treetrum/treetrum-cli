@@ -1,7 +1,8 @@
 import * as dotenv from "dotenv";
-import { z, TypeOf } from "zod";
+import { TypeOf, z } from "zod";
 
 // Recursively go up directories until a .env is found
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const env = dotenv.config({ path: require("find-config")(".env") });
 
 const zodEnv = z.object({
@@ -17,6 +18,7 @@ const zodEnv = z.object({
 });
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
         interface ProcessEnv extends TypeOf<typeof zodEnv> {}
     }

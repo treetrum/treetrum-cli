@@ -1,10 +1,9 @@
-import chalk from "chalk";
 import stringify from "csv-stringify/lib/sync";
-import { Transaction } from "./BankConnector";
 import Dinero from "dinero.js";
 import moment from "moment";
+import { Transaction } from "./BankConnector";
 
-export const dataArrayToCSVString = (data: Record<string, any>[]) => {
+export const dataArrayToCSVString = (data: Record<string, unknown>[]) => {
     return stringify(data, { header: true });
 };
 
