@@ -10,13 +10,14 @@ import { TransactionItem, TransactionsResponse } from "./transaction-response.js
 export class AnzConnector implements BankConnector {
     id = "anz";
     bankName = "ANZ";
+    requiresBrowser = false;
 
     page!: Page;
     task!: Task;
 
-    setup(page: Page, task: Task) {
-        this.page = page;
+    setup(task: Task, page?: Page) {
         this.task = task;
+        this.page = page!;
     }
 
     async getAnzAppState(page: Page): Promise<StoreState> {

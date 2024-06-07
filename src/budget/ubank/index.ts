@@ -18,13 +18,14 @@ export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
 export class UbankConnector implements BankConnector {
     id = "ubank";
     bankName = "UBank";
+    requiresBrowser = false;
 
     page!: Page;
     task!: Task;
 
-    setup(page: Page, task: Task) {
-        this.page = page;
+    setup(task: Task, page?: Page) {
         this.task = task;
+        this.page = page!;
     }
 
     async getAccounts() {

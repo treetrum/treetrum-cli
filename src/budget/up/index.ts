@@ -8,13 +8,14 @@ import { UpClient } from "./up-client.js";
 export class UpConnector implements BankConnector {
     id = "up";
     bankName = "Up";
+    requiresBrowser = false;
 
     page!: Page;
     task!: Task;
 
-    setup(page: Page, task: Task) {
-        this.page = page;
+    setup(task: Task, page?: Page) {
         this.task = task;
+        this.page = page!;
     }
 
     private getToken() {

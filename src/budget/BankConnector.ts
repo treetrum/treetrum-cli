@@ -22,6 +22,9 @@ export interface BankConnector {
     /** Human readable name of the connector */
     bankName: string;
 
+    /** Set to true if this connector needs to use a playwright page to fetch data */
+    requiresBrowser: boolean;
+
     /** The browser page used to perform actions in this bank */
     page: Page;
 
@@ -29,7 +32,7 @@ export interface BankConnector {
     task: Task;
 
     /** Sets up the page and task for use in later methods */
-    setup: (page: Page, task: Task) => void;
+    setup: (task: Task, page?: Page) => void;
 
     /** Returns an array of {@link Account}s, each of which contains an array of transactions */
     getAccounts: () => Promise<Account[]>;

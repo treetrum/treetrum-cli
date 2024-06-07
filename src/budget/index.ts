@@ -40,12 +40,17 @@ export const budget = async (opts: {
             },
             {
                 title: "Initialising browser",
-                task: async (ctx) => {
-                    chromium.use(stealthPlugin());
-                    ctx.chromium = await chromium.launchPersistentContext(
-                        path.join(homedir(), ".treetrum_cli_playwright_data"),
-                        { headless: process.env.CI ? true : opts.headless }
-                    );
+                task: async (ctx, task) => {
+                    const needsBrowser = ctx.connectors.some((c) => c.requiresBrowser);
+                    if (needsBrowser) {
+                        chromium.use(stealthPlugin());
+                        ctx.chromium = await chromium.launchPersistentContext(
+                            path.join(homedir(), ".treetrum_cli_playwright_data"),
+                            { headless: process.env.CI ? true : opts.headless }
+                        );
+                    } else {
+                        task.skip("Browser not needed");
+                    }
                 },
             },
             {
@@ -54,24 +59,31 @@ export const budget = async (opts: {
                     task.newListr(
                         ctx.connectors.map((connector) => ({
                             title: connector.bankName,
-                            skip: (ctx) => ctx.chromium === undefined,
+                            skip: (ctx) => connector.requiresBrowser && ctx.chromium === undefined,
                             retry: { tries: 1 },
                             task: async (ctx, task) => {
-                                const page = await ctx.chromium!.newPage();
-                                connector.setup(page, task);
+                                const page = connector.requiresBrowser
+                                    ? await ctx.chromium!.newPage()
+                                    : undefined;
+                                connector.setup(task, page);
                                 try {
                                     const connectorAccounts = await connector.getAccounts();
                                     ctx.accounts.push(...connectorAccounts);
                                 } catch (e) {
-                                    const screenshotPath = `/tmp/${connector.id}-error-${Date.now()}.png`;
-                                    await page.screenshot({ path: screenshotPath, fullPage: true });
-                                    console.error(
-                                        "Screenshot written to",
-                                        path.resolve(screenshotPath)
-                                    );
+                                    if (page) {
+                                        const screenshotPath = `/tmp/${connector.id}-error-${Date.now()}.png`;
+                                        await page.screenshot({
+                                            path: screenshotPath,
+                                            fullPage: true,
+                                        });
+                                        console.error(
+                                            "Screenshot written to",
+                                            path.resolve(screenshotPath)
+                                        );
+                                    }
                                     throw e;
                                 } finally {
-                                    await page.close();
+                                    await page?.close();
                                 }
                             },
                         })),
@@ -134,6 +146,6 @@ export const budget = async (opts: {
         console.log("Something went wrong 😭");
         console.error(error);
     } finally {
-        await tasks.ctx.chromium!.close();
+        await tasks.ctx.chromium?.close();
     }
 };

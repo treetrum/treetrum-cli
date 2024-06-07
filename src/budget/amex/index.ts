@@ -15,13 +15,14 @@ type AmexCsvDataRow = {
 export class AmexConnector implements BankConnector {
     id = "amex";
     bankName = "American Express";
+    requiresBrowser = false;
 
     page!: Page;
     task!: Task;
 
-    setup(page: Page, task: Task) {
-        this.page = page;
+    setup(task: Task, page?: Page) {
         this.task = task;
+        this.page = page!;
     }
 
     async getAccounts() {

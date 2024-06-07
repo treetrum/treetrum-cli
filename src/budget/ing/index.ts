@@ -120,13 +120,14 @@ export const transformTransactions = (data: CsvRow[]): Transaction[] => {
 export class INGConnector implements BankConnector {
     id = "ing";
     bankName = "ING";
+    requiresBrowser = false;
 
     page!: Page;
     task!: Task;
 
-    setup(page: Page, task: Task) {
-        this.page = page;
+    setup(task: Task, page?: Page) {
         this.task = task;
+        this.page = page!;
     }
 
     async getAccounts() {
