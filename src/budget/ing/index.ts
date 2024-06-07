@@ -3,12 +3,12 @@ import { parse } from "csv-parse/sync";
 import { formatDate } from "date-fns/format";
 import { parse as parseDate } from "date-fns/parse";
 import Dinero from "dinero.js";
+import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Page } from "playwright";
 import qs from "query-string";
 import { Account, BankConnector, Transaction } from "../BankConnector.js";
 import { Task, TaskMessages } from "../types.js";
-import { performAction } from "../utils.js";
 import { ING_DATE_FORMAT } from "./constants.js";
 import { login as loginToIng } from "./login.js";
 
@@ -120,7 +120,7 @@ export const transformTransactions = (data: CsvRow[]): Transaction[] => {
 export class INGConnector implements BankConnector {
     id = "ing";
     bankName = "ING";
-    requiresBrowser = false;
+    requiresBrowser = true;
 
     page!: Page;
     task!: Task;
@@ -140,15 +140,10 @@ export class INGConnector implements BankConnector {
         const outputAccounts: Account[] = [];
         for (const account of accounts) {
             try {
-                const transactions = await performAction(
-                    `Fetching transactions for ${account.name}`,
-                    fetchTransactions(account.accountNumber, this.page)
-                );
-
+                const transactions = await fetchTransactions(account.accountNumber, this.page);
                 const transformed = transformTransactions(transactions);
-
                 outputAccounts.push({
-                    name: account.name,
+                    name: _kebabCase(account.name),
                     transactions: transformed,
                 });
             } catch (error) {

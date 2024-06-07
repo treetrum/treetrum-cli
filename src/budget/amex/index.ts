@@ -15,7 +15,7 @@ type AmexCsvDataRow = {
 export class AmexConnector implements BankConnector {
     id = "amex";
     bankName = "American Express";
-    requiresBrowser = false;
+    requiresBrowser = true;
 
     page!: Page;
     task!: Task;
@@ -30,7 +30,7 @@ export class AmexConnector implements BankConnector {
 
         this.task.output = TaskMessages.downloadingTransactions;
         const transactions = await this.getTransactions();
-        return [{ name: "AMEX - Credit Card", transactions: transactions }];
+        return [{ name: "amex-credit-card", transactions: transactions }];
     }
 
     login = async () => {

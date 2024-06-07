@@ -1,3 +1,4 @@
+import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Page } from "playwright";
 import { BankConnector, Transaction } from "../BankConnector.js";
@@ -42,7 +43,7 @@ export class UpConnector implements BankConnector {
         for (const account of response.data) {
             const transactions = await client.fetchAccountTransactions(account.id);
 
-            accountsToTransactions[`${this.id} - ${account.attributes.displayName}`] =
+            accountsToTransactions[_kebabCase(`${this.id} ${account.attributes.displayName}`)] =
                 transactions.data
                     .filter((t) => t.attributes.status === "SETTLED")
                     .map<Transaction>((t) => ({

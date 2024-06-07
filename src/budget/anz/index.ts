@@ -1,3 +1,4 @@
+import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Page } from "playwright";
 import { v1 as uuidv1 } from "uuid";
@@ -10,7 +11,7 @@ import { TransactionItem, TransactionsResponse } from "./transaction-response.js
 export class AnzConnector implements BankConnector {
     id = "anz";
     bankName = "ANZ";
-    requiresBrowser = false;
+    requiresBrowser = true;
 
     page!: Page;
     task!: Task;
@@ -113,7 +114,7 @@ export class AnzConnector implements BankConnector {
 
         return Object.entries(accounts).map(([name, transactions]) => {
             return {
-                name: `${this.bankName} - ${name}`,
+                name: _kebabCase(`${this.id} ${name}`),
                 transactions: transactions.filter((t) => {
                     // Filter out transactions that are not in the last 30 days
                     return moment(t.date).isAfter(moment().subtract(30, "days"));

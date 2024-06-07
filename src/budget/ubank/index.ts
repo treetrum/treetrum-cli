@@ -1,3 +1,4 @@
+import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Page } from "playwright";
 import prompts from "prompts";
@@ -18,7 +19,7 @@ export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
 export class UbankConnector implements BankConnector {
     id = "ubank";
     bankName = "UBank";
-    requiresBrowser = false;
+    requiresBrowser = true;
 
     page!: Page;
     task!: Task;
@@ -107,9 +108,8 @@ export class UbankConnector implements BankConnector {
 
                 linkedBanks.forEach((b) => {
                     b.accounts.forEach((account) => {
-                        accountNicknames[account.id] = `${b.shortBankName} - ${
-                            account.nickname || account.label
-                        }`;
+                        accountNicknames[account.id] =
+                            `${b.shortBankName} ${account.nickname || account.label}`;
                     });
                     accounts.push(...b.accounts);
                 });
@@ -148,7 +148,7 @@ export class UbankConnector implements BankConnector {
 
         const transformed: Record<string, Transaction[]> = {};
         Object.entries(accountTransactions).forEach(([key, value]) => {
-            transformed[key] = value.map(transformUbankTransaction);
+            transformed[_kebabCase(key)] = value.map(transformUbankTransaction);
         });
         return transformed;
     };

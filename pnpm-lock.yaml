@@ -38,6 +38,9 @@ importers:
       listr2:
         specifier: ^8.2.1
         version: 8.2.1
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       moment:
         specifier: ^2.30.1
         version: 2.30.1
@@ -90,6 +93,9 @@ importers:
       '@types/find-config':
         specifier: ^1.0.4
         version: 1.0.4
+      '@types/lodash':
+        specifier: ^4.17.4
+        version: 4.17.4
       '@types/node':
         specifier: ^20.14.2
         version: 20.14.2
@@ -305,6 +311,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/lodash@4.17.4':
+    resolution: {integrity: sha512-wYCP26ZLxaT3R39kiN2+HcJ4kTd3U1waI/cY7ivWYqFP6pW3ZNpvi6Wd6PHZx7T/t8z0vlkXMg3QYLa7DZ/IJQ==}
 
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
@@ -1701,6 +1710,8 @@ snapshots:
   '@types/find-config@1.0.4': {}
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/lodash@4.17.4': {}
 
   '@types/ms@0.7.34': {}
 
