@@ -2,11 +2,6 @@ import * as dotenv from "dotenv";
 import findConfig from "find-config";
 import { TypeOf, z } from "zod";
 
-// Recursively go up directories until a .env is found
-const configPath = findConfig(".env");
-if (!configPath) throw new Error("ENV CONFIG NOT FOUND");
-const env = dotenv.config({ path: configPath });
-
 const zodEnv = z.object({
     ING_USER: z.string(),
     ING_PW: z.string(),
@@ -27,5 +22,9 @@ declare global {
 }
 
 if (!process.env.CI) {
+    // Recursively go up directories until a .env is found
+    const configPath = findConfig(".env");
+    if (!configPath) throw new Error("ENV CONFIG NOT FOUND");
+    const env = dotenv.config({ path: configPath });
     zodEnv.parse(env.parsed);
 }
