@@ -123,11 +123,13 @@ export class AnzConnector implements BankConnector {
 
     async login(page: Page) {
         this.task.output = TaskMessages.readingCredentials;
-        const user = await getOpItem(process.env.ANZ_USER_1PR);
-        const password = await getOpItem(process.env.ANZ_PW_1PR);
+        const [user, password] = await Promise.all([
+            getOpItem(process.env.ANZ_USER_1PR),
+            getOpItem(process.env.ANZ_PW_1PR),
+            await page.goto("https://login.anz.com/internetbanking"),
+        ]);
 
         this.task.output = TaskMessages.loggingIn;
-        await page.goto("https://login.anz.com/internetbanking");
         await page.fill("#customerRegistrationNumber", user);
         await page.fill("#password", password);
         await page.click("button[type=submit]");
@@ -136,7 +138,7 @@ export class AnzConnector implements BankConnector {
             console.log("Username input failed... trying again");
             await this.login(page);
         } else {
-            await page.waitForNavigation();
+            await page.waitForNavigation({ timeout: 10000 });
             await page.waitForSelector("#home-title");
         }
     }

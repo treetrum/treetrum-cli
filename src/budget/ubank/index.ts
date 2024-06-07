@@ -18,16 +18,8 @@ export class UbankConnector implements BankConnector {
     id = "ubank";
     bankName = "UBank";
 
-    private user: string;
-    private pw: string;
-
     page!: Page;
     task!: Task;
-
-    constructor() {
-        this.user = process.env.UBANK_USER;
-        this.pw = process.env.UBANK_PW;
-    }
 
     setup(page: Page, task: Task) {
         this.page = page;
@@ -36,7 +28,7 @@ export class UbankConnector implements BankConnector {
 
     async getAccounts() {
         this.task.output = TaskMessages.loggingIn;
-        await this.login();
+        await this.login(process.env.UBANK_USER, process.env.UBANK_PW);
 
         this.task.output = TaskMessages.downloadingTransactions;
         const accountTransactions = await this.fetchTransactions();
@@ -46,22 +38,22 @@ export class UbankConnector implements BankConnector {
         });
     }
 
-    login = async () => {
+    login = async (user: string, password: string) => {
         await this.page.goto("https://www.ubank.com.au/welcome/login/username");
-        await this.page.type('[sp-automation-id="input-username"]', this.user);
+        await this.page.fill('[sp-automation-id="input-username"]', user);
 
         await this.page.click("button[type=submit]");
-        await this.page.waitForNavigation();
-        await this.page.type('[sp-automation-id="input-password"]', this.pw);
+        await this.page.waitForNavigation({ timeout: 10000 });
+        await this.page.fill('[sp-automation-id="input-password"]', password);
         await this.page.click("button[type=submit]");
-        await this.page.waitForNavigation();
+        await this.page.waitForNavigation({ timeout: 10000 });
 
         // Check for remember browser screen
         const rememberBrowserButtonSelector = `[sp-automation-id="radio-tile-label-trustBrowser-private"]`;
         if (await this.page.$(rememberBrowserButtonSelector)) {
             await this.page.click(rememberBrowserButtonSelector);
             await this.page.click("button[type=submit]");
-            await this.page.waitForNavigation();
+            await this.page.waitForNavigation({ timeout: 10000 });
         }
 
         // Check for OTP screen
@@ -74,9 +66,9 @@ export class UbankConnector implements BankConnector {
                     message: `Enter the code sent to your phone number`,
                 },
             ]);
-            await this.page.type('[sp-automation-id="input-otpValue"]', code);
+            await this.page.fill('[sp-automation-id="input-otpValue"]', code);
             await this.page.click("button[type=submit]");
-            await this.page.waitForNavigation();
+            await this.page.waitForNavigation({ timeout: 10000 });
         }
     };
 

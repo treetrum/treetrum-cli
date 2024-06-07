@@ -1,4 +1,4 @@
-import stringify from "csv-stringify/lib/sync.js";
+import { stringify } from "csv-stringify/sync";
 import Dinero from "dinero.js";
 import moment from "moment";
 import { Transaction } from "./BankConnector.js";

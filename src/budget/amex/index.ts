@@ -12,35 +12,6 @@ type AmexCsvDataRow = {
     Amount: string;
 };
 
-const transformStatementData = (rawCSV: string): Transaction[] => {
-    return (parse(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
-        date: moment(r.Date, "DD/MM/YYYY").toDate(),
-        description: r.Description,
-        amount: r.Amount,
-    }));
-};
-
-export const login = async (page: Page, userId: string, password: string) => {
-    await page.goto("https://www.americanexpress.com/en-au/account/login");
-    await page.type("#eliloUserID", userId);
-    await page.type("#eliloPassword", password);
-    await page.click("#loginSubmit");
-    await page.waitForNavigation();
-};
-
-const getTransactions = async (page: Page) => {
-    await page.goto("https://global.americanexpress.com/activity/recent");
-    await page.getByRole("button", { name: "Download Your Transactions" }).click();
-    await page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
-
-    // Catch the download and process as string
-    const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("link", { name: "Download", exact: true }).click();
-    const data = await readFile(await (await downloadPromise).path(), { encoding: "utf-8" });
-
-    return transformStatementData(data);
-};
-
 export class AmexConnector implements BankConnector {
     id = "amex";
     bankName = "American Express";
@@ -54,21 +25,46 @@ export class AmexConnector implements BankConnector {
     }
 
     async getAccounts() {
-        this.task.output = TaskMessages.readingCredentials;
-        const username = await getOpItem(process.env.AMEX_USER_1PR);
-        const password = await getOpItem(process.env.AMEX_PW_1PR);
-
-        this.task.output = TaskMessages.loggingIn;
-        await login(this.page, username, password);
+        await this.login();
 
         this.task.output = TaskMessages.downloadingTransactions;
-        const transactions = await getTransactions(this.page);
-
-        return [
-            {
-                name: "AMEX | Credit Card",
-                transactions: transactions,
-            },
-        ];
+        const transactions = await this.getTransactions();
+        return [{ name: "AMEX | Credit Card", transactions: transactions }];
     }
+
+    login = async () => {
+        this.task.output = TaskMessages.readingCredentials;
+        const [userId, password] = await Promise.all([
+            getOpItem(process.env.AMEX_USER_1PR),
+            getOpItem(process.env.AMEX_PW_1PR),
+            this.page.goto("https://www.americanexpress.com/en-au/account/login"),
+        ]);
+
+        this.task.output = TaskMessages.loggingIn;
+        await this.page.fill("#eliloUserID", userId);
+        await this.page.fill("#eliloPassword", password);
+        await this.page.click("#loginSubmit");
+        await this.page.waitForNavigation({ timeout: 10000 });
+    };
+
+    getTransactions = async () => {
+        await this.page.goto("https://global.americanexpress.com/activity/recent");
+        await this.page.getByRole("button", { name: "Download Your Transactions" }).click();
+        await this.page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
+
+        // Catch the download and process as string
+        const downloadPromise = this.page.waitForEvent("download");
+        await this.page.getByRole("link", { name: "Download", exact: true }).click();
+        const data = await readFile(await (await downloadPromise).path(), { encoding: "utf-8" });
+
+        return this.transformStatementData(data);
+    };
+
+    transformStatementData = (rawCSV: string): Transaction[] => {
+        return (parse(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
+            date: moment(r.Date, "DD/MM/YYYY").toDate(),
+            description: r.Description,
+            amount: r.Amount,
+        }));
+    };
 }
