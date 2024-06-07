@@ -30,7 +30,7 @@ export class AmexConnector implements BankConnector {
 
         this.task.output = TaskMessages.downloadingTransactions;
         const transactions = await this.getTransactions();
-        return [{ name: "AMEX | Credit Card", transactions: transactions }];
+        return [{ name: "AMEX - Credit Card", transactions: transactions }];
     }
 
     login = async () => {

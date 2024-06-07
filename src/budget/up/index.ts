@@ -42,14 +42,15 @@ export class UpConnector implements BankConnector {
         for (const account of response.data) {
             const transactions = await client.fetchAccountTransactions(account.id);
 
-            accountsToTransactions[`Up | ${account.attributes.displayName}`] = transactions.data
-                .filter((t) => t.attributes.status === "SETTLED")
-                .map<Transaction>((t) => ({
-                    date: moment(t.attributes.createdAt).toDate(),
-                    amount: t.attributes.amount.value,
-                    description: t.attributes.description,
-                    memo: t.attributes.message,
-                }));
+            accountsToTransactions[`${this.id} - ${account.attributes.displayName}`] =
+                transactions.data
+                    .filter((t) => t.attributes.status === "SETTLED")
+                    .map<Transaction>((t) => ({
+                        date: moment(t.attributes.createdAt).toDate(),
+                        amount: t.attributes.amount.value,
+                        description: t.attributes.description,
+                        memo: t.attributes.message,
+                    }));
         }
 
         return accountsToTransactions;

@@ -107,7 +107,7 @@ export class UbankConnector implements BankConnector {
 
                 linkedBanks.forEach((b) => {
                     b.accounts.forEach((account) => {
-                        accountNicknames[account.id] = `${b.shortBankName} | ${
+                        accountNicknames[account.id] = `${b.shortBankName} - ${
                             account.nickname || account.label
                         }`;
                     });
