@@ -2,6 +2,7 @@ import moment from "moment";
 import { Page } from "playwright";
 import prompts from "prompts";
 import { BankConnector, Transaction } from "../BankConnector.js";
+import { readSecret } from "../OPClient.js";
 import { Task, TaskMessages } from "../types.js";
 import { Account, GetAccountsResponse } from "./types/GetAccountsResponse.js";
 import { GetTransactionsResponse, UbankTransaction } from "./types/GetTransactionsResponse.js";
@@ -28,7 +29,11 @@ export class UbankConnector implements BankConnector {
 
     async getAccounts() {
         this.task.output = TaskMessages.loggingIn;
-        await this.login(process.env.UBANK_USER, process.env.UBANK_PW);
+        const [user, password] = await Promise.all([
+            await readSecret(process.env.UBANK_USER),
+            await readSecret(process.env.UBANK_PW),
+        ]);
+        await this.login(user, password);
 
         this.task.output = TaskMessages.downloadingTransactions;
         const accountTransactions = await this.fetchTransactions();

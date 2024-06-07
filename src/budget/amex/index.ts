@@ -3,7 +3,7 @@ import { readFile } from "fs/promises";
 import moment from "moment";
 import { Page } from "playwright";
 import { BankConnector, Transaction } from "../BankConnector.js";
-import { getOpItem } from "../OPClient.js";
+import { readSecret } from "../OPClient.js";
 import { Task, TaskMessages } from "../types.js";
 
 type AmexCsvDataRow = {
@@ -35,8 +35,8 @@ export class AmexConnector implements BankConnector {
     login = async () => {
         this.task.output = TaskMessages.readingCredentials;
         const [userId, password] = await Promise.all([
-            getOpItem(process.env.AMEX_USER_1PR),
-            getOpItem(process.env.AMEX_PW_1PR),
+            readSecret(process.env.AMEX_USER),
+            readSecret(process.env.AMEX_PW),
             this.page.goto("https://www.americanexpress.com/en-au/account/login"),
         ]);
 

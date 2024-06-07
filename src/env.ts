@@ -10,13 +10,13 @@ const env = dotenv.config({ path: configPath });
 const zodEnv = z.object({
     ING_USER: z.string(),
     ING_PW: z.string(),
-    AMEX_USER_1PR: z.string(),
-    AMEX_PW_1PR: z.string(),
-    UP_TOKEN_1PR: z.string(),
+    AMEX_USER: z.string(),
+    AMEX_PW: z.string(),
+    UP_TOKEN: z.string(),
     UBANK_USER: z.string(),
     UBANK_PW: z.string(),
-    ANZ_USER_1PR: z.string(),
-    ANZ_PW_1PR: z.string(),
+    ANZ_USER: z.string(),
+    ANZ_PW: z.string(),
 });
 
 declare global {
@@ -26,4 +26,6 @@ declare global {
     }
 }
 
-zodEnv.parse(env.parsed);
+if (!process.env.CI) {
+    zodEnv.parse(env.parsed);
+}

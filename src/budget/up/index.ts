@@ -1,7 +1,7 @@
 import moment from "moment";
 import { Page } from "playwright";
 import { BankConnector, Transaction } from "../BankConnector.js";
-import { getOpItem } from "../OPClient.js";
+import { readSecret } from "../OPClient.js";
 import { Task, TaskMessages } from "../types.js";
 import { UpClient } from "./up-client.js";
 
@@ -18,7 +18,7 @@ export class UpConnector implements BankConnector {
     }
 
     private getToken() {
-        return getOpItem(process.env.UP_TOKEN_1PR);
+        return readSecret(process.env.UP_TOKEN);
     }
 
     async getAccounts() {

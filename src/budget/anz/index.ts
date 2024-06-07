@@ -2,7 +2,7 @@ import moment from "moment";
 import { Page } from "playwright";
 import { v1 as uuidv1 } from "uuid";
 import { Account, BankConnector, Transaction } from "../BankConnector.js";
-import { getOpItem } from "../OPClient.js";
+import { readSecret } from "../OPClient.js";
 import { Task, TaskMessages } from "../types.js";
 import { SelectedAccount, Store, StoreState } from "./store-state.js";
 import { TransactionItem, TransactionsResponse } from "./transaction-response.js";
@@ -124,8 +124,8 @@ export class AnzConnector implements BankConnector {
     async login(page: Page) {
         this.task.output = TaskMessages.readingCredentials;
         const [user, password] = await Promise.all([
-            getOpItem(process.env.ANZ_USER_1PR),
-            getOpItem(process.env.ANZ_PW_1PR),
+            readSecret(process.env.ANZ_USER),
+            readSecret(process.env.ANZ_PW),
             await page.goto("https://login.anz.com/internetbanking"),
         ]);
 

@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Lint/Build JS
+name: Build JS
 
 on:
   push:
@@ -11,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: playwright-latest
     strategy:
       matrix:
         node-version: [20]
@@ -30,3 +27,6 @@ jobs:
         run: pnpm install
       - name: build
         run: pnpm run build
+      - name: Do a test run
+        run: npx playwright install --with-deps
+      - run: npm run start -- budget --banks up --headless
