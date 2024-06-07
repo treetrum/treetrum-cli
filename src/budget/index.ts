@@ -116,6 +116,7 @@ export const budget = async (opts: {
                                     modifier
                                 );
                                 const outputPath = path.join(opts.outdir, `${account.name}.csv`);
+                                await fs.mkdir(opts.outdir, { recursive: true });
                                 task.title = outputPath;
                                 await fs.writeFile(
                                     outputPath,
