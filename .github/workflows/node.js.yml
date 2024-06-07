@@ -1,8 +1,6 @@
 name: Build JS
 
-on:
-  push:
-    branches: ["*"]
+on: push
 
 jobs:
   build:
