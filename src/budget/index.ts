@@ -1,17 +1,16 @@
-import chalk from "chalk";
 import fs from "fs/promises";
 import { Listr } from "listr2";
 import { homedir } from "os";
 import path from "path";
 import { chromium } from "playwright-extra";
-import { AmexConnector } from "./amex";
-import { AnzConnector } from "./anz";
-import { INGConnector } from "./ing";
-import stealthPlugin from "./stealth-plugin";
-import { Ctx } from "./types";
-import { UbankConnector } from "./ubank";
-import { UpConnector } from "./up";
-import { applyPriceModifier, transactionsToCsvString } from "./utils";
+import stealthPlugin from "puppeteer-extra-plugin-stealth";
+import { AmexConnector } from "./amex/index.js";
+import { AnzConnector } from "./anz/index.js";
+import { INGConnector } from "./ing/index.js";
+import { Ctx } from "./types.js";
+import { UbankConnector } from "./ubank/index.js";
+import { UpConnector } from "./up/index.js";
+import { applyPriceModifier, transactionsToCsvString } from "./utils.js";
 
 export const budget = async (opts: {
     headless: boolean;
@@ -119,9 +118,9 @@ export const budget = async (opts: {
             chromium: undefined,
         });
     } catch (error) {
-        console.log(chalk.red("Something went wrong 😭"));
+        console.log("Something went wrong 😭");
         console.error(error);
     } finally {
-        await tasks.ctx.chromium?.close();
+        await tasks.ctx.chromium!.close();
     }
 };

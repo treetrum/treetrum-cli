@@ -1,5 +1,5 @@
 import { Page } from "playwright";
-import { Task } from "./types";
+import { Task } from "./types.js";
 
 export type AccountName = string;
 

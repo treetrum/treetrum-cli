@@ -1,9 +1,11 @@
 import * as dotenv from "dotenv";
+import findConfig from "find-config";
 import { TypeOf, z } from "zod";
 
 // Recursively go up directories until a .env is found
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const env = dotenv.config({ path: require("find-config")(".env") });
+const configPath = findConfig(".env");
+if (!configPath) throw new Error("ENV CONFIG NOT FOUND");
+const env = dotenv.config({ path: configPath });
 
 const zodEnv = z.object({
     ING_USER: z.string(),

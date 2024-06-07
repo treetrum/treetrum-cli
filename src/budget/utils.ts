@@ -1,7 +1,7 @@
-import stringify from "csv-stringify/lib/sync";
+import stringify from "csv-stringify/lib/sync.js";
 import Dinero from "dinero.js";
 import moment from "moment";
-import { Transaction } from "./BankConnector";
+import { Transaction } from "./BankConnector.js";
 
 export const dataArrayToCSVString = (data: Record<string, unknown>[]) => {
     return stringify(data, { header: true });

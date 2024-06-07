@@ -1,10 +1,10 @@
 import moment from "moment";
 import { Page } from "playwright";
 import prompts from "prompts";
-import { BankConnector, Transaction } from "../BankConnector";
-import { Task, TaskMessages } from "../types";
-import { Account, GetAccountsResponse } from "./types/GetAccountsResponse";
-import { GetTransactionsResponse, UbankTransaction } from "./types/GetTransactionsResponse";
+import { BankConnector, Transaction } from "../BankConnector.js";
+import { Task, TaskMessages } from "../types.js";
+import { Account, GetAccountsResponse } from "./types/GetAccountsResponse.js";
+import { GetTransactionsResponse, UbankTransaction } from "./types/GetTransactionsResponse.js";
 
 export const transformUbankTransaction = (t: UbankTransaction): Transaction => {
     return {

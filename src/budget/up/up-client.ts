@@ -1,6 +1,6 @@
 import moment from "moment";
-import { UpTransaction } from "./transaction-types";
-import { Account, PaginatedResponse } from "./types";
+import { UpTransaction } from "./transaction-types.js";
+import { Account, PaginatedResponse } from "./types.js";
 
 export class UpClient {
     token: string;

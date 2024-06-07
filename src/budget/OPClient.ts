@@ -1,4 +1,4 @@
-import { read } from "../op-client";
+import { read } from "../op-client/index.js";
 
 export const getOpItem = async (reference: string): Promise<string> => {
     // console.log("Reading OP item", reference);

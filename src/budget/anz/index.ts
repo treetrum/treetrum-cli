@@ -1,11 +1,11 @@
 import moment from "moment";
 import { Page } from "playwright";
 import { v1 as uuidv1 } from "uuid";
-import { Account, BankConnector, Transaction } from "../BankConnector";
-import { getOpItem } from "../OPClient";
-import { Task, TaskMessages } from "../types";
-import { SelectedAccount, Store, StoreState } from "./store-state";
-import { TransactionItem, TransactionsResponse } from "./transaction-response";
+import { Account, BankConnector, Transaction } from "../BankConnector.js";
+import { getOpItem } from "../OPClient.js";
+import { Task, TaskMessages } from "../types.js";
+import { SelectedAccount, Store, StoreState } from "./store-state.js";
+import { TransactionItem, TransactionsResponse } from "./transaction-response.js";
 
 export class AnzConnector implements BankConnector {
     id = "anz";

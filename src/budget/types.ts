@@ -1,6 +1,6 @@
 import { DefaultRenderer, ListrTaskWrapper, SimpleRenderer } from "listr2";
 import { BrowserContext } from "playwright";
-import { Account, BankConnector } from "./BankConnector";
+import { Account, BankConnector } from "./BankConnector.js";
 
 export type Ctx = {
     connectors: BankConnector[];

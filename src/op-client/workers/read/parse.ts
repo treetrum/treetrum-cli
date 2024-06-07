@@ -1,4 +1,6 @@
 import { read } from "@1password/op-js";
-import { expose } from "threads/worker";
+import { parentPort } from "worker_threads";
 
-expose(read.parse);
+parentPort?.on("message", ({ params }: { params: Parameters<typeof read.parse> }) => {
+    parentPort?.postMessage(read.parse(...params));
+});

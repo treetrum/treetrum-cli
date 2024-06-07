@@ -1,17 +1,16 @@
 import axios from "axios";
-import chalk from "chalk";
 import { parse } from "csv-parse/sync";
-import formatDate from "date-fns/format";
-import parseDate from "date-fns/parse";
+import { formatDate } from "date-fns/format";
+import { parse as parseDate } from "date-fns/parse";
 import Dinero from "dinero.js";
 import moment from "moment";
 import { Page } from "playwright";
 import qs from "query-string";
-import { Account, BankConnector, Transaction } from "../BankConnector";
-import { Task, TaskMessages } from "../types";
-import { performAction } from "../utils";
-import { ING_DATE_FORMAT } from "./constants";
-import { login as loginToIng } from "./login";
+import { Account, BankConnector, Transaction } from "../BankConnector.js";
+import { Task, TaskMessages } from "../types.js";
+import { performAction } from "../utils.js";
+import { ING_DATE_FORMAT } from "./constants.js";
+import { login as loginToIng } from "./login.js";
 
 export const fetchTransactions = async (accountNumber: string, page: Page, days: number = 14) => {
     const url =
@@ -152,7 +151,7 @@ export class INGConnector implements BankConnector {
                     transactions: transformed,
                 });
             } catch (error) {
-                console.log(chalk.red(`Failed to fetch account details for ${account.name}`));
+                console.log(`Failed to fetch account details for ${account.name}`);
                 console.error(error);
             }
         }
