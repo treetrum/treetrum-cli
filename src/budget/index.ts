@@ -115,8 +115,10 @@ export const budget = async (opts: {
                                     account.transactions,
                                     modifier
                                 );
+                                const outputPath = path.join(opts.outdir, `${account.name}.csv`);
+                                task.title = outputPath;
                                 await fs.writeFile(
-                                    path.join(opts.outdir, `${account.name}.csv`),
+                                    outputPath,
                                     transactionsToCsvString(transactions)
                                 );
                             },
@@ -144,7 +146,7 @@ export const budget = async (opts: {
         });
     } catch (error) {
         console.log("Something went wrong 😭");
-        console.error(error);
+        throw error;
     } finally {
         await tasks.ctx.chromium?.close();
     }

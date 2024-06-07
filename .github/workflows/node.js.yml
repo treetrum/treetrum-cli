@@ -25,6 +25,6 @@ jobs:
       - run: pnpm install
       - run: pnpm run build
       # - run: npx playwright install --with-deps
-      - run: pnpm run start budget --banks up --headless
+      - run: pnpm run start budget --banks up --headless --outdir=/tmp
         env:
           UP_TOKEN: ${{ secrets.UP_TOKEN }}
