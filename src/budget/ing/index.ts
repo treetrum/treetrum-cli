@@ -5,7 +5,6 @@ import formatDate from "date-fns/format";
 import parseDate from "date-fns/parse";
 import Dinero from "dinero.js";
 import moment from "moment";
-import fetch from "node-fetch";
 import { Page } from "playwright";
 import qs from "query-string";
 import { Account, BankConnector, Transaction } from "../BankConnector";
