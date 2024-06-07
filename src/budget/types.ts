@@ -11,7 +11,7 @@ export type Ctx = {
 export type Task = ListrTaskWrapper<Ctx, typeof DefaultRenderer, typeof SimpleRenderer>;
 
 export enum TaskMessages {
-    readingCredentials = "Reading credentials from 1Password",
+    readingCredentials = "Reading credentials",
     loggingIn = "Logging in",
     downloadingTransactions = "Downloading transactions",
 }

@@ -44,7 +44,7 @@ export const budget = async (opts: {
                     chromium.use(stealthPlugin());
                     ctx.chromium = await chromium.launchPersistentContext(
                         path.join(homedir(), ".treetrum_cli_playwright_data"),
-                        { headless: opts.headless }
+                        { headless: process.env.CI ? true : opts.headless }
                     );
                 },
             },
@@ -78,7 +78,7 @@ export const budget = async (opts: {
                         {
                             concurrent: true,
                             rendererOptions: { collapseSubtasks: false },
-                            exitOnError: false,
+                            exitOnError: process.env.CI ? true : false,
                         }
                     ),
             },

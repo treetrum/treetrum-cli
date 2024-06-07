@@ -2,13 +2,12 @@ name: Build JS
 
 on:
   push:
-    branches: ["master"]
-  pull_request:
     branches: ["*"]
 
 jobs:
   build:
-    runs-on: playwright-latest
+    name: "Build and test JS"
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [20]
@@ -23,10 +22,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
-      - name: Install dependencies
-        run: pnpm install
-      - name: build
-        run: pnpm run build
-      - name: Do a test run
-        run: npx playwright install --with-deps
-      - run: npm run start -- budget --banks up --headless
+      - run: pnpm install
+      - run: pnpm run build
+      - run: npx playwright install --with-deps
+      - run: pnpm run start budget --banks up --headless

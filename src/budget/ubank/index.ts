@@ -28,11 +28,13 @@ export class UbankConnector implements BankConnector {
     }
 
     async getAccounts() {
-        this.task.output = TaskMessages.loggingIn;
+        this.task.output = TaskMessages.readingCredentials;
         const [user, password] = await Promise.all([
             await readSecret(process.env.UBANK_USER),
             await readSecret(process.env.UBANK_PW),
         ]);
+
+        this.task.output = TaskMessages.loggingIn;
         await this.login(user, password);
 
         this.task.output = TaskMessages.downloadingTransactions;
