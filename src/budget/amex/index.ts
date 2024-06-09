@@ -45,7 +45,7 @@ export class AmexConnector implements BankConnector {
         await this.page.fill("#eliloUserID", userId);
         await this.page.fill("#eliloPassword", password);
         await this.page.click("#loginSubmit");
-        await this.page.waitForNavigation({ timeout: 10000 });
+        await this.page.getByRole("heading", { name: "Remaining Statement Balance" }).waitFor();
     };
 
     getTransactions = async () => {
@@ -53,10 +53,10 @@ export class AmexConnector implements BankConnector {
         await this.page.getByRole("button", { name: "Download Your Transactions" }).click();
         await this.page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
 
-        // Catch the download and process as string
-        const downloadPromise = this.page.waitForEvent("download");
+        // Catch the download and process as path
+        const downloadPath = this.page.waitForEvent("download").then((d) => d.path());
         await this.page.getByRole("link", { name: "Download", exact: true }).click();
-        const data = await readFile(await (await downloadPromise).path(), { encoding: "utf-8" });
+        const data = await readFile(await downloadPath, { encoding: "utf-8" });
 
         return this.transformStatementData(data);
     };
