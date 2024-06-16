@@ -1,12 +1,20 @@
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
-import { Page } from "playwright";
+import { Locator, Page } from "playwright";
 import { v1 as uuidv1 } from "uuid";
 import { Account, BankConnector, Transaction } from "../BankConnector.js";
 import { readSecret } from "../OPClient.js";
 import { Task, TaskMessages } from "../types.js";
 import { SelectedAccount, Store, StoreState } from "./store-state.js";
 import { TransactionItem, TransactionsResponse } from "./transaction-response.js";
+
+/** Is visible check, but with a timeout */
+const isVisible = (locator: Locator) => {
+    return locator
+        .waitFor()
+        .then(() => true)
+        .catch(() => false);
+};
 
 export class AnzConnector implements BankConnector {
     id = "anz";
@@ -136,12 +144,14 @@ export class AnzConnector implements BankConnector {
         await page.fill("#password", password);
         await page.click("button[type=submit]");
 
-        if (await page.$('[data-test-id="customerRegistrationNumber_error"]')) {
-            console.log("Username input failed... trying again");
-            await this.login(page);
-        } else {
-            await page.waitForNavigation({ timeout: 10000 });
-            await page.waitForSelector("#home-title");
+        // ANZ sometimes pops up a warning message, check for it and bypass it here
+        this.task.output = "Checking for continue button";
+        const continueButton = page.getByRole("button", { name: "Continue to Internet Banking" });
+        if (await isVisible(continueButton)) {
+            await continueButton.click();
         }
+
+        this.task.output = TaskMessages.loggingIn;
+        await page.waitForSelector("#home-title");
     }
 }
