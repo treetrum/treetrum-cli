@@ -45,7 +45,7 @@ export class AmexConnector implements BankConnector {
         await this.page.fill("#eliloUserID", userId);
         await this.page.fill("#eliloPassword", password);
         await this.page.click("#loginSubmit");
-        await this.page.getByRole("heading", { name: "Remaining Statement Balance" }).waitFor();
+        await this.page.getByRole("heading", { name: "Statement Balance" }).waitFor();
     };
 
     getTransactions = async () => {
