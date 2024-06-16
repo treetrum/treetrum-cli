@@ -1,4 +1,6 @@
 import { parse } from "csv-parse/sync";
+import { format } from "date-fns/format";
+import { sub } from "date-fns/sub";
 import { readFile } from "fs/promises";
 import moment from "moment";
 import { Page } from "playwright";
@@ -49,7 +51,22 @@ export class AmexConnector implements BankConnector {
     };
 
     getTransactions = async () => {
-        await this.page.goto("https://global.americanexpress.com/activity/recent");
+        await this.page.goto("https://global.americanexpress.com/activity/search");
+
+        // Enter date range and search
+        const searchSection = this.page.locator('[data-module-name="axp-activity-search-control"]');
+        const endDate = new Date();
+        const startDate = sub(endDate, { days: 30 });
+        const startDateField = searchSection.locator("#startDate");
+        const endDateField = searchSection.locator("#endDate");
+        await startDateField.fill(format(startDate, "dd/MM/yyyy"));
+        await endDateField.fill(format(endDate, "dd/MM/yyyy"));
+        await searchSection
+            .locator(".row")
+            .last()
+            .getByRole("button", { name: "Search", exact: true })
+            .click();
+
         await this.page.getByRole("button", { name: "Download Your Transactions" }).click();
         await this.page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
 
