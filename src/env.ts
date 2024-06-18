@@ -12,6 +12,8 @@ const zodEnv = z.object({
     UBANK_PW: z.string(),
     ANZ_USER: z.string(),
     ANZ_PW: z.string(),
+    TENPLAY_USERNAME: z.string(),
+    TENPLAY_PASSWORD: z.string(),
 });
 
 declare global {

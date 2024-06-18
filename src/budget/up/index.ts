@@ -1,8 +1,8 @@
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Page } from "playwright";
+import { readSecret } from "../../OPClient.js";
 import { BankConnector, Transaction } from "../BankConnector.js";
-import { readSecret } from "../OPClient.js";
 import { Task, TaskMessages } from "../types.js";
 import { UpClient } from "./up-client.js";
 
