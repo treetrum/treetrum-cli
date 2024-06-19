@@ -4,7 +4,7 @@ import { budget } from "./budget.js";
 export const BudgetCommand = new Command()
     .command("budget")
     .description("Download budget data from requested bank accounts")
-    .option("--headless", "Should puppeteer be run in headless mode", false)
+    .option("--headless", "Should playwright be run in headless mode", false)
     .option("-o, --outdir <path>", "Where budget files should be output", "/Users/sam/Desktop")
     .option("-b, --banks <bankNames...>", "Which banks to download data from")
     .addOption(

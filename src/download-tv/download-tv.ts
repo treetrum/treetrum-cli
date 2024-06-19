@@ -1,26 +1,8 @@
-import { spawn } from "child_process";
-import cpy from "cpy";
-import fs from "fs";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
 import { readSecret } from "../OPClient.js";
 import { Options } from "./schema.js";
-
-const runCommand = (command: string, args: string[], onMessage: (message: string) => void) => {
-    return new Promise<void>((resolve, reject) => {
-        const process = spawn(command, args);
-        process.stdout.on("data", (data) => {
-            onMessage(data.toString());
-        });
-        process.on("close", (code) => {
-            if (code !== 0) {
-                reject(new Error(`Command failed with exit code ${code}`));
-            } else {
-                resolve();
-            }
-        });
-    });
-};
+import { runCommand } from "./utils.js";
 
 export const downloadTV = async (options: Options) => {
     const user = await readSecret(process.env.TENPLAY_USERNAME);
@@ -29,7 +11,8 @@ export const downloadTV = async (options: Options) => {
     const zeroSeasonNumber = String(options.season).padStart(2, "0");
     const zeroEpNumber = String(options.episode).padStart(2, "0");
     const epName = `${options.show} - S${zeroSeasonNumber}E${zeroEpNumber} - Episode ${options.episode}.mp4`;
-    const output = `/Volumes/TV/${options.show}/Season ${options.season}/${epName}`;
+    const downloadPath = `/tmp/treetrum-cli/${epName}`;
+    const outputPath = `/Volumes/TV/${options.show}/Season ${options.season}/${epName}`;
 
     const tasks = new Listr([
         {
@@ -44,7 +27,7 @@ export const downloadTV = async (options: Options) => {
                     [
                         options.url,
                         "-o",
-                        epName,
+                        downloadPath,
                         "--no-simulate",
                         "--username",
                         user,
@@ -57,18 +40,15 @@ export const downloadTV = async (options: Options) => {
             },
         },
         {
-            title: `Copying to ${output}`,
+            title: `Copying to ${outputPath}`,
             task: async (_, task) => {
-                const stats = fs.statSync(epName);
-                await cpy(epName, output, { overwrite: true }).on("progress", (progress) => {
-                    const percent = progress.completedSize / stats.size;
-                    const percentFmt = Intl.NumberFormat("en-gb", {
-                        style: "percent",
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    }).format(percent);
-                    task.output = `${percentFmt}`;
-                });
+                await runCommand(
+                    "rsync",
+                    ["-ah", "--progress", downloadPath, outputPath],
+                    (msg) => {
+                        task.output = msg;
+                    }
+                );
             },
         },
     ]);
@@ -76,7 +56,7 @@ export const downloadTV = async (options: Options) => {
     try {
         await tasks.run();
     } catch (error) {
-        console.log("Something went wrong 😭");
+        console.error("Something went wrong 😭");
         throw error;
     }
 };
