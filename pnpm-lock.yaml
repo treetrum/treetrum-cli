@@ -123,6 +123,9 @@ importers:
       globals:
         specifier: ^15.6.0
         version: 15.6.0
+      husky:
+        specifier: ^9.0.11
+        version: 9.0.11
       js:
         specifier: link:@types/eslint/js
         version: link:@types/eslint/js
@@ -851,6 +854,11 @@ packages:
   human-signals@7.0.0:
     resolution: {integrity: sha512-74kytxOUSvNbjrT9KisAbaTZ/eJwD/LrbM/kh5j0IhPuJzwuA19dWvniFGwBzN9rVjg+O/e+F310PjObDXS+9Q==}
     engines: {node: '>=18.18.0'}
+
+  husky@9.0.11:
+    resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -2376,6 +2384,8 @@ snapshots:
     optional: true
 
   human-signals@7.0.0: {}
+
+  husky@9.0.11: {}
 
   ieee754@1.2.1:
     optional: true
