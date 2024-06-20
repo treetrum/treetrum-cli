@@ -2,7 +2,7 @@ import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Page } from "playwright";
 import prompts from "prompts";
-import { readSecret } from "../../OPClient.js";
+import { readSecret } from "../../../utils/secrets.js";
 import { BankConnector, Transaction } from "../BankConnector.js";
 import { Task, TaskMessages } from "../types.js";
 import { Account, GetAccountsResponse } from "./types/GetAccountsResponse.js";

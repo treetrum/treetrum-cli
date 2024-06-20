@@ -2,7 +2,7 @@ import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import { Locator, Page } from "playwright";
 import { v1 as uuidv1 } from "uuid";
-import { readSecret } from "../../OPClient.js";
+import { readSecret } from "../../../utils/secrets.js";
 import { Account, BankConnector, Transaction } from "../BankConnector.js";
 import { Task, TaskMessages } from "../types.js";
 import { SelectedAccount, Store, StoreState } from "./store-state.js";

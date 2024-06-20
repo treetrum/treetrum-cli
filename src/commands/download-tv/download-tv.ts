@@ -1,7 +1,7 @@
 import { execa } from "execa";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
-import { readSecret } from "../OPClient.js";
+import { readSecret } from "../../utils/secrets.js";
 import { Options } from "./schema.js";
 
 export const downloadTV = async (options: Options) => {

@@ -4,7 +4,7 @@ import { sub } from "date-fns/sub";
 import { readFile } from "fs/promises";
 import moment from "moment";
 import { Page } from "playwright";
-import { readSecret } from "../../OPClient.js";
+import { readSecret } from "../../../utils/secrets.js";
 import { BankConnector, Transaction } from "../BankConnector.js";
 import { Task, TaskMessages } from "../types.js";
 
