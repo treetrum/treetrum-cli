@@ -1,8 +1,8 @@
+import { execa } from "execa";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
 import { readSecret } from "../OPClient.js";
 import { Options } from "./schema.js";
-import { runCommand } from "./utils.js";
 
 export const downloadTV = async (options: Options) => {
     const user = await readSecret(process.env.TENPLAY_USERNAME);
@@ -17,46 +17,23 @@ export const downloadTV = async (options: Options) => {
     const tasks = new Listr([
         {
             title: `Downloading episode from ${options.url}`,
-            task: async (ctx, task) => {
-                const debounceDuration = 100;
-                const updateTaskOutput = throttle((msg: string) => {
-                    task.output = msg;
-                }, debounceDuration);
-                await runCommand(
-                    "yt-dlp",
-                    [
-                        options.url,
-                        "-o",
-                        downloadPath,
-                        "--no-simulate",
-                        "--username",
-                        user,
-                        "--password",
-                        pass,
-                    ],
-                    updateTaskOutput
-                );
+            task: async (_, task) => {
+                const updateTaskOutput = throttle((msg) => (task.output = msg), 100);
+                const process = execa`yt-dlp ${options.url} -o ${downloadPath} --no-simulate --username ${user} --password ${pass}`;
+                process.stdout.on("data", updateTaskOutput);
+                await process;
                 updateTaskOutput.cancel();
             },
         },
         {
             title: `Copying to ${outputPath}`,
             task: async (_, task) => {
-                await runCommand(
-                    "rsync",
-                    ["-ah", "--progress", downloadPath, outputPath],
-                    (msg) => {
-                        task.output = msg;
-                    }
-                );
+                const process = execa`rsync -ah --progress ${downloadPath} ${outputPath}`;
+                process.stdout.on("data", (m) => (task.output = m));
+                await process;
             },
         },
     ]);
 
-    try {
-        await tasks.run();
-    } catch (error) {
-        console.error("Something went wrong 😭");
-        throw error;
-    }
+    await tasks.run();
 };

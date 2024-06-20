@@ -45,6 +45,7 @@
         "date-fns": "^3.6.0",
         "dinero.js": "^1.9.1",
         "dotenv": "^16.4.5",
+        "execa": "^9.2.0",
         "find-config": "^1.0.0",
         "listr2": "^8.2.1",
         "lodash": "^4.17.21",
