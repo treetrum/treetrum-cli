@@ -19,13 +19,9 @@ export class UpConnector implements BankConnector {
         this.page = page!;
     }
 
-    private getToken() {
-        return readSecret(process.env.UP_TOKEN);
-    }
-
     async getAccounts() {
         this.task.output = TaskMessages.readingCredentials;
-        const token = await this.getToken();
+        const token = await readSecret(process.env.UP_TOKEN);
 
         this.task.output = TaskMessages.downloadingTransactions;
         const accountTransactions = await this.fetchTransactions(token);
