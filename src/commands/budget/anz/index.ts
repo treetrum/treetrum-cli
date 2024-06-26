@@ -145,10 +145,15 @@ export class AnzConnector implements BankConnector {
         await page.click("button[type=submit]");
 
         // ANZ sometimes pops up a warning message, check for it and bypass it here
-        this.task.output = "Checking for continue button";
-        const continueButton = page.getByRole("button", { name: "Continue to Internet Banking" });
-        if (await isVisible(continueButton)) {
-            await continueButton.click();
+        const isContinueButtonActive = false;
+        if (isContinueButtonActive) {
+            this.task.output = "Checking for continue button";
+            const continueButton = page.getByRole("button", {
+                name: "Continue to Internet Banking",
+            });
+            if (await isVisible(continueButton)) {
+                await continueButton.click();
+            }
         }
 
         this.task.output = TaskMessages.loggingIn;
