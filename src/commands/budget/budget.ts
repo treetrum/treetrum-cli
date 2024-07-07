@@ -4,6 +4,7 @@ import { homedir } from "os";
 import path from "path";
 import { chromium } from "playwright-extra";
 import stealthPlugin from "puppeteer-extra-plugin-stealth";
+import { readSecret } from "../../utils/secrets.js";
 import { Account, BankConnector } from "./BankConnector.js";
 import { AmexConnector } from "./amex/index.js";
 import { AnzConnector } from "./anz/index.js";
@@ -132,12 +133,30 @@ export const budget = async (opts: Options) => {
     const tasks = new Listr<Ctx>(
         [
             {
-                title: "Collecting bank accounts",
-                task: collectBankAccounts,
-            },
-            {
-                title: "Initialising browser",
-                task: initBrowser,
+                title: "Initialising",
+                task: async (ctx, task) =>
+                    task.newListr(
+                        [
+                            {
+                                task: async (_, task) =>
+                                    task.newListr([
+                                        {
+                                            title: "Collecting bank accounts",
+                                            task: collectBankAccounts,
+                                        },
+                                        {
+                                            title: "Initialising browser",
+                                            task: initBrowser,
+                                        },
+                                    ]),
+                            },
+                            {
+                                title: "Authenticating",
+                                task: async () => readSecret(process.env.UP_TOKEN),
+                            },
+                        ],
+                        { concurrent: true }
+                    ),
             },
             {
                 title: "Downloading statement data",
