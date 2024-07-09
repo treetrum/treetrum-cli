@@ -21,7 +21,7 @@
         "@types/dinero.js": "^1.9.4",
         "@types/eslint": "^8.56.10",
         "@types/find-config": "^1.0.4",
-        "@types/lodash": "^4.17.5",
+        "@types/lodash": "^4.17.6",
         "@types/node": "^20.14.5",
         "@types/pixelmatch": "^5.2.6",
         "@types/pngjs": "^6.0.5",
