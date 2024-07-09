@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@1password/op-js':
-        specifier: ^0.1.12
-        version: 0.1.12
+        specifier: ^0.1.13
+        version: 0.1.13
       '@commander-js/extra-typings':
         specifier: ^12.1.0
         version: 12.1.0(commander@12.1.0)
@@ -147,8 +147,8 @@ importers:
 
 packages:
 
-  '@1password/op-js@0.1.12':
-    resolution: {integrity: sha512-vL4mrpZ67GaaOH4cClI8X6rVpnAlsTuH6X0wMPKA1ND9LAjzAlVKvl+Z01kvAwm5MLW6MFQn+KoZkQThphUhDg==}
+  '@1password/op-js@0.1.13':
+    resolution: {integrity: sha512-ZZBLxVqywFdvIbLv2xWw2N1ImSi183rRKf90vV19KRMReNyLwuD0dv6IrKrIdrJU33IuV3Gz85Z4K2a1PJTBDg==}
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -342,9 +342,6 @@ packages:
 
   '@types/node@20.14.10':
     resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
-
-  '@types/node@20.14.5':
-    resolution: {integrity: sha512-aoRR+fJkZT2l0aGOJhuA8frnCSoNX6W7U2mpNq63+BxBIj5BQFt8rHy627kijCmm63ijdSdwvGgpUsU6MBsZZA==}
 
   '@types/pixelmatch@5.2.6':
     resolution: {integrity: sha512-wC83uexE5KGuUODn6zkm9gMzTwdY5L0chiK+VrKcDfEjzxh1uadlWTvOmAbCpnM9zx/Ww3f8uKlYQVnO/TrqVg==}
@@ -1605,7 +1602,7 @@ packages:
 
 snapshots:
 
-  '@1password/op-js@0.1.12':
+  '@1password/op-js@0.1.13':
     dependencies:
       lookpath: 1.2.2
       semver: 7.6.2
@@ -1820,11 +1817,6 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.14.5':
-    dependencies:
-      undici-types: 5.26.5
-    optional: true
-
   '@types/pixelmatch@5.2.6':
     dependencies:
       '@types/node': 20.14.10
@@ -1840,14 +1832,14 @@ snapshots:
 
   '@types/puppeteer@2.1.8':
     dependencies:
-      '@types/node': 20.14.5
+      '@types/node': 20.14.10
     optional: true
 
   '@types/uuid@9.0.8': {}
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.14.5
+      '@types/node': 20.14.10
     optional: true
 
   '@typescript-eslint/eslint-plugin@7.16.0(@typescript-eslint/parser@7.16.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)':
