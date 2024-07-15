@@ -35,7 +35,7 @@
         "prettier-plugin-tailwindcss": "^0.6.5",
         "ts-node": "^10.9.2",
         "typescript": "^5.5.3",
-        "typescript-eslint": "^7.16.0"
+        "typescript-eslint": "^7.16.1"
     },
     "dependencies": {
         "@1password/op-js": "^0.1.13",
