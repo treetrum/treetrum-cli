@@ -59,7 +59,7 @@
         "prompts": "^2.4.2",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
-        "query-string": "^9.0.0",
+        "query-string": "^9.1.0",
         "threads": "^1.7.0",
         "uuid": "^10.0.0",
         "zod": "^3.23.8"
