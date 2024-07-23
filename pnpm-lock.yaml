@@ -72,8 +72,8 @@ importers:
         specifier: ^2.11.2
         version: 2.11.2(playwright-extra@4.3.6(playwright-core@1.45.3)(playwright@1.45.3))(puppeteer-extra@3.3.6(@types/puppeteer@2.1.8)(puppeteer-core@18.2.1)(puppeteer@18.2.1))
       query-string:
-        specifier: ^9.0.0
-        version: 9.0.0
+        specifier: ^9.1.0
+        version: 9.1.0
       threads:
         specifier: ^1.7.0
         version: 1.7.0
@@ -1329,8 +1329,8 @@ packages:
     engines: {node: '>=14.1.0'}
     deprecated: < 22.6.4 is no longer supported
 
-  query-string@9.0.0:
-    resolution: {integrity: sha512-4EWwcRGsO2H+yzq6ddHcVqkCQ2EFUSfDMEjF8ryp8ReymyZhIuaFRGLomeOQLkrzacMHoyky2HW0Qe30UbzkKw==}
+  query-string@9.1.0:
+    resolution: {integrity: sha512-t6dqMECpCkqfyv2FfwVS1xcB6lgXW/0XZSaKdsCNGYkqMO76AFiJEg4vINzoDKcZa6MS7JX+OHIjwh06K5vczw==}
     engines: {node: '>=18'}
 
   queue-microtask@1.2.3:
@@ -2761,7 +2761,7 @@ snapshots:
       - utf-8-validate
     optional: true
 
-  query-string@9.0.0:
+  query-string@9.1.0:
     dependencies:
       decode-uri-component: 0.4.1
       filter-obj: 5.1.0
