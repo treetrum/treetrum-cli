@@ -1,4 +1,5 @@
 import { execa } from "execa";
+import fs from "fs/promises";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
 import { readSecret } from "../../utils/secrets.js";
@@ -12,9 +13,20 @@ export const downloadTV = async (options: Options) => {
     const zeroEpNumber = String(options.episode).padStart(2, "0");
     const epName = `${options.show} - S${zeroSeasonNumber}E${zeroEpNumber} - Episode ${options.episode}.mp4`;
     const downloadPath = `/tmp/treetrum-cli/${epName}`;
-    const outputPath = `/Volumes/TV/${options.show}/Season ${options.season}/${epName}`;
+    const outputDir = `/Volumes/TV/${options.show}/Season ${options.season}`;
+    const outputPath = `${outputDir}/${epName}`;
 
     const tasks = new Listr([
+        {
+            title: "Checking server access",
+            task: async () => {
+                try {
+                    await fs.access(outputDir);
+                } catch {
+                    throw new Error(`Can't access "${outputDir}" to save file`);
+                }
+            },
+        },
         {
             title: `Downloading episode from ${options.url}`,
             task: async (_, task) => {
