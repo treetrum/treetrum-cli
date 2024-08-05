@@ -10,7 +10,8 @@
         "prepare": "husky"
     },
     "bin": {
-        "treetrum": "./dist/treetrum.js"
+        "treetrum": "./dist/treetrum.js",
+        "tt": "./dist/treetrum.js"
     },
     "keywords": [],
     "author": "",
