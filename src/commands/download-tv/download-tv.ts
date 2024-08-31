@@ -19,6 +19,8 @@ export const downloadTV = async (options: Options) => {
     const outputDir = path.join(tvDir, options.show, `Season ${options.season}`);
     const outputPath = path.join(outputDir, epName);
 
+    const execaInstance = execa({ shell: true });
+
     const tasks = new Listr([
         {
             title: "Checking server access",
@@ -41,7 +43,8 @@ export const downloadTV = async (options: Options) => {
             title: `Downloading episode from ${options.url}`,
             task: async (_, task) => {
                 const updateTaskOutput = throttle((msg) => (task.output = msg), 100);
-                const process = execa`yt-dlp ${options.url} -o ${downloadPath} --no-simulate --username ${user} --password ${pass}`;
+                const ytDlp = `docker run --rm -v "$(pwd):/workdir" -w /workdir tnk4on/yt-dlp:alpine-pip`;
+                const process = execaInstance`${ytDlp} ${options.url} -o "${downloadPath}" --no-simulate --username "${user}" --password "${pass}"`;
                 process.stdout.on("data", updateTaskOutput);
                 await process;
                 updateTaskOutput.cancel();
@@ -50,7 +53,7 @@ export const downloadTV = async (options: Options) => {
         {
             title: `Copying to ${outputPath}`,
             task: async (_, task) => {
-                const process = execa`rsync -ah --progress ${downloadPath} ${outputPath}`;
+                const process = execaInstance`rsync -ah --progress "${downloadPath}" "${outputPath}"`;
                 process.stdout.on("data", (m) => (task.output = m));
                 await process;
             },
