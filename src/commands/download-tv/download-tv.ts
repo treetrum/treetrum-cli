@@ -6,6 +6,8 @@ import path from "path";
 import { readSecret } from "../../utils/secrets.js";
 import { Options } from "./schema.js";
 
+const USE_DOCKER = true;
+
 export const downloadTV = async (options: Options) => {
     const user = await readSecret(process.env.TENPLAY_USERNAME);
     const pass = await readSecret(process.env.TENPLAY_PASSWORD);
@@ -43,7 +45,9 @@ export const downloadTV = async (options: Options) => {
             title: `Downloading episode from ${options.url}`,
             task: async (_, task) => {
                 const updateTaskOutput = throttle((msg) => (task.output = msg), 100);
-                const ytDlp = `docker run --rm -v "$(pwd):/workdir" -w /workdir tnk4on/yt-dlp:alpine-pip`;
+                const ytDlp = USE_DOCKER
+                    ? `docker run -v "$(pwd):/workdir" -v /tmp:/tmp -w /workdir vincejv/yt-dlp`
+                    : "yt-dlp";
                 const process = execaInstance`${ytDlp} ${options.url} -o "${downloadPath}" --no-simulate --username "${user}" --password "${pass}"`;
                 process.stdout.on("data", updateTaskOutput);
                 await process;
