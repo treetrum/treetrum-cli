@@ -15,8 +15,8 @@ export const downloadTV = async (options: Options) => {
     const epName = `${options.show} - S${zeroSeasonNumber}E${zeroEpNumber} - Episode ${options.episode}.mp4`;
 
     const downloadPath = path.join("/tmp/treetrum-cli", epName);
-    const serverPath = path.join("/Volumes/TV");
-    const outputDir = path.join(serverPath, options.show, `Season ${options.season}`);
+    const tvDir = path.join(options.path);
+    const outputDir = path.join(tvDir, options.show, `Season ${options.season}`);
     const outputPath = path.join(outputDir, epName);
 
     const tasks = new Listr([
@@ -25,7 +25,7 @@ export const downloadTV = async (options: Options) => {
             task: async () => {
                 // Ensure we can access the server path
                 try {
-                    await fs.access(serverPath);
+                    await fs.access(tvDir);
                 } catch {
                     throw new Error(`Can't access "${outputDir}" to save file`);
                 }
