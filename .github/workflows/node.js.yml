@@ -4,7 +4,7 @@ on: push
 
 jobs:
   build:
-    name: "Build and test JS"
+    name: "Build, lint and test JS"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,6 +18,7 @@ jobs:
           node-version: 20
           cache: "pnpm"
       - run: pnpm install
+      - run: pnpm lint
       - run: pnpm run build
       # - run: npx playwright install --with-deps
       - run: pnpm run start budget --banks up --headless --outdir=/tmp/statements

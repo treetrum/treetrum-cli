@@ -7,7 +7,8 @@
     "scripts": {
         "start": "tsc && node dist/index.js",
         "build": "tsc && npm link && chmod +x dist/treetrum.js",
-        "prepare": "husky"
+        "prepare": "husky",
+        "lint": "eslint"
     },
     "bin": {
         "tt": "./dist/treetrum.js"
