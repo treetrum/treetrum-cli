@@ -44,7 +44,10 @@ export const downloadTV = async (options: Options) => {
             task: async (_, task) => {
                 const updateTaskOutput = throttle((msg) => (task.output = msg), 100);
                 const ytDlp = "yt-dlp";
-                const process = execaInstance`${ytDlp} ${options.url} -o "${downloadPath}" --no-simulate --username "${user}" --password "${pass}"`;
+                const credentials = options.url.includes("10play")
+                    ? `--username "${user}" --password "${pass}"`
+                    : "";
+                const process = execaInstance`${ytDlp} ${options.url} -o "${downloadPath}" --no-simulate ${credentials}`;
                 process.stdout.on("data", updateTaskOutput);
                 await process;
                 updateTaskOutput.cancel();
