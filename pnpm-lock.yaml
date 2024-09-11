@@ -58,7 +58,7 @@ importers:
         version: 1.47.0
       playwright-extra:
         specifier: ^4.3.6
-        version: 4.3.6(playwright@1.47.0)
+        version: 4.3.6(playwright-core@1.47.0)(playwright@1.47.0)
       pngjs:
         specifier: ^7.0.0
         version: 7.0.0
@@ -70,7 +70,7 @@ importers:
         version: 3.3.6
       puppeteer-extra-plugin-stealth:
         specifier: ^2.11.2
-        version: 2.11.2(playwright-extra@4.3.6)(puppeteer-extra@3.3.6)
+        version: 2.11.2(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6)
       query-string:
         specifier: ^9.1.0
         version: 9.1.0
@@ -103,8 +103,8 @@ importers:
         specifier: ^4.17.7
         version: 4.17.7
       '@types/node':
-        specifier: ^20.14.11
-        version: 20.16.5
+        specifier: ^22.5.4
+        version: 22.5.4
       '@types/pixelmatch':
         specifier: ^5.2.6
         version: 5.2.6
@@ -134,10 +134,10 @@ importers:
         version: 3.3.3
       prettier-plugin-tailwindcss:
         specifier: ^0.6.5
-        version: 0.6.6(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.3.3)
+        version: 0.6.6(@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.3.3))(prettier@3.3.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.16.5)(typescript@5.5.4)
+        version: 10.9.2(@types/node@22.5.4)(typescript@5.5.4)
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
@@ -342,6 +342,9 @@ packages:
 
   '@types/node@20.16.5':
     resolution: {integrity: sha512-VwYCweNo3ERajwy0IUlqqcyZ8/A7Zwa9ZP3MnENWcB11AejO+tLy3pu850goUW2FC/IJMdZUfKpX/yxL1gymCA==}
+
+  '@types/node@22.5.4':
+    resolution: {integrity: sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==}
 
   '@types/pixelmatch@5.2.6':
     resolution: {integrity: sha512-wC83uexE5KGuUODn6zkm9gMzTwdY5L0chiK+VrKcDfEjzxh1uadlWTvOmAbCpnM9zx/Ww3f8uKlYQVnO/TrqVg==}
@@ -1671,6 +1674,10 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
+  '@types/node@22.5.4':
+    dependencies:
+      undici-types: 6.19.8
+
   '@types/pixelmatch@5.2.6':
     dependencies:
       '@types/node': 20.16.5
@@ -1686,7 +1693,7 @@ snapshots:
 
   '@types/uuid@10.0.0': {}
 
-  '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0)(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
       '@eslint-community/regexpp': 4.11.0
       '@typescript-eslint/parser': 7.18.0(eslint@8.57.0)(typescript@5.5.4)
@@ -1699,6 +1706,7 @@ snapshots:
       ignore: 5.3.2
       natural-compare: 1.4.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
+    optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
@@ -1711,6 +1719,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 7.18.0
       debug: 4.3.7
       eslint: 8.57.0
+    optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
@@ -1727,6 +1736,7 @@ snapshots:
       debug: 4.3.7
       eslint: 8.57.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
+    optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
@@ -1743,6 +1753,7 @@ snapshots:
       minimatch: 9.0.5
       semver: 7.6.3
       ts-api-utils: 1.3.0(typescript@5.5.4)
+    optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
@@ -2375,10 +2386,12 @@ snapshots:
 
   playwright-core@1.47.0: {}
 
-  playwright-extra@4.3.6(playwright@1.47.0):
+  playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0):
     dependencies:
       debug: 4.3.7
+    optionalDependencies:
       playwright: 1.47.0
+      playwright-core: 1.47.0
     transitivePeerDependencies:
       - supports-color
 
@@ -2392,10 +2405,11 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-tailwindcss@0.6.6(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.3.3):
+  prettier-plugin-tailwindcss@0.6.6(@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.3.3))(prettier@3.3.3):
     dependencies:
-      '@trivago/prettier-plugin-sort-imports': 4.3.0(prettier@3.3.3)
       prettier: 3.3.3
+    optionalDependencies:
+      '@trivago/prettier-plugin-sort-imports': 4.3.0(prettier@3.3.3)
 
   prettier@3.3.3: {}
 
@@ -2412,44 +2426,48 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-extra-plugin-stealth@2.11.2(playwright-extra@4.3.6)(puppeteer-extra@3.3.6):
+  puppeteer-extra-plugin-stealth@2.11.2(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6):
     dependencies:
       debug: 4.3.7
-      playwright-extra: 4.3.6(playwright@1.47.0)
+      puppeteer-extra-plugin: 3.2.3(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6)
+      puppeteer-extra-plugin-user-preferences: 2.4.1(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6)
+    optionalDependencies:
+      playwright-extra: 4.3.6(playwright-core@1.47.0)(playwright@1.47.0)
       puppeteer-extra: 3.3.6
-      puppeteer-extra-plugin: 3.2.3(playwright-extra@4.3.6)(puppeteer-extra@3.3.6)
-      puppeteer-extra-plugin-user-preferences: 2.4.1(playwright-extra@4.3.6)(puppeteer-extra@3.3.6)
     transitivePeerDependencies:
       - supports-color
 
-  puppeteer-extra-plugin-user-data-dir@2.4.1(playwright-extra@4.3.6)(puppeteer-extra@3.3.6):
+  puppeteer-extra-plugin-user-data-dir@2.4.1(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6):
     dependencies:
       debug: 4.3.7
       fs-extra: 10.1.0
-      playwright-extra: 4.3.6(playwright@1.47.0)
-      puppeteer-extra: 3.3.6
-      puppeteer-extra-plugin: 3.2.3(playwright-extra@4.3.6)(puppeteer-extra@3.3.6)
+      puppeteer-extra-plugin: 3.2.3(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6)
       rimraf: 3.0.2
+    optionalDependencies:
+      playwright-extra: 4.3.6(playwright-core@1.47.0)(playwright@1.47.0)
+      puppeteer-extra: 3.3.6
     transitivePeerDependencies:
       - supports-color
 
-  puppeteer-extra-plugin-user-preferences@2.4.1(playwright-extra@4.3.6)(puppeteer-extra@3.3.6):
+  puppeteer-extra-plugin-user-preferences@2.4.1(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6):
     dependencies:
       debug: 4.3.7
       deepmerge: 4.3.1
-      playwright-extra: 4.3.6(playwright@1.47.0)
+      puppeteer-extra-plugin: 3.2.3(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6)
+      puppeteer-extra-plugin-user-data-dir: 2.4.1(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6)
+    optionalDependencies:
+      playwright-extra: 4.3.6(playwright-core@1.47.0)(playwright@1.47.0)
       puppeteer-extra: 3.3.6
-      puppeteer-extra-plugin: 3.2.3(playwright-extra@4.3.6)(puppeteer-extra@3.3.6)
-      puppeteer-extra-plugin-user-data-dir: 2.4.1(playwright-extra@4.3.6)(puppeteer-extra@3.3.6)
     transitivePeerDependencies:
       - supports-color
 
-  puppeteer-extra-plugin@3.2.3(playwright-extra@4.3.6)(puppeteer-extra@3.3.6):
+  puppeteer-extra-plugin@3.2.3(playwright-extra@4.3.6(playwright-core@1.47.0)(playwright@1.47.0))(puppeteer-extra@3.3.6):
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.3.7
       merge-deep: 3.0.3
-      playwright-extra: 4.3.6(playwright@1.47.0)
+    optionalDependencies:
+      playwright-extra: 4.3.6(playwright-core@1.47.0)(playwright@1.47.0)
       puppeteer-extra: 3.3.6
     transitivePeerDependencies:
       - supports-color
@@ -2578,14 +2596,14 @@ snapshots:
     dependencies:
       typescript: 5.5.4
 
-  ts-node@10.9.2(@types/node@20.16.5)(typescript@5.5.4):
+  ts-node@10.9.2(@types/node@22.5.4)(typescript@5.5.4):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.16.5
+      '@types/node': 22.5.4
       acorn: 8.12.1
       acorn-walk: 8.3.3
       arg: 4.1.3
@@ -2604,10 +2622,11 @@ snapshots:
 
   typescript-eslint@7.18.0(eslint@8.57.0)(typescript@5.5.4):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0)(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/parser': 7.18.0(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/utils': 7.18.0(eslint@8.57.0)(typescript@5.5.4)
       eslint: 8.57.0
+    optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
