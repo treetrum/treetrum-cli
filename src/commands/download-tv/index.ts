@@ -31,17 +31,25 @@ const validateOptions = async (options: any) => {
             .map((s) => ({ title: String(s), value: s })),
     });
 
-    const output = await prompts([
+    const { episode, url } = await prompts([
         { message: "Episode number", name: "episode", type: "number" },
         { message: "Download URL", name: "url", type: "text" },
     ]);
-    return optionsSchema.parse({ path: tvFolder, show, season, ...output });
+
+    return optionsSchema.parse({
+        ...options,
+        show,
+        season,
+        episode,
+        url,
+    });
 };
 
 export const DownloadTVCommand = new Command()
     .command("download-tv")
     .description("Downloads an episode TV using yt-dlp and moves it to a designated folder")
     .option("-p, --path [string]", "Path for where shows are stored", "/Volumes/TV")
+    .option("--patched-yt-dlp [boolean]", "Whether to use the patched yt-dlp binary", false)
     .action(async (options) => {
         const validated = await validateOptions(options);
         downloadTV(validated);
