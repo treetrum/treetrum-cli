@@ -97,8 +97,8 @@ importers:
         specifier: ^4.17.7
         version: 4.17.7
       '@types/node':
-        specifier: ^22.5.5
-        version: 22.5.5
+        specifier: ^22.6.1
+        version: 22.6.1
       '@types/pixelmatch':
         specifier: ^5.2.6
         version: 5.2.6
@@ -300,8 +300,8 @@ packages:
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
-  '@types/node@22.5.5':
-    resolution: {integrity: sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==}
+  '@types/node@22.6.1':
+    resolution: {integrity: sha512-V48tCfcKb/e6cVUigLAaJDAILdMP0fUW6BidkPK4GpGjXcfbnoHasCZDwz3N3yVt5we2RHm4XTQCpv0KJz9zqw==}
 
   '@types/pixelmatch@5.2.6':
     resolution: {integrity: sha512-wC83uexE5KGuUODn6zkm9gMzTwdY5L0chiK+VrKcDfEjzxh1uadlWTvOmAbCpnM9zx/Ww3f8uKlYQVnO/TrqVg==}
@@ -1528,21 +1528,21 @@ snapshots:
 
   '@types/ms@0.7.34': {}
 
-  '@types/node@22.5.5':
+  '@types/node@22.6.1':
     dependencies:
       undici-types: 6.19.8
 
   '@types/pixelmatch@5.2.6':
     dependencies:
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
 
   '@types/pngjs@6.0.5':
     dependencies:
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
 
   '@types/prompts@2.4.9':
     dependencies:
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
       kleur: 3.0.3
 
   '@types/uuid@10.0.0': {}
