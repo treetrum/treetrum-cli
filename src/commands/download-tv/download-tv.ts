@@ -43,9 +43,7 @@ export const downloadTV = async (options: Options) => {
             title: `Downloading episode from ${options.url}`,
             task: async (_, task) => {
                 const updateTaskOutput = throttle((msg) => (task.output = msg), 100);
-                const ytDlp = options.patchedYtDlp
-                    ? "/Users/sam/Developer/treetrum-cli/lib/yt-dlp-patched"
-                    : "yt-dlp";
+                const ytDlp = "yt-dlp";
                 const credentials = options.url.includes("10play")
                     ? `--username "${user}" --password "${pass}"`
                     : "";
