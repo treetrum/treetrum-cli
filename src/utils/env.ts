@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import findConfig from "find-config";
-import { TypeOf, z } from "zod";
+import { type TypeOf, z } from "zod";
 
 const zodEnv = z.object({
     ING_USER: z.string(),
@@ -19,11 +19,12 @@ const zodEnv = z.object({
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
         interface ProcessEnv extends TypeOf<typeof zodEnv> {}
     }
 }
 
-if (!process.env.CI) {
+if (!process.env["CI"]) {
     // Recursively go up directories until a .env is found
     const configPath = findConfig(".env");
     if (!configPath) throw new Error("ENV CONFIG NOT FOUND");

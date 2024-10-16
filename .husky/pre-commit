@@ -1,2 +1,2 @@
-pnpm run lint
-pnpm run build
+bun run lint
+bun run test

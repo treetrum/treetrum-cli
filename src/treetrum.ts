@@ -1,2 +1,2 @@
-#!/usr/bin/env node
-import "./index.js";
+#! /usr/bin/env bun
+import "./index.ts";
