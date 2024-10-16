@@ -280,7 +280,7 @@ export interface TentacledData {
     interstitialData: ContactPage;
 }
 
-export interface ContactPage {}
+export type ContactPage = unknown;
 
 export interface InterstitialType {
     codeType: string;

@@ -5,13 +5,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "tsc && node dist/index.js",
-        "build": "tsc && npm link && chmod +x dist/treetrum.js",
+        "start": "bun run src/index.ts",
+        "link": "bun link",
+        "test": "bun test",
         "prepare": "husky",
-        "lint": "eslint"
+        "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\""
     },
     "bin": {
-        "tt": "./dist/treetrum.js"
+        "tt": "./src/treetrum.ts"
     },
     "keywords": [],
     "author": "",
@@ -32,8 +33,10 @@
         "husky": "^9.1.6",
         "prettier": "^3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.5",
+        "ts-jest": "^29.2.5",
         "typescript": "^5.6.2",
-        "typescript-eslint": "^8.8.1"
+        "typescript-eslint": "^8.9.0",
+        "@types/bun": "latest"
     },
     "dependencies": {
         "@1password/op-js": "^0.1.13",
