@@ -20,3 +20,13 @@ const getInDirectory =
 export const getFoldersInDirectory = getInDirectory((stat) => stat.isDirectory());
 
 export const getFilesInDirectory = getInDirectory((stat) => stat.isFile());
+
+export const parseEpisodeNumberFromUrl = (url: string): string | undefined => {
+    return url
+        .split("/")
+        .filter((p) => p.includes("ep"))
+        .map((p) => p.match(/(\d+)/))
+        .filter((p) => p != undefined)
+        .at(0)
+        ?.at(0);
+};

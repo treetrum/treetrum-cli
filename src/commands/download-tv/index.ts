@@ -3,7 +3,7 @@ import path from "path";
 import prompts from "prompts";
 import { downloadTV } from "./download-tv.js";
 import { optionsSchema } from "./schema.js";
-import { getFoldersInDirectory } from "./utils.js";
+import { getFoldersInDirectory, parseEpisodeNumberFromUrl } from "./utils.js";
 
 const validateOptions = async (options: any) => {
     prompts.override(options);
@@ -41,6 +41,7 @@ const validateOptions = async (options: any) => {
         message: "Episode number",
         name: "episode",
         type: "number",
+        initial: parseEpisodeNumberFromUrl(url),
     });
 
     return optionsSchema.parse({
