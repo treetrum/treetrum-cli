@@ -4,7 +4,7 @@ import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
 import path from "path";
 import { readSecret } from "../../utils/secrets.js";
-import { Options } from "./schema.js";
+import type { Options } from "./schema.js";
 
 export const downloadTV = async (options: Options) => {
     const user = await readSecret(process.env.TENPLAY_USERNAME);
@@ -59,6 +59,12 @@ export const downloadTV = async (options: Options) => {
                 const process = execaInstance`rsync -ah --progress "${downloadPath}" "${outputPath}"`;
                 process.stdout.on("data", (m) => (task.output = m));
                 await process;
+            },
+        },
+        {
+            title: "Cleaning up",
+            task: async () => {
+                await fs.rm(downloadPath);
             },
         },
     ]);
