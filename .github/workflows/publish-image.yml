@@ -1,0 +1,23 @@
+name: Docker Image CI
+
+on:
+  pull_request:
+    branches: ["master", "develop"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag treetrum-cli:$(date +%s)
+
+      - name: Publish Docker
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: treetrum/treetrum-cli
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          tags: "latest,${{ github.sha }},${{ github.head_ref || github.ref_name }}"
