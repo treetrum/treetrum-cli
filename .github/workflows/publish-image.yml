@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build/publish docker image
 
 on:
   pull_request:
@@ -10,10 +10,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Build the Docker image
+      - name: Build image
         run: docker build . --file Dockerfile --tag treetrum-cli:$(date +%s)
 
-      - name: Publish Docker
+      - name: Publish image
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           name: treetrum/treetrum-cli
