@@ -1,9 +1,9 @@
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
-import { Page } from "playwright";
+import type { Page } from "playwright";
 import { readSecret } from "../../../utils/secrets.js";
-import { BankConnector, Transaction } from "../BankConnector.js";
-import { Task, TaskMessages } from "../types.js";
+import { type BankConnector, type Transaction } from "../BankConnector.js";
+import { type Task, TaskMessages } from "../types.js";
 import { UpClient } from "./up-client.js";
 
 export class UpConnector implements BankConnector {
@@ -40,14 +40,13 @@ export class UpConnector implements BankConnector {
             const transactions = await client.fetchAccountTransactions(account.id);
 
             accountsToTransactions[_kebabCase(`${this.id} ${account.attributes.displayName}`)] =
-                transactions.data
-                    .filter((t) => t.attributes.status === "SETTLED")
-                    .map<Transaction>((t) => ({
-                        date: moment(t.attributes.createdAt).toDate(),
-                        amount: t.attributes.amount.value,
-                        description: t.attributes.description,
-                        memo: t.attributes.message,
-                    }));
+                transactions.data.map<Transaction>((t) => ({
+                    date: moment(t.attributes.createdAt).toDate(),
+                    amount: t.attributes.amount.value,
+                    description: t.attributes.description,
+                    memo: t.attributes.message,
+                    cleared: t.attributes.status === "SETTLED",
+                }));
         }
 
         return accountsToTransactions;

@@ -1,13 +1,16 @@
-import { Page } from "playwright";
-import { Task } from "./types.js";
+import type { Page } from "playwright";
+import type { Task } from "./types.js";
 
 export type AccountName = string;
+
+export const createPending = (value: boolean) => (value ? "TRUE" : "FALSE");
 
 export type Transaction = {
     description: string;
     date: Date;
     amount: string;
     memo?: string;
+    cleared?: boolean;
 };
 
 export type Account = {
