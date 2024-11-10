@@ -1,8 +1,9 @@
 name: Build/publish docker image
 
 on:
+  push:
+    branches: ["master"]
   pull_request:
-    branches: ["master", "develop"]
 
 jobs:
   build:
