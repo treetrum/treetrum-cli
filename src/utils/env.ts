@@ -1,21 +1,26 @@
 import * as dotenv from "dotenv";
 import findConfig from "find-config";
-import { type TypeOf, z } from "zod";
+import { type TypeOf, ZodSchema, z } from "zod";
 
 const zodEnv = z.object({
-    UP_TOKEN: z.string(),
+    CI: z.string().optional(),
+});
+
+export const TVDownloadEnv = z.object({
     TENPLAY_USERNAME: z.string(),
     TENPLAY_PASSWORD: z.string(),
-
-    AMEX_USER: z.string().optional(),
-    AMEX_PW: z.string().optional(),
-    UBANK_USER: z.string().optional(),
-    UBANK_PW: z.string().optional(),
-    ING_USER: z.string().optional(),
-    ING_PW: z.string().optional(),
-    ANZ_USER: z.string().optional(),
-    ANZ_PW: z.string().optional(),
 });
+
+export const UpEnv = z.object({
+    UP_TOKEN: z.string(),
+});
+
+export const AmexEnv = z.object({
+    AMEX_USER: z.string(),
+    AMEX_PW: z.string(),
+});
+
+export const parseEnv = <T extends ZodSchema>(env: T): z.infer<T> => env.parse(process.env);
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace

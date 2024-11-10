@@ -4,13 +4,10 @@ import { homedir } from "os";
 import path from "path";
 import { chromium } from "playwright-extra";
 import stealthPlugin from "puppeteer-extra-plugin-stealth";
-import { readSecret } from "../../utils/secrets.js";
-import { Account, BankConnector } from "./BankConnector.js";
+import { UpEnv, parseEnv } from "@/utils/env.js";
+import type { Account, BankConnector } from "./BankConnector.js";
 import { AmexConnector } from "./amex/index.js";
-import { AnzConnector } from "./anz/index.js";
-import { INGConnector } from "./ing/index.js";
-import { Ctx, Options, TaskFn } from "./types.js";
-import { UbankConnector } from "./ubank/index.js";
+import type { Ctx, Options, TaskFn } from "./types.js";
 import { UpConnector } from "./up/index.js";
 import { applyPriceModifier, transactionsToCsvString } from "./utils.js";
 
@@ -19,13 +16,7 @@ const videoDir = path.join(tmpDir, "/video");
 const screenshotsDir = path.join(tmpDir, "/screenshots");
 
 const collectBankAccounts: TaskFn = (ctx) => {
-    ctx.connectors = [
-        new UpConnector(),
-        new UbankConnector(),
-        new AnzConnector(),
-        new INGConnector(),
-        new AmexConnector(),
-    ].filter((connector) => {
+    ctx.connectors = [new UpConnector(), new AmexConnector()].filter((connector) => {
         if (!ctx.options.banks || ctx.options.banks.includes(connector.id)) {
             return true;
         }
@@ -134,7 +125,7 @@ export const budget = async (opts: Options) => {
         [
             {
                 title: "Initialising",
-                task: async (ctx, task) =>
+                task: async (_, task) =>
                     task.newListr(
                         [
                             {
@@ -152,7 +143,7 @@ export const budget = async (opts: Options) => {
                             },
                             {
                                 title: "Authenticating",
-                                task: async () => readSecret(process.env.UP_TOKEN),
+                                task: async () => parseEnv(UpEnv).UP_TOKEN,
                             },
                         ],
                         { concurrent: true }
