@@ -2,8 +2,7 @@ name: Build/publish docker image
 
 on:
   push:
-    branches: ["master"]
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,10 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Build image
-        run: docker build . --file Dockerfile --tag treetrum-cli:$(date +%s)
 
-      - name: Publish image
+      - name: Build/publish image
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           name: treetrum/treetrum-cli
