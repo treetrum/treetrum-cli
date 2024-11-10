@@ -16,6 +16,11 @@
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noPropertyAccessFromIndexSignature": true
+        "noPropertyAccessFromIndexSignature": true,
+        "paths": {
+            "@/budget/*": ["./src/budget/*"],
+            "@/commands/*": ["./src/commands/*"],
+            "@/utils/*": ["./src/utils/*"]
+        }
     }
 }

@@ -1,6 +1,7 @@
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import type { Page } from "playwright";
+import { UpEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../../utils/secrets.js";
 import { type BankConnector, type Transaction } from "../BankConnector.js";
 import { type Task, TaskMessages } from "../types.js";
@@ -21,7 +22,7 @@ export class UpConnector implements BankConnector {
 
     async getAccounts() {
         this.task.output = TaskMessages.readingCredentials;
-        const token = await readSecret(process.env.UP_TOKEN);
+        const token = await readSecret(parseEnv(UpEnv).UP_TOKEN);
 
         this.task.output = TaskMessages.downloadingTransactions;
         const accountTransactions = await this.fetchTransactions(token);

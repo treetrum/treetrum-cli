@@ -21,8 +21,6 @@ jobs:
       - run: bun run start budget --banks up --headless --outdir=/tmp/statements
         env:
           UP_TOKEN: ${{ secrets.UP_TOKEN }}
-          TENPLAY_USERNAME: "---"
-          TENPLAY_PASSWORD: "---"
       - name: Upload Statements
         uses: actions/upload-artifact@v4
         with:

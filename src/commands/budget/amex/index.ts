@@ -3,10 +3,11 @@ import { format } from "date-fns/format";
 import { sub } from "date-fns/sub";
 import { readFile } from "fs/promises";
 import moment from "moment";
-import { Page } from "playwright";
-import { readSecret } from "../../../utils/secrets.js";
-import { BankConnector, Transaction } from "../BankConnector.js";
-import { Task, TaskMessages } from "../types.js";
+import { type Page } from "playwright";
+import { AmexEnv, parseEnv } from "@/utils/env.js";
+import { readSecret } from "@/utils/secrets.js";
+import { type BankConnector, type Transaction } from "../BankConnector.js";
+import { type Task, TaskMessages } from "../types.js";
 
 type AmexCsvDataRow = {
     Date: string;
@@ -37,9 +38,11 @@ export class AmexConnector implements BankConnector {
 
     login = async () => {
         this.task.output = TaskMessages.readingCredentials;
+
+        const { AMEX_USER, AMEX_PW } = parseEnv(AmexEnv);
         const [userId, password] = await Promise.all([
-            readSecret(process.env.AMEX_USER),
-            readSecret(process.env.AMEX_PW),
+            readSecret(AMEX_USER),
+            readSecret(AMEX_PW),
             this.page.goto("https://www.americanexpress.com/en-au/account/login"),
         ]);
 
