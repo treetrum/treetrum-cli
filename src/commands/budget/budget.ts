@@ -5,6 +5,7 @@ import path from "path";
 import { chromium } from "playwright-extra";
 import stealthPlugin from "puppeteer-extra-plugin-stealth";
 import { UpEnv, parseEnv } from "@/utils/env.js";
+import { readSecret } from "@/utils/secrets.js";
 import type { Account, BankConnector } from "./BankConnector.js";
 import { AmexConnector } from "./amex/index.js";
 import type { Ctx, Options, TaskFn } from "./types.js";
@@ -143,7 +144,7 @@ export const budget = async (opts: Options) => {
                             },
                             {
                                 title: "Authenticating",
-                                task: async () => parseEnv(UpEnv).UP_TOKEN,
+                                task: async () => readSecret(parseEnv(UpEnv).UP_TOKEN),
                             },
                         ],
                         { concurrent: true }
