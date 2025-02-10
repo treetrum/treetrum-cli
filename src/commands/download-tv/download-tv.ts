@@ -3,12 +3,14 @@ import fs from "fs/promises";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
 import path from "path";
+import { TVDownloadEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../utils/secrets.js";
 import type { Options } from "./schema.js";
 
 export const downloadTV = async (options: Options) => {
-    const user = await readSecret(process.env.TENPLAY_USERNAME);
-    const pass = await readSecret(process.env.TENPLAY_PASSWORD);
+    const env = parseEnv(TVDownloadEnv);
+    const user = await readSecret(env.TENPLAY_USERNAME);
+    const pass = await readSecret(env.TENPLAY_PASSWORD);
 
     const zeroSeasonNumber = String(options.season).padStart(2, "0");
     const zeroEpNumber = String(options.episode).padStart(2, "0");
