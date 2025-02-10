@@ -20,6 +20,17 @@ export const AmexEnv = z.object({
     AMEX_PW: z.string(),
 });
 
+/**
+ * Parses process.env using a passed in Zod schema.
+ *
+ * Usage example:
+ *
+ * ```typescript
+ * const env = parseEnv(TVDownloadEnv);
+ * const user = await readSecret(env.TENPLAY_USERNAME);
+ * const pass = await readSecret(env.TENPLAY_PASSWORD);
+ * ```
+ */
 export const parseEnv = <T extends ZodSchema>(env: T): z.infer<T> => env.parse(process.env);
 
 declare global {
