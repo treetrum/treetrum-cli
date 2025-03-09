@@ -1,14 +1,15 @@
-FROM oven/bun
+FROM oven/bun AS base
+WORKDIR /app
 
 # Install dependencies
 RUN apt-get update && apt-get install -y ffmpeg curl python3 rsync python3-pycryptodome
 
-# Install yt-dlp using apt-get
+# Install yt-dlp
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/bin/yt-dlp
 RUN chmod a+rx /usr/bin/yt-dlp  # Make executable
 
 # Install bun deps
-COPY package.json bun.lockb .
+COPY package.json bun.lock .
 RUN bun install --ignore-scripts
 
 # Copy app files
