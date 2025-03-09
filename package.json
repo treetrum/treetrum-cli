@@ -9,7 +9,7 @@
         "link": "bun link",
         "test": "bun test",
         "prepare": "husky",
-        "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\""
+        "lint": "eslint ."
     },
     "bin": {
         "tt": "./src/treetrum.ts"
