@@ -17,7 +17,7 @@ export const BudgetCommand = new Command()
                 .map((t) => t.trim().split(":"))
                 .map((mod) => ({
                     matcher: mod[0],
-                    modifier: parseFloat(mod[1]),
+                    modifier: Number.parseFloat(mod[1]),
                 }));
         })
     )

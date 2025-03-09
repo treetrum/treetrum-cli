@@ -1,11 +1,11 @@
 import moment from "moment";
-import { UpTransaction } from "./transaction-types.js";
-import { Account, PaginatedResponse } from "./types.js";
+import type { UpTransaction } from "./transaction-types.js";
+import type { Account, PaginatedResponse } from "./types.js";
 
 export class UpClient {
     token: string;
 
-    baseUrl: string = "https://api.up.com.au/api/v1";
+    baseUrl = "https://api.up.com.au/api/v1";
 
     constructor(token: string) {
         this.token = token;
@@ -26,10 +26,10 @@ export class UpClient {
     }
 
     fetchAccounts() {
-        return this.fetchJson<PaginatedResponse<Account>>(`/accounts`);
+        return this.fetchJson<PaginatedResponse<Account>>("/accounts");
     }
 
-    fetchAccountTransactions(accountId: string, sinceDaysAgo: number = 14) {
+    fetchAccountTransactions(accountId: string, sinceDaysAgo = 14) {
         const sinceFormatted = moment().subtract(sinceDaysAgo, "days").toISOString();
         return this.fetchJson<PaginatedResponse<UpTransaction>>(
             `/accounts/${accountId}/transactions?filter[since]=${sinceFormatted}&page[size]=99`

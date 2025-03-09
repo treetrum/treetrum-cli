@@ -1,7 +1,8 @@
+import path from "node:path";
 /** This is an async wrapper around the 1password CLI */
-import { read as opRead } from "@1password/op-js";
-import path from "path";
+import type { read as opRead } from "@1password/op-js";
 
+// biome-ignore lint/suspicious: keeping this as any to avoid complexity
 const createAsyncWorker = <TFunc extends (...args: any[]) => any>(workerPath: string) => {
     return async (...params: Parameters<TFunc>) => {
         return new Promise<ReturnType<TFunc>>((resolve, reject) => {

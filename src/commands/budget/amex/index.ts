@@ -1,12 +1,12 @@
+import { readFile } from "node:fs/promises";
+import { AmexEnv, parseEnv } from "@/utils/env.js";
+import { readSecret } from "@/utils/secrets.js";
 import { parse } from "csv-parse/sync";
 import { format } from "date-fns/format";
 import { sub } from "date-fns/sub";
-import { readFile } from "fs/promises";
 import moment from "moment";
-import { type Page } from "playwright";
-import { AmexEnv, parseEnv } from "@/utils/env.js";
-import { readSecret } from "@/utils/secrets.js";
-import { type BankConnector, type Transaction } from "../BankConnector.js";
+import type { Page } from "playwright";
+import type { BankConnector, Transaction } from "../BankConnector.js";
 import { type Task, TaskMessages } from "../types.js";
 
 type AmexCsvDataRow = {
@@ -25,6 +25,7 @@ export class AmexConnector implements BankConnector {
 
     setup(task: Task, page?: Page) {
         this.task = task;
+        // biome-ignore lint/style/noNonNullAssertion: purposefully doing this
         this.page = page!;
     }
 

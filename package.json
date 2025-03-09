@@ -9,7 +9,7 @@
         "link": "bun link",
         "test": "bun test",
         "prepare": "husky",
-        "lint": "eslint ."
+        "lint": "biome check --fix"
     },
     "bin": {
         "tt": "./src/treetrum.ts"
@@ -18,30 +18,18 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@eslint/js": "^9.12.0",
-        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@biomejs/biome": "1.9.4",
         "@types/dinero.js": "^1.9.4",
         "@types/find-config": "^1.0.4",
         "@types/lodash": "^4.17.10",
         "@types/node": "^22.7.5",
-        "@types/pixelmatch": "^5.2.6",
-        "@types/pngjs": "^6.0.5",
         "@types/prompts": "^2.4.9",
-        "@types/uuid": "^10.0.0",
-        "eslint": "~8.57.0",
-        "globals": "^15.9.0",
         "husky": "^9.1.6",
-        "prettier": "^3.3.3",
-        "prettier-plugin-tailwindcss": "^0.6.5",
-        "ts-jest": "^29.2.5",
-        "typescript": "^5.6.2",
-        "typescript-eslint": "^8.9.0",
-        "@types/bun": "latest"
+        "typescript": "^5.6.2"
     },
     "dependencies": {
         "@1password/op-js": "^0.1.13",
         "@commander-js/extra-typings": "^13.1.0",
-        "axios": "^1.7.2",
         "commander": "^13.1.0",
         "csv-parse": "^5.5.6",
         "csv-stringify": "^6.5.1",
@@ -53,15 +41,11 @@
         "listr2": "^8.2.4",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",
-        "pixelmatch": "^6.0.0",
         "playwright": "^1.46.1",
         "playwright-extra": "^4.3.6",
-        "pngjs": "^7.0.0",
         "prompts": "^2.4.2",
         "puppeteer-extra": "^3.3.6",
         "puppeteer-extra-plugin-stealth": "^2.11.2",
-        "query-string": "^9.1.0",
-        "uuid": "^11.0.3",
         "zod": "^3.23.8"
     }
 }

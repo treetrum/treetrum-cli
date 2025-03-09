@@ -1,9 +1,9 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { TVDownloadEnv, parseEnv } from "@/utils/env.js";
 import { execa } from "execa";
-import fs from "fs/promises";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
-import path from "path";
-import { TVDownloadEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../utils/secrets.js";
 import type { Options } from "./schema.js";
 
@@ -44,7 +44,9 @@ export const downloadTV = async (options: Options) => {
         {
             title: `Downloading episode from ${options.url}`,
             task: async (_, task) => {
-                const updateTaskOutput = throttle((msg) => (task.output = msg), 100);
+                const updateTaskOutput = throttle((msg) => {
+                    task.output = msg;
+                }, 100);
                 const ytDlp = "yt-dlp";
                 const credentials = options.url.includes("10play")
                     ? `--username "${user}" --password "${pass}"`
@@ -59,7 +61,9 @@ export const downloadTV = async (options: Options) => {
             title: `Copying to ${outputPath}`,
             task: async (_, task) => {
                 const process = execaInstance`rsync -ah --progress "${downloadPath}" "${outputPath}"`;
-                process.stdout.on("data", (m) => (task.output = m));
+                process.stdout.on("data", (m) => {
+                    task.output = m;
+                });
                 await process;
             },
         },

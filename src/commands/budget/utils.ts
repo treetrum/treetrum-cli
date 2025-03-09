@@ -32,7 +32,7 @@ export const performActionSync = <T>(name: string, action: T): T => {
 
 export const applyPriceModifier = (
     transactions: Transaction[],
-    priceModifier: number = 1
+    priceModifier = 1
 ): Transaction[] => {
     if (priceModifier === 1) {
         return transactions;
@@ -41,7 +41,9 @@ export const applyPriceModifier = (
     return transactions.map((transaction) => {
         const { amount } = transaction;
 
-        const amountAsInteger = parseInt(`${parseFloat(amount.replace("$", "")) * 100}`);
+        const amountAsInteger = Number.parseInt(
+            `${Number.parseFloat(amount.replace("$", "")) * 100}`
+        );
 
         const transformedAmount = Dinero({ amount: amountAsInteger })
             .multiply(priceModifier)

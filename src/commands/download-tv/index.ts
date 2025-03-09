@@ -1,11 +1,11 @@
+import path from "node:path";
 import { Command } from "@commander-js/extra-typings";
-import path from "path";
 import prompts from "prompts";
 import { downloadTV } from "./download-tv.js";
 import { optionsSchema } from "./schema.js";
 import { getFoldersInDirectory, parseEpisodeNumberFromUrl } from "./utils.js";
 
-const validateOptions = async (options: any) => {
+const validateOptions = async (options: object) => {
     prompts.override(options);
 
     const { path: tvFolder } = await prompts({ message: "TV Folder", name: "path", type: "text" });
@@ -32,7 +32,7 @@ const validateOptions = async (options: any) => {
         name: "season",
         type: "autocomplete",
         choices: seasons
-            .map((a) => parseInt(a, 10))
+            .map((a) => Number.parseInt(a, 10))
             .sort((a, b) => b - a)
             .map((s) => ({ title: String(s), value: s })),
     });
