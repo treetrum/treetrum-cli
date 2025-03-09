@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import findConfig from "find-config";
-import { type TypeOf, ZodSchema, z } from "zod";
+import { type TypeOf, type ZodSchema, z } from "zod";
 
 const zodEnv = z.object({
     CI: z.string().optional(),

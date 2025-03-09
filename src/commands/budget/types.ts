@@ -1,6 +1,6 @@
-import { DefaultRenderer, type ListrTaskFn, ListrTaskWrapper, SimpleRenderer } from "listr2";
-import { type BrowserContext } from "playwright";
-import { type Account, type BankConnector } from "./BankConnector.js";
+import type { DefaultRenderer, ListrTaskFn, ListrTaskWrapper, SimpleRenderer } from "listr2";
+import type { BrowserContext } from "playwright";
+import type { Account, BankConnector } from "./BankConnector.js";
 
 export type Options = {
     headless: boolean;

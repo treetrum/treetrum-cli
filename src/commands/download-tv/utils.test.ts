@@ -13,9 +13,9 @@ describe("parseEpisodeNumberFromUrl", () => {
                 episode: "21",
             },
         ];
-        cases.forEach(({ url, episode }) => {
+        for (const { url, episode } of cases) {
             expect(parseEpisodeNumberFromUrl(url)).toBe(episode);
-        });
+        }
     });
 
     it("9now urls", () => {
@@ -25,8 +25,8 @@ describe("parseEpisodeNumberFromUrl", () => {
                 episode: "4",
             },
         ];
-        cases.forEach(({ url, episode }) => {
+        for (const { url, episode } of cases) {
             expect(parseEpisodeNumberFromUrl(url)).toBe(episode);
-        });
+        }
     });
 });

@@ -1,6 +1,6 @@
-import { Stats } from "fs";
-import fs from "fs/promises";
-import path from "path";
+import type { Stats } from "node:fs";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const getInDirectory =
     (predicate: (stat: Stats) => boolean) =>
@@ -26,7 +26,7 @@ export const parseEpisodeNumberFromUrl = (url: string): string | undefined => {
         .split("/")
         .filter((p) => p.includes("ep"))
         .map((p) => p.match(/(\d+)/))
-        .filter((p) => p != undefined)
+        .filter((p) => p != null)
         .at(0)
         ?.at(0);
 };

@@ -1,9 +1,9 @@
+import { UpEnv, parseEnv } from "@/utils/env.js";
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
 import type { Page } from "playwright";
-import { UpEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../../utils/secrets.js";
-import { type BankConnector, type Transaction } from "../BankConnector.js";
+import type { BankConnector, Transaction } from "../BankConnector.js";
 import { type Task, TaskMessages } from "../types.js";
 import { UpClient } from "./up-client.js";
 
@@ -17,6 +17,7 @@ export class UpConnector implements BankConnector {
 
     setup(task: Task, page?: Page) {
         this.task = task;
+        // biome-ignore lint/style/noNonNullAssertion: purposefully doing this
         this.page = page!;
     }
 

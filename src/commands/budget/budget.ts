@@ -1,11 +1,11 @@
-import fs from "fs/promises";
-import { Listr, PRESET_TIMER } from "listr2";
-import { homedir } from "os";
-import path from "path";
-import { chromium } from "playwright-extra";
-import stealthPlugin from "puppeteer-extra-plugin-stealth";
+import fs from "node:fs/promises";
+import { homedir } from "node:os";
+import path from "node:path";
 import { UpEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "@/utils/secrets.js";
+import { Listr, PRESET_TIMER } from "listr2";
+import { chromium } from "playwright-extra";
+import stealthPlugin from "puppeteer-extra-plugin-stealth";
 import type { Account, BankConnector } from "./BankConnector.js";
 import { AmexConnector } from "./amex/index.js";
 import type { Ctx, Options, TaskFn } from "./types.js";
@@ -44,7 +44,7 @@ const initBrowser: TaskFn = async (ctx, task) => {
 const downloadStatements =
     (connector: BankConnector): TaskFn =>
     async (ctx, task) => {
-        const page = connector.requiresBrowser ? await ctx.chromium!.newPage() : undefined;
+        const page = connector.requiresBrowser ? await ctx.chromium?.newPage() : undefined;
         connector.setup(task, page);
         let errored = false;
         try {
@@ -83,7 +83,7 @@ const downloadAllStatements: TaskFn = (ctx, task) => {
         {
             concurrent: true,
             rendererOptions: { collapseSubtasks: false },
-            exitOnError: process.env.CI ? true : false,
+            exitOnError: !!process.env.CI,
         }
     );
 };
@@ -93,12 +93,12 @@ const writeCsvFile =
     async (ctx, task) => {
         let modifier = 1;
         if (ctx.options.accountModifiers) {
-            ctx.options.accountModifiers.forEach((mod) => {
+            for (const mod of ctx.options.accountModifiers) {
                 if (account.name.toLowerCase().includes(mod.matcher)) {
                     modifier = mod.modifier;
                     task.title = `${task.title} (With ${modifier} modifier)`;
                 }
-            });
+            }
         }
         const transactions = applyPriceModifier(account.transactions, modifier);
         const outputPath = path.join(ctx.options.outdir, `${account.name}.csv`);
