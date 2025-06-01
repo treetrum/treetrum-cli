@@ -51,32 +51,26 @@ export class AmexConnector implements BankConnector {
         await this.page.fill("#eliloUserID", userId);
         await this.page.fill("#eliloPassword", password);
         await this.page.click("#loginSubmit");
-        await this.page.getByRole("heading", { name: "Statement Balance" }).waitFor();
+        await this.page.getByRole("button", { name: "Statements & Activity" }).waitFor();
     };
 
     getTransactions = async () => {
-        await this.page.goto("https://global.americanexpress.com/activity/search");
-
-        // Enter date range and search
-        const searchSection = this.page.locator('[data-module-name="axp-activity-search-control"]');
         const endDate = new Date();
         const startDate = sub(endDate, { days: 30 });
-        const startDateField = searchSection.locator("#startDate");
-        const endDateField = searchSection.locator("#endDate");
-        await startDateField.fill(format(startDate, "dd/MM/yyyy"));
-        await endDateField.fill(format(endDate, "dd/MM/yyyy"));
-        await searchSection
-            .locator(".row")
-            .last()
-            .getByRole("button", { name: "Search", exact: true })
-            .click();
 
-        await this.page.getByRole("button", { name: "Download Your Transactions" }).click();
+        // Filter transactions
+        await this.page.goto(
+            `https://global.americanexpress.com/activity/search?from=${format(startDate, "yyyy-MM-dd")}&to=${format(endDate, "yyyy-MM-dd")}`
+        );
+        await this.page.getByRole("button", { name: "Search", exact: true }).last().click();
+        await this.page.getByRole("button", { name: "Download" }).click();
         await this.page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
 
         // Catch the download and process as path
         const downloadPath = this.page.waitForEvent("download").then((d) => d.path());
-        await this.page.getByRole("link", { name: "Download", exact: true }).click();
+        await this.page
+            .locator("[data-test-id='axp-activity-download-footer-download-confirm']")
+            .click();
         const data = await readFile(await downloadPath, { encoding: "utf-8" });
 
         return this.transformStatementData(data);
