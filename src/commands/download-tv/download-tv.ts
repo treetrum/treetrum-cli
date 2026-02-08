@@ -6,6 +6,7 @@ import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
 import { readSecret } from "../../utils/secrets.js";
 import type { Options } from "./schema.js";
+import { is10PlayUrl } from "./utils.js";
 
 export const downloadTV = async (options: Options) => {
     const env = parseEnv(TVDownloadEnv);
@@ -48,7 +49,7 @@ export const downloadTV = async (options: Options) => {
                     task.output = msg;
                 }, 100);
                 const ytDlp = "yt-dlp";
-                const credentials = options.url.includes("10play")
+                const credentials = is10PlayUrl(options.url)
                     ? `--username "${user}" --password "${pass}"`
                     : "";
                 const process = execaInstance`${ytDlp} ${options.url} -o "${downloadPath}" --no-simulate ${credentials}`;
