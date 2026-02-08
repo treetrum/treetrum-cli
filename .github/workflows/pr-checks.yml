@@ -11,19 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
-      - name: Use Node.js 20
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
+          bun-version-file: .bun-version
+
       - run: bun install
+
       - run: bun lint
+
       - run: bun test
+
       - run: bun run start budget --banks up --headless --outdir=/tmp/statements
         env:
           UP_TOKEN: ${{ secrets.UP_TOKEN }}
+
       - name: Upload Statements
         uses: actions/upload-artifact@v6
         with:

@@ -36,23 +36,19 @@ describe("parseEpisodeNumberFromUrl", () => {
 });
 
 describe(is10PlayUrl, () => {
-    const valid = [
+    it.each([
         "https://10play.com.au/the-cheap-seats/episodes/season-4/episode-25/tpv241015mrlsi",
         "https://10play.com.au/have-you-been-paying-attention/episodes/2024/episode-21/tpv240930bpnte",
         "https://10.com.au/the-cheap-seats/episodes/season-5/the-cheap-seats-s5-ep-30/tpv251118gxpqt",
-    ];
-
-    const invalid = [
-        "https://www.9now.com.au/travel-guides/season-7/episode-4",
-        "https://www.bbc.com/iplayer/episode/m001q8x4/some-show-series-1-episode-2",
-        "https://www.netflix.com/watch/12345678",
-    ];
-
-    it.each(valid)("identifies valid 10play url: %s", (url: string) => {
+    ])("identifies valid: %s", (url: string) => {
         expect(is10PlayUrl(url)).toBe(true);
     });
 
-    it.each(invalid)("identifies invalid 10play url: %s", (url: string) => {
+    it.each([
+        "https://www.9now.com.au/travel-guides/season-7/episode-4",
+        "https://www.bbc.com/iplayer/episode/m001q8x4/some-show-series-1-episode-2",
+        "https://www.netflix.com/watch/12345678",
+    ])("identifies invalid: %s", (url: string) => {
         expect(is10PlayUrl(url)).toBe(false);
     });
 });
