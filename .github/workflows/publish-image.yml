@@ -1,9 +1,8 @@
 name: Build/publish docker image
 
 on:
-  push:
-    tags:
-      - "*"
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -26,12 +25,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/treetrum/treetrum-cli
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
+
       - name: Build/publish image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/treetrum/treetrum-cli:latest
-            ghcr.io/treetrum/treetrum-cli:${{ github.ref_name }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
