@@ -33,5 +33,8 @@ COPY src /app/src
 RUN chmod a+rx /app/src/treetrum.ts \
     && ln -s /app/src/treetrum.ts /usr/local/bin/tt
 
+# Override base image entrypoint so our CMD runs directly.
+ENTRYPOINT []
+
 # Keep the container alive for exec/attach usage
-CMD ["sleep", "infinity"]
+CMD ["sh", "-c", "trap : TERM INT; sleep infinity & wait"]
