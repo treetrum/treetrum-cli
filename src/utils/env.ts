@@ -44,6 +44,6 @@ declare global {
 // Recursively go up directories until a .env is found
 const configPath = findConfig(".env");
 if (configPath) {
-    dotenv.config({ path: configPath });
+    dotenv.config({ path: configPath, quiet: true });
 }
 zodEnv.parse(process.env);
