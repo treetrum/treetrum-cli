@@ -23,6 +23,17 @@ RUN apt-get update \
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/bin/yt-dlp \
     && chmod a+rx /usr/bin/yt-dlp
 
+# Install ttyd (web terminal)
+RUN set -eux; \
+    arch="$(uname -m)"; \
+    case "$arch" in \
+        x86_64) bin="ttyd.x86_64" ;; \
+        aarch64|arm64) bin="ttyd.aarch64" ;; \
+        *) echo "Unsupported arch: $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -L "https://github.com/tsl0922/ttyd/releases/latest/download/${bin}" -o /usr/local/bin/ttyd; \
+    chmod a+rx /usr/local/bin/ttyd
+
 # Copy app and deps
 COPY --from=deps /app/node_modules /app/node_modules
 COPY package.json /app/
@@ -36,5 +47,9 @@ RUN chmod a+rx /app/src/treetrum.ts \
 # Override base image entrypoint so our CMD runs directly.
 ENTRYPOINT []
 
-# Keep the container alive for exec/attach usage
-CMD ["sh", "-c", "trap : TERM INT; sleep infinity & wait"]
+# Expose web terminal port
+EXPOSE 7681
+
+# Run web terminal (use bash; run `tt` inside)
+# -W/--writable enables interactive input
+CMD ["ttyd", "-p", "7681", "-W", "bash"]
