@@ -8,7 +8,7 @@
         "newlinesBetween": false
     },
     "experimentalSortPackageJson": false,
-    "ignorePatterns": ["renovate.json"],
+    "ignorePatterns": ["renovate.json", "CHANGELOG.md"],
     "jsxSingleQuote": false,
     "printWidth": 100,
     "quoteProps": "as-needed",
