@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.3.1](https://github.com/treetrum/treetrum-cli/compare/v1.3.0...v1.3.1) (2026-02-08)
+
+
+### Fixes
+
+* make dotenv run silently ([#160](https://github.com/treetrum/treetrum-cli/issues/160)) ([2a1a17d](https://github.com/treetrum/treetrum-cli/commit/2a1a17d63dfe7204d80391656cf71bb851911c9a))
+
+
+### Dependencies
+
+* pin bun version ([#155](https://github.com/treetrum/treetrum-cli/issues/155)) ([7810853](https://github.com/treetrum/treetrum-cli/commit/7810853cb1aa38e99cf140e6809098bf95400037))
+* update dependency bun to v1.3.9 ([#156](https://github.com/treetrum/treetrum-cli/issues/156)) ([632602b](https://github.com/treetrum/treetrum-cli/commit/632602b4fcc19b585ed785c07b39adc940efa8d3))
+* update dependency dotenv to v17 ([#134](https://github.com/treetrum/treetrum-cli/issues/134)) ([38bcf55](https://github.com/treetrum/treetrum-cli/commit/38bcf55ed4ab1c7c021a321368c529d8eb7f26bf))
+* update dependency listr2 to v10 ([#135](https://github.com/treetrum/treetrum-cli/issues/135)) ([d690575](https://github.com/treetrum/treetrum-cli/commit/d6905756f12da02573d9c3891e5d9531ab65cf94))
+* upgrade commander and @commander-js/extra-typings to v14 ([#159](https://github.com/treetrum/treetrum-cli/issues/159)) ([cece47c](https://github.com/treetrum/treetrum-cli/commit/cece47c255fbbda77b7e18fa7c4a2b9bfb0152de))
+
+
+### Internal Changes
+
+* add agents file ([#157](https://github.com/treetrum/treetrum-cli/issues/157)) ([45f138a](https://github.com/treetrum/treetrum-cli/commit/45f138a0340bb9273305d657d6c05d1334fc6ea4))
+* ignore changelog in oxfmt ([#161](https://github.com/treetrum/treetrum-cli/issues/161)) ([719e065](https://github.com/treetrum/treetrum-cli/commit/719e0658ef42fb6d0645b495889071ab5c965dba))
+* switch from biome to oxlint & oxfmt ([#158](https://github.com/treetrum/treetrum-cli/issues/158)) ([7d72947](https://github.com/treetrum/treetrum-cli/commit/7d729475f58a12af9ae90105353ee56136f65133))
+
 ## [1.3.0](https://github.com/treetrum/treetrum-cli/compare/v1.2.0...v1.3.0) (2026-02-08)
 
 ### Features
