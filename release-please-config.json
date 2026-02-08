@@ -19,6 +19,10 @@
                     "section": "Fixes"
                 },
                 {
+                    "type": "deps",
+                    "section": "Dependencies"
+                },
+                {
                     "type": "chore",
                     "section": "Internal Changes"
                 }
