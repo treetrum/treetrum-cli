@@ -18,4 +18,5 @@ COPY . .
 # Link tt binary
 RUN bun link
 
-CMD ["/bin/bash"]
+# Keep the container alive for exec/attach usage
+CMD ["sleep", "infinity"]
