@@ -7,6 +7,10 @@ export const BudgetCommand = new Command()
     .option("--headless", "Should playwright be run in headless mode", false)
     .option("-o, --outdir <path>", "Where budget files should be output", "/Users/sam/Desktop")
     .option("-b, --banks <bankNames...>", "Which banks to download data from")
+    .option(
+        "--exclude-accounts <names...>",
+        "Accounts to exclude by name (case-insensitive substring match)"
+    )
     .addOption(
         new Option(
             "--account-modifiers <key:value>",

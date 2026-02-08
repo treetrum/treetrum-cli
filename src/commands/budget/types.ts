@@ -7,6 +7,7 @@ export type Options = {
     outdir: string;
     banks?: string[];
     accountModifiers?: { matcher: string; modifier: number }[];
+    excludeAccounts?: string[];
 };
 
 export type Ctx = {
