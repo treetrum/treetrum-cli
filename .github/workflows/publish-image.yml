@@ -2,8 +2,8 @@ name: Build/publish docker image
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
   workflow_dispatch:
 
 jobs:
@@ -20,4 +20,4 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          tags: "latest,${{ github.sha }},${{ github.head_ref || github.ref_name }}"
+          tags: "latest,${{ github.ref_name }}"
