@@ -25,8 +25,11 @@ export const parseEpisodeNumberFromUrl = (url: string): string | undefined => {
     return url
         .split("/")
         .filter((p) => p.includes("ep"))
-        .map((p) => p.match(/(\d+)/))
-        .filter((p) => p != null)
-        .at(0)
-        ?.at(0);
+        .map((p) => p.match(/(\d+)/g))
+        .filter((p) => !!p)
+        .map((matches) => matches?.at(-1))
+        .at(0);
 };
+
+export const is10PlayUrl = (url: string) =>
+    ["10play", "10.com.au"].some((domain) => url.includes(domain));
