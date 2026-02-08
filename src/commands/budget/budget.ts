@@ -107,19 +107,30 @@ const writeCsvFile =
         await fs.writeFile(outputPath, transactionsToCsvString(transactions));
     };
 
-const writeCsvFiles: TaskFn = (ctx, task) =>
-    task.newListr(
-        ctx.accounts
-            .filter((a) => a.transactions.length > 0)
-            .map((account) => ({
-                title: `${account.name}.csv`,
-                task: writeCsvFile(account),
-            })),
+const writeCsvFiles: TaskFn = (ctx, task) => {
+    const excludeMatchers = (ctx.options.excludeAccounts ?? [])
+        .map((name) => name.trim().toLowerCase())
+        .filter((name) => name.length > 0);
+    return task.newListr(
+        ctx.accounts.map((account) => ({
+            title: `${account.name}.csv`,
+            skip: () => {
+                if (account.transactions.length === 0) return "No transactions";
+                if (excludeMatchers.length === 0) return false;
+                const accountName = account.name.toLowerCase();
+                if (excludeMatchers.some((matcher) => accountName.includes(matcher))) {
+                    return `${account.name}.csv (skipped: --excludeAccounts)`;
+                }
+                return false;
+            },
+            task: writeCsvFile(account),
+        })),
         {
             concurrent: true,
             rendererOptions: { collapseSubtasks: false },
         }
     );
+};
 
 export const budget = async (opts: Options) => {
     const tasks = new Listr<Ctx>(
