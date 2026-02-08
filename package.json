@@ -9,6 +9,7 @@
         "link": "bun link",
         "test": "bun test",
         "format": "oxfmt .",
+        "format:check": "oxfmt --check .",
         "lint:check": "oxlint",
         "lint:fix": "oxlint --fix",
         "lint": "bun run lint:fix"
