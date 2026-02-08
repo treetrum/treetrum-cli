@@ -30,9 +30,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/treetrum/treetrum-cli
+          flavor: |
+            latest=${{ github.event.release.prerelease == false }}
           tags: |
             type=ref,event=tag
-            type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
 
       - name: Build/publish image
         uses: docker/build-push-action@v6
