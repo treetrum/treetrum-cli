@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.1](https://github.com/treetrum/treetrum-cli/compare/v1.1.0...v1.1.1) (2026-02-08)
+
+
+### Dependencies
+
+* update dependency csv-parse to v6 ([#133](https://github.com/treetrum/treetrum-cli/issues/133)) ([422a743](https://github.com/treetrum/treetrum-cli/commit/422a743e8a7cd9027b21710f6f7b341965c342a4))
+
+
+### Internal Changes
+
+* update release please tags ([#146](https://github.com/treetrum/treetrum-cli/issues/146)) ([b343851](https://github.com/treetrum/treetrum-cli/commit/b343851edc4a1f07d4d55f67ef3dbfe243788a88))
+
 ## [1.1.0](https://github.com/treetrum/treetrum-cli/compare/treetrum-cli-v1.0.0...treetrum-cli-v1.1.0) (2026-02-08)
 
 
