@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0](https://github.com/treetrum/treetrum-cli/compare/v1.1.1...v1.2.0) (2026-02-08)
+
+
+### Features
+
+* add arm64 builds ([#148](https://github.com/treetrum/treetrum-cli/issues/148)) ([47b2039](https://github.com/treetrum/treetrum-cli/commit/47b2039cb3bc1d8f6460c62841c8ae000270934f))
+* docker improvements ([#150](https://github.com/treetrum/treetrum-cli/issues/150)) ([c6d1ef7](https://github.com/treetrum/treetrum-cli/commit/c6d1ef72833cabb26ec23a7e493759a6770fe956))
+
+
+### Fixes
+
+* add support for new 10.com.au urls ([#151](https://github.com/treetrum/treetrum-cli/issues/151)) ([abf7822](https://github.com/treetrum/treetrum-cli/commit/abf7822900ab57a6aacb7e900afe0927fd2a6acd))
+
+
+### Internal Changes
+
+* docker tagging updates ([09e30fa](https://github.com/treetrum/treetrum-cli/commit/09e30fa4a721f4bedfb8a9f6ef0cc1257fd4a12f))
+* fix dockerfile ([582a062](https://github.com/treetrum/treetrum-cli/commit/582a06242162dd8a18cd6b848a8652898c695aaa))
+* fix dockerfile ([416b296](https://github.com/treetrum/treetrum-cli/commit/416b296687173d76e57b97f77f01776428136174))
+* only publish images on releases ([aa10377](https://github.com/treetrum/treetrum-cli/commit/aa10377f0f5a6b7b93f3c64e5fe4d67afdf8f4cd))
+
 ## [1.1.1](https://github.com/treetrum/treetrum-cli/compare/v1.1.0...v1.1.1) (2026-02-08)
 
 
