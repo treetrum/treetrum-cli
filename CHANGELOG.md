@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/treetrum/treetrum-cli/compare/v1.2.0...v1.3.0) (2026-02-08)
+
+
+### Features
+
+* add web terminal support ([#152](https://github.com/treetrum/treetrum-cli/issues/152)) ([15dd2b5](https://github.com/treetrum/treetrum-cli/commit/15dd2b5053b80f3be0161fe63078997de907fe13))
+
 ## [1.2.0](https://github.com/treetrum/treetrum-cli/compare/v1.1.1...v1.2.0) (2026-02-08)
 
 
