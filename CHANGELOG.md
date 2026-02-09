@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/treetrum/treetrum-cli/compare/v1.3.1...v1.3.2) (2026-02-09)
+
+
+### Fixes
+
+* fix commander types runtime issue ([#162](https://github.com/treetrum/treetrum-cli/issues/162)) ([46f651c](https://github.com/treetrum/treetrum-cli/commit/46f651c79053a9b7df5d19fbe7e05b3c5c506466))
+
 ## [1.3.1](https://github.com/treetrum/treetrum-cli/compare/v1.3.0...v1.3.1) (2026-02-08)
 
 
