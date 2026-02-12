@@ -5,6 +5,7 @@
         ":semanticCommitTypeAll(deps)",
         ":semanticCommitScopeDisabled"
     ],
+    "reviewers": ["@treetrum"],
     "semanticCommits": "enabled",
     "packageRules": [
         {
