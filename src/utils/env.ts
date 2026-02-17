@@ -1,5 +1,5 @@
-import * as dotenv from "dotenv";
 import path from "path";
+import * as dotenv from "dotenv";
 import { type TypeOf, type ZodSchema, z } from "zod";
 
 const zodEnv = z.object({

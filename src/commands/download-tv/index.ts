@@ -1,5 +1,5 @@
-import { Command } from "@commander-js/extra-typings";
 import path from "node:path";
+import { Command } from "@commander-js/extra-typings";
 import prompts from "prompts";
 import { downloadTV } from "./download-tv.js";
 import { optionsSchema } from "./schema.js";

@@ -1,9 +1,9 @@
-import type { Page } from "playwright";
+import { readFile } from "node:fs/promises";
 import { parse } from "csv-parse/sync";
 import { format } from "date-fns/format";
 import { sub } from "date-fns/sub";
 import moment from "moment";
-import { readFile } from "node:fs/promises";
+import type { Page } from "playwright";
 import { AmexEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "@/utils/secrets.js";
 import type { BankConnector, Transaction } from "../BankConnector.js";

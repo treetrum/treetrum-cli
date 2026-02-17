@@ -1,9 +1,9 @@
-import type { Page } from "playwright";
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
+import type { Page } from "playwright";
 import { UpEnv, parseEnv } from "@/utils/env.js";
-import type { BankConnector, Transaction } from "../BankConnector.js";
 import { readSecret } from "../../../utils/secrets.js";
+import type { BankConnector, Transaction } from "../BankConnector.js";
 import { type Task, TaskMessages } from "../types.js";
 import { UpClient } from "./up-client.js";
 
