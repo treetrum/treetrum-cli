@@ -1,4 +1,4 @@
-import path from "path";
+import { fileURLToPath } from "url";
 import * as dotenv from "dotenv";
 import { type TypeOf, type ZodSchema, z } from "zod";
 
@@ -41,6 +41,6 @@ declare global {
     }
 }
 
-const envPath = path.join(import.meta.url, "../../../.env");
+const envPath = fileURLToPath(new URL("../../.env", import.meta.url));
 dotenv.config({ path: envPath, quiet: true });
 zodEnv.parse(process.env);
