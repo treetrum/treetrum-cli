@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.3](https://github.com/treetrum/treetrum-cli/compare/v1.3.2...v1.3.3) (2026-02-17)
+
+
+### Dependencies
+
+* update dependency oxfmt to ^0.32.0 ([#164](https://github.com/treetrum/treetrum-cli/issues/164)) ([39d50f8](https://github.com/treetrum/treetrum-cli/commit/39d50f8eff7b53ccf6a8ac4df3e951f4426ccecb))
+* update dependency oxfmt to ^0.33.0 ([#166](https://github.com/treetrum/treetrum-cli/issues/166)) ([6800419](https://github.com/treetrum/treetrum-cli/commit/68004195872e8282d79203a2128168721c3a50c1))
+
+
+### Internal Changes
+
+* add treetrum to renovate reviewers ([2207d9c](https://github.com/treetrum/treetrum-cli/commit/2207d9c2f033fe2a794ed1c57b40830b10cabeaa))
+* load .env relative to script ([4e58a42](https://github.com/treetrum/treetrum-cli/commit/4e58a42c905b5b0199b3bc1c54e434e8cb162dc0))
+* load .env relative to script ([f901de5](https://github.com/treetrum/treetrum-cli/commit/f901de52b14719e4c12349609bf9ce37b56a5bc6))
+
 ## [1.3.2](https://github.com/treetrum/treetrum-cli/compare/v1.3.1...v1.3.2) (2026-02-09)
 
 
