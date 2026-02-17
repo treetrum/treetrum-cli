@@ -25,7 +25,7 @@
         "@types/lodash": "^4.17.10",
         "@types/prompts": "^2.4.9",
         "lefthook": "^2.1.0",
-        "oxfmt": "^0.32.0",
+        "oxfmt": "^0.33.0",
         "oxlint": "^1.43.0",
         "typescript": "^5.6.2"
     },
