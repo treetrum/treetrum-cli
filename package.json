@@ -22,7 +22,6 @@
     "license": "ISC",
     "devDependencies": {
         "@types/dinero.js": "^1.9.4",
-        "@types/find-config": "^1.0.4",
         "@types/lodash": "^4.17.10",
         "@types/prompts": "^2.4.9",
         "lefthook": "^2.1.0",
@@ -40,7 +39,6 @@
         "dinero.js": "^1.9.1",
         "dotenv": "^17.0.0",
         "execa": "^9.3.0",
-        "find-config": "^1.0.0",
         "listr2": "^10.0.0",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",

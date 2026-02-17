@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import findConfig from "find-config";
+import path from "path";
 import { type TypeOf, type ZodSchema, z } from "zod";
 
 const zodEnv = z.object({
@@ -41,9 +41,6 @@ declare global {
     }
 }
 
-// Recursively go up directories until a .env is found
-const configPath = findConfig(".env");
-if (configPath) {
-    dotenv.config({ path: configPath, quiet: true });
-}
+const envPath = path.join(import.meta.url, "../../../.env");
+dotenv.config({ path: envPath, quiet: true });
 zodEnv.parse(process.env);
