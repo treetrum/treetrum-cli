@@ -1,11 +1,11 @@
+import fs from "node:fs/promises";
+import path from "node:path";
 import { execa } from "execa";
 import { Listr } from "listr2";
 import throttle from "lodash/throttle.js";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { TVDownloadEnv, parseEnv } from "@/utils/env.js";
-import type { Options } from "./schema.js";
 import { readSecret } from "../../utils/secrets.js";
+import type { Options } from "./schema.js";
 import { is10PlayUrl } from "./utils.js";
 
 export const downloadTV = async (options: Options) => {

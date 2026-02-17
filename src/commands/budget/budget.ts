@@ -1,14 +1,14 @@
-import { Listr, PRESET_TIMER } from "listr2";
 import fs from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
+import { Listr, PRESET_TIMER } from "listr2";
 import { chromium } from "playwright-extra";
 import stealthPlugin from "puppeteer-extra-plugin-stealth";
 import { UpEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "@/utils/secrets.js";
+import { AmexConnector } from "./amex/index.js";
 import type { Account, BankConnector } from "./BankConnector.js";
 import type { Ctx, Options, TaskFn } from "./types.js";
-import { AmexConnector } from "./amex/index.js";
 import { UpConnector } from "./up/index.js";
 import { applyPriceModifier, transactionsToCsvString } from "./utils.js";
 
