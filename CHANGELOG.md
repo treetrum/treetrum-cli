@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/treetrum/treetrum-cli/compare/v1.3.3...v1.3.4) (2026-02-19)
+
+
+### Dependencies
+
+* update dependency oxfmt to ^0.34.0 ([#167](https://github.com/treetrum/treetrum-cli/issues/167)) ([c35f1de](https://github.com/treetrum/treetrum-cli/commit/c35f1de3cfbaead3d260f92c0c3139648acef0a6))
+
 ## [1.3.3](https://github.com/treetrum/treetrum-cli/compare/v1.3.2...v1.3.3) (2026-02-17)
 
 
