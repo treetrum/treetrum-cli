@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.4](https://github.com/treetrum/treetrum-cli/compare/v1.3.3...v1.3.4) (2026-02-26)
+
+
+### Dependencies
+
+* update actions/upload-artifact action to v7 ([#171](https://github.com/treetrum/treetrum-cli/issues/171)) ([d92bbc7](https://github.com/treetrum/treetrum-cli/commit/d92bbc7d60eb3287d403ac80519195a33f7c6ac6))
+* update dependency bun to v1.3.10 ([#170](https://github.com/treetrum/treetrum-cli/issues/170)) ([3ed6111](https://github.com/treetrum/treetrum-cli/commit/3ed6111a2e1584cf653d7c49133f93461cee1da1))
+* update dependency oxfmt to ^0.34.0 ([#167](https://github.com/treetrum/treetrum-cli/issues/167)) ([c35f1de](https://github.com/treetrum/treetrum-cli/commit/c35f1de3cfbaead3d260f92c0c3139648acef0a6))
+* update dependency oxfmt to ^0.35.0 ([#169](https://github.com/treetrum/treetrum-cli/issues/169)) ([f99aa92](https://github.com/treetrum/treetrum-cli/commit/f99aa9224ef2c4e66b5e93ef3943dcfb840f83f4))
+
 ## [1.3.3](https://github.com/treetrum/treetrum-cli/compare/v1.3.2...v1.3.3) (2026-02-17)
 
 
