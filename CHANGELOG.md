@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.4](https://github.com/treetrum/treetrum-cli/compare/v1.3.3...v1.3.4) (2026-03-08)
+
+
+### Dependencies
+
+* update actions/upload-artifact action to v7 ([#171](https://github.com/treetrum/treetrum-cli/issues/171)) ([d92bbc7](https://github.com/treetrum/treetrum-cli/commit/d92bbc7d60eb3287d403ac80519195a33f7c6ac6))
+* update dependency bun to v1.3.10 ([#170](https://github.com/treetrum/treetrum-cli/issues/170)) ([3ed6111](https://github.com/treetrum/treetrum-cli/commit/3ed6111a2e1584cf653d7c49133f93461cee1da1))
+* update dependency dinero.js to v2 ([#173](https://github.com/treetrum/treetrum-cli/issues/173)) ([bffdbf1](https://github.com/treetrum/treetrum-cli/commit/bffdbf19db7fe0e0384994881f52ab67367f9c9c))
+* update dependency oxfmt to ^0.34.0 ([#167](https://github.com/treetrum/treetrum-cli/issues/167)) ([c35f1de](https://github.com/treetrum/treetrum-cli/commit/c35f1de3cfbaead3d260f92c0c3139648acef0a6))
+* update dependency oxfmt to ^0.35.0 ([#169](https://github.com/treetrum/treetrum-cli/issues/169)) ([f99aa92](https://github.com/treetrum/treetrum-cli/commit/f99aa9224ef2c4e66b5e93ef3943dcfb840f83f4))
+* update dependency oxfmt to ^0.36.0 ([#172](https://github.com/treetrum/treetrum-cli/issues/172)) ([cf5eb69](https://github.com/treetrum/treetrum-cli/commit/cf5eb69e274b85470fa34fa4503d7ee067e92851))
+* update docker/build-push-action action to v7 ([#177](https://github.com/treetrum/treetrum-cli/issues/177)) ([ab2c56b](https://github.com/treetrum/treetrum-cli/commit/ab2c56b27c38d4ce509eaa913ed848a17cd3135b))
+* update docker/login-action action to v4 ([#175](https://github.com/treetrum/treetrum-cli/issues/175)) ([390e380](https://github.com/treetrum/treetrum-cli/commit/390e380cbb11d7f1caea1f8da440d7fa5ebb3546))
+* update docker/metadata-action action to v6 ([#178](https://github.com/treetrum/treetrum-cli/issues/178)) ([0f6fafc](https://github.com/treetrum/treetrum-cli/commit/0f6fafcc9566ca13fce8cebdbe07fd94db4d7627))
+* update docker/setup-buildx-action action to v4 ([#176](https://github.com/treetrum/treetrum-cli/issues/176)) ([f26debf](https://github.com/treetrum/treetrum-cli/commit/f26debf7a13ebb8da47849ff5ddf5bccb0b8db6c))
+* update docker/setup-qemu-action action to v4 ([#174](https://github.com/treetrum/treetrum-cli/issues/174)) ([4f206c5](https://github.com/treetrum/treetrum-cli/commit/4f206c5c1a55d7a7d7d9fbe07fff0498119b88ab))
+
 ## [1.3.3](https://github.com/treetrum/treetrum-cli/compare/v1.3.2...v1.3.3) (2026-02-17)
 
 
