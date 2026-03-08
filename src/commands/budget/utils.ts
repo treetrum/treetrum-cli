@@ -1,5 +1,5 @@
 import { stringify } from "csv-stringify/sync";
-import Dinero from "dinero.js";
+import { USD, dinero, multiply, toDecimal } from "dinero.js";
 import moment from "moment";
 import type { Transaction } from "./BankConnector.js";
 
@@ -45,9 +45,15 @@ export const applyPriceModifier = (
             `${Number.parseFloat(amount.replace("$", "")) * 100}`
         );
 
-        const transformedAmount = Dinero({ amount: amountAsInteger })
-            .multiply(priceModifier)
-            .toFormat("0.00");
+        const transformedAmount = toDecimal(
+            multiply(
+                dinero({
+                    amount: amountAsInteger,
+                    currency: USD,
+                }),
+                priceModifier
+            )
+        );
 
         const beforeModifierDescription = `${amount} before x${priceModifier}`;
 
