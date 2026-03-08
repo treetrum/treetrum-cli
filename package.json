@@ -21,7 +21,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/dinero.js": "^1.9.4",
+        "@types/dinero.js": "^2.0.0",
         "@types/lodash": "^4.17.10",
         "@types/prompts": "^2.4.9",
         "lefthook": "^2.1.0",
@@ -36,7 +36,7 @@
         "csv-parse": "^6.0.0",
         "csv-stringify": "^6.5.1",
         "date-fns": "^4.1.0",
-        "dinero.js": "^1.9.1",
+        "dinero.js": "^2.0.0",
         "dotenv": "^17.0.0",
         "execa": "^9.3.0",
         "listr2": "^10.0.0",
