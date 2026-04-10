@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.5](https://github.com/treetrum/treetrum-cli/compare/v1.3.4...v1.3.5) (2026-04-10)
+
+
+### Dependencies
+
+* update dependency bun to v1.3.11 ([#183](https://github.com/treetrum/treetrum-cli/issues/183)) ([0b40de0](https://github.com/treetrum/treetrum-cli/commit/0b40de045a1b1f1f14f81bd9eec53b5800f7c3a1))
+* update dependency bun to v1.3.12 ([#188](https://github.com/treetrum/treetrum-cli/issues/188)) ([336c12c](https://github.com/treetrum/treetrum-cli/commit/336c12c15de4cc27f21555daa8b07e0e51c0a61d))
+* update dependency oxfmt to ^0.37.0 ([#179](https://github.com/treetrum/treetrum-cli/issues/179)) ([c54378a](https://github.com/treetrum/treetrum-cli/commit/c54378af02aff24108fd170d3b60d68ef37688b2))
+* update dependency oxfmt to ^0.40.0 ([#180](https://github.com/treetrum/treetrum-cli/issues/180)) ([59efa32](https://github.com/treetrum/treetrum-cli/commit/59efa326badf276649daf2e066f24f0cf40dfc0e))
+* update dependency oxfmt to ^0.41.0 ([#181](https://github.com/treetrum/treetrum-cli/issues/181)) ([2ddd1eb](https://github.com/treetrum/treetrum-cli/commit/2ddd1eb095274be2468e15e8af5a032d0e1bf54f))
+* update dependency oxfmt to ^0.42.0 ([#185](https://github.com/treetrum/treetrum-cli/issues/185)) ([ccd775f](https://github.com/treetrum/treetrum-cli/commit/ccd775fe8de51dd3d26e1552621be6a370ac74a0))
+* update dependency oxfmt to ^0.43.0 ([#186](https://github.com/treetrum/treetrum-cli/issues/186)) ([78aaad0](https://github.com/treetrum/treetrum-cli/commit/78aaad0dd502aa72618ad12d76cb3911bc4abe8a))
+* update dependency oxfmt to ^0.44.0 ([#187](https://github.com/treetrum/treetrum-cli/issues/187)) ([7554b16](https://github.com/treetrum/treetrum-cli/commit/7554b16c61c7f7780d8c284a61a686318e931b61))
+* update dependency typescript to v6 ([#184](https://github.com/treetrum/treetrum-cli/issues/184)) ([ab3efbc](https://github.com/treetrum/treetrum-cli/commit/ab3efbc90db8e9ada981cee3cd69a66369584c64))
+
 ## [1.3.4](https://github.com/treetrum/treetrum-cli/compare/v1.3.3...v1.3.4) (2026-03-08)
 
 
