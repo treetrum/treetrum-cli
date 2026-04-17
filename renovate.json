@@ -12,6 +12,10 @@
             "automerge": true
         },
         {
+            "matchPackageNames": ["oxfmt", "oxlint", "oxlint-tsgolint"],
+            "automerge": true
+        },
+        {
             "matchUpdateTypes": ["minor", "major"],
             "reviewers": ["@treetrum"]
         }
