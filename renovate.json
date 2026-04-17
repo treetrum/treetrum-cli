@@ -1,23 +1,4 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "config:recommended",
-        ":semanticCommitTypeAll(deps)",
-        ":semanticCommitScopeDisabled"
-    ],
-    "semanticCommits": "enabled",
-    "packageRules": [
-        {
-            "matchUpdateTypes": ["patch"],
-            "automerge": true
-        },
-        {
-            "matchPackageNames": ["oxfmt", "oxlint", "oxlint-tsgolint"],
-            "automerge": true
-        },
-        {
-            "matchUpdateTypes": ["minor", "major"],
-            "reviewers": ["@treetrum"]
-        }
-    ]
+    "extends": ["github>treetrum/renovate-config"]
 }
