@@ -21,7 +21,6 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/dinero.js": "^2.0.0",
         "@types/lodash": "^4.17.10",
         "@types/prompts": "^2.4.9",
         "lefthook": "^2.1.0",

@@ -25,7 +25,6 @@
         "zod": "^4.0.0",
       },
       "devDependencies": {
-        "@types/dinero.js": "^2.0.0",
         "@types/lodash": "^4.17.10",
         "@types/prompts": "^2.4.9",
         "lefthook": "^2.1.0",
@@ -121,8 +120,6 @@
     "@sindresorhus/merge-streams": ["@sindresorhus/merge-streams@4.0.0", "", {}, "sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ=="],
 
     "@types/debug": ["@types/debug@4.1.12", "", { "dependencies": { "@types/ms": "*" } }, "sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ=="],
-
-    "@types/dinero.js": ["@types/dinero.js@2.0.0", "", { "dependencies": { "dinero.js": "*" } }, "sha512-hurUZwUL8hlk9U1GsJeCk8+vQsRfU1ISU3osm0Pn1cJMfYC1cVQZ1gzNKz54CnucWQzAcUCHKsFAsJFCvMYnpw=="],
 
     "@types/lodash": ["@types/lodash@4.17.23", "", {}, "sha512-RDvF6wTulMPjrNdCoYRC8gNR880JNGT8uB+REUpC2Ns4pRqQJhGz90wh7rgdXDPpCczF3VGktDuFGVnz8zP7HA=="],
 
