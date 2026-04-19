@@ -10,9 +10,9 @@ jobs:
     name: "Lint, Test & Build"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version-file: .bun-version
 
@@ -29,7 +29,7 @@ jobs:
           UP_TOKEN: ${{ secrets.UP_TOKEN }}
 
       - name: Upload Statements
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: statements
           path: /tmp/statements/*.csv
