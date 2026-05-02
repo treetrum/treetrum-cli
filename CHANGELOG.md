@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.3.5](https://github.com/treetrum/treetrum-cli/compare/v1.3.4...v1.3.5) (2026-05-02)
+
+
+### Dependencies
+
+* pin dependencies ([#191](https://github.com/treetrum/treetrum-cli/issues/191)) ([4973734](https://github.com/treetrum/treetrum-cli/commit/4973734811c395243ea7a5c593129a61525b81f5))
+* update dependency bun to v1.3.11 ([#183](https://github.com/treetrum/treetrum-cli/issues/183)) ([0b40de0](https://github.com/treetrum/treetrum-cli/commit/0b40de045a1b1f1f14f81bd9eec53b5800f7c3a1))
+* update dependency bun to v1.3.12 ([#188](https://github.com/treetrum/treetrum-cli/issues/188)) ([336c12c](https://github.com/treetrum/treetrum-cli/commit/336c12c15de4cc27f21555daa8b07e0e51c0a61d))
+* update dependency bun to v1.3.13 ([#193](https://github.com/treetrum/treetrum-cli/issues/193)) ([20f6670](https://github.com/treetrum/treetrum-cli/commit/20f66706728de2dc1a80fc2111e9f38e79331ed6))
+* update dependency oxfmt to ^0.37.0 ([#179](https://github.com/treetrum/treetrum-cli/issues/179)) ([c54378a](https://github.com/treetrum/treetrum-cli/commit/c54378af02aff24108fd170d3b60d68ef37688b2))
+* update dependency oxfmt to ^0.40.0 ([#180](https://github.com/treetrum/treetrum-cli/issues/180)) ([59efa32](https://github.com/treetrum/treetrum-cli/commit/59efa326badf276649daf2e066f24f0cf40dfc0e))
+* update dependency oxfmt to ^0.41.0 ([#181](https://github.com/treetrum/treetrum-cli/issues/181)) ([2ddd1eb](https://github.com/treetrum/treetrum-cli/commit/2ddd1eb095274be2468e15e8af5a032d0e1bf54f))
+* update dependency oxfmt to ^0.42.0 ([#185](https://github.com/treetrum/treetrum-cli/issues/185)) ([ccd775f](https://github.com/treetrum/treetrum-cli/commit/ccd775fe8de51dd3d26e1552621be6a370ac74a0))
+* update dependency oxfmt to ^0.43.0 ([#186](https://github.com/treetrum/treetrum-cli/issues/186)) ([78aaad0](https://github.com/treetrum/treetrum-cli/commit/78aaad0dd502aa72618ad12d76cb3911bc4abe8a))
+* update dependency oxfmt to ^0.44.0 ([#187](https://github.com/treetrum/treetrum-cli/issues/187)) ([7554b16](https://github.com/treetrum/treetrum-cli/commit/7554b16c61c7f7780d8c284a61a686318e931b61))
+* update dependency oxfmt to ^0.45.0 ([#189](https://github.com/treetrum/treetrum-cli/issues/189)) ([788d72e](https://github.com/treetrum/treetrum-cli/commit/788d72e9222d850ecee214bd41363b9c817bce9c))
+* update dependency oxfmt to v0.46.0 ([#194](https://github.com/treetrum/treetrum-cli/issues/194)) ([0960bd4](https://github.com/treetrum/treetrum-cli/commit/0960bd4c314fdeb6c90c6f9791ac9b73aee42032))
+* update dependency oxfmt to v0.47.0 ([#197](https://github.com/treetrum/treetrum-cli/issues/197)) ([3172406](https://github.com/treetrum/treetrum-cli/commit/31724060bb7a7726e20119083015a3eedaf3cab1))
+* update dependency oxlint to v1.61.0 ([#195](https://github.com/treetrum/treetrum-cli/issues/195)) ([fb9f9ea](https://github.com/treetrum/treetrum-cli/commit/fb9f9ead70e8bfe19ce16482011a6007ab774228))
+* update dependency oxlint to v1.62.0 ([#198](https://github.com/treetrum/treetrum-cli/issues/198)) ([fd22406](https://github.com/treetrum/treetrum-cli/commit/fd22406770f22156822d7464ae08f88f2fd4b68c))
+* update dependency typescript to v6 ([#184](https://github.com/treetrum/treetrum-cli/issues/184)) ([ab3efbc](https://github.com/treetrum/treetrum-cli/commit/ab3efbc90db8e9ada981cee3cd69a66369584c64))
+* update dependency zod to v4.4.1 ([#199](https://github.com/treetrum/treetrum-cli/issues/199)) ([06329f9](https://github.com/treetrum/treetrum-cli/commit/06329f95f100357f5b898555926fdccf69f965e1))
+* update dependency zod to v4.4.2 ([#200](https://github.com/treetrum/treetrum-cli/issues/200)) ([ec1779e](https://github.com/treetrum/treetrum-cli/commit/ec1779e89d58b988954b4909bf65be298f01b0e9))
+* update googleapis/release-please-action action to v5 ([#196](https://github.com/treetrum/treetrum-cli/issues/196)) ([cb67a1f](https://github.com/treetrum/treetrum-cli/commit/cb67a1f1b36a4c04acbdda7b4c8f747a9a43de02))
+
+
+### Internal Changes
+
+* remove types/dinero ([c8b51bc](https://github.com/treetrum/treetrum-cli/commit/c8b51bc7d7ba4c8c6035757630c0849dfd837769))
+* update renovate to automerge lint/formatting bumps ([a6108d0](https://github.com/treetrum/treetrum-cli/commit/a6108d0086e5395d36c112cd1d8d622ecd0f65ee))
+* use shared renovate preset ([#190](https://github.com/treetrum/treetrum-cli/issues/190)) ([2972a0b](https://github.com/treetrum/treetrum-cli/commit/2972a0bd96eb21d10b3bbd92294c8511cb7a7ba5))
+
 ## [1.3.4](https://github.com/treetrum/treetrum-cli/compare/v1.3.3...v1.3.4) (2026-03-08)
 
 
