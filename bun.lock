@@ -8,7 +8,7 @@
         "@1password/op-js": "0.1.13",
         "@commander-js/extra-typings": "15.0.0",
         "commander": "15.0.0",
-        "csv-parse": "6.2.1",
+        "csv-parse": "7.0.0",
         "csv-stringify": "6.8.0",
         "date-fns": "4.4.0",
         "dinero.js": "2.0.2",
@@ -153,7 +153,7 @@
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
-    "csv-parse": ["csv-parse@6.2.1", "", {}, "sha512-LRLMV+UCyfMokp8Wb411duBf1gaBKJfOfBWU9eHMJ+b+cJYZsNu3AFmjJf3+yPGd59Exz1TsMjaSFyxnYB9+IQ=="],
+    "csv-parse": ["csv-parse@7.0.0", "", {}, "sha512-CSssqPAK5us09FhMI9juM0jnqXUJP+rtWeIfivTYBLNH/8rnxkQlZvoRemF6MAyfNov9XU8mN2wwF/pP68sxTA=="],
 
     "csv-stringify": ["csv-stringify@6.8.0", "", {}, "sha512-Ya0OOHb6XbgPaZKH7dcdmwXe3azUS0TwmlbVdS75HoAhnHApSkiQcfEJoC/s5WwGsrXwOjBDr3FTmCZPjkssgg=="],
 
