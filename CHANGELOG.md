@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.3.6](https://github.com/treetrum/treetrum-cli/compare/v1.3.5...v1.3.6) (2026-07-01)
+
+
+### Fixes
+
+* **deps:** update dependency @commander-js/extra-typings to v15 ([#218](https://github.com/treetrum/treetrum-cli/issues/218)) ([7fb32fb](https://github.com/treetrum/treetrum-cli/commit/7fb32fb691c77754c2cea9bb5d5f42ba40d21f40))
+* **deps:** update dependency commander to v15 ([#219](https://github.com/treetrum/treetrum-cli/issues/219)) ([c1f1a5d](https://github.com/treetrum/treetrum-cli/commit/c1f1a5da835881ae97fd0d64e7da22ef8bc27e9a))
+* **deps:** update dependency csv-parse to v7 ([#224](https://github.com/treetrum/treetrum-cli/issues/224)) ([91181d8](https://github.com/treetrum/treetrum-cli/commit/91181d86be1fe24afdf10b93eb4e935c74c57aad))
+* **deps:** update dependency csv-stringify to v6.8.0 ([#223](https://github.com/treetrum/treetrum-cli/issues/223)) ([32fe1b8](https://github.com/treetrum/treetrum-cli/commit/32fe1b8f633ea69dd5a45c033b38c42708e2a41d))
+* **deps:** update dependency date-fns to v4.3.0 ([#214](https://github.com/treetrum/treetrum-cli/issues/214)) ([e9e5829](https://github.com/treetrum/treetrum-cli/commit/e9e5829ea29b87200f531153ffc199ae662f7a26))
+* **deps:** update dependency date-fns to v4.4.0 ([#220](https://github.com/treetrum/treetrum-cli/issues/220)) ([a4fee0e](https://github.com/treetrum/treetrum-cli/commit/a4fee0e16321292edc2d0ad005586f2777b85562))
+* **deps:** update dependency listr2 to v10.2.2 ([#230](https://github.com/treetrum/treetrum-cli/issues/230)) ([7d916eb](https://github.com/treetrum/treetrum-cli/commit/7d916ebe4b28cdc7954f4652db3f677ed6befdec))
+* **deps:** update playwright monorepo ([#229](https://github.com/treetrum/treetrum-cli/issues/229)) ([71bbcf3](https://github.com/treetrum/treetrum-cli/commit/71bbcf3f8a2a103d9e2264a01c83483851123f12))
+* **deps:** update playwright monorepo to v1.61.0 ([#226](https://github.com/treetrum/treetrum-cli/issues/226)) ([7e43c88](https://github.com/treetrum/treetrum-cli/commit/7e43c88ba19776b43a2c0c8ffff63f194b4c6479))
+
+
+### Internal Changes
+
+* **deps:** update actions/checkout action to v7 ([#227](https://github.com/treetrum/treetrum-cli/issues/227)) ([e17fb72](https://github.com/treetrum/treetrum-cli/commit/e17fb7222de6905c61126e03bc92afcedcd84969))
+* **deps:** update dependency lefthook to v2.1.9 ([#217](https://github.com/treetrum/treetrum-cli/issues/217)) ([a86e57f](https://github.com/treetrum/treetrum-cli/commit/a86e57f70b5ea3ae6d0db26dc362456742e5638c))
+* **deps:** update oxc monorepo ([#216](https://github.com/treetrum/treetrum-cli/issues/216)) ([247b704](https://github.com/treetrum/treetrum-cli/commit/247b7043e14c9b9f934858db7fd6428ca216a83f))
+* **deps:** update oxc monorepo ([#221](https://github.com/treetrum/treetrum-cli/issues/221)) ([4497eba](https://github.com/treetrum/treetrum-cli/commit/4497ebabcb84c58c091158a5bf0dc810db7b6db0))
+* **deps:** update oxc monorepo ([#222](https://github.com/treetrum/treetrum-cli/issues/222)) ([c6e77bb](https://github.com/treetrum/treetrum-cli/commit/c6e77bb75a0d2bcfee633465a3bf2bf4b2b26e83))
+* **deps:** update oxc monorepo ([#225](https://github.com/treetrum/treetrum-cli/issues/225)) ([56cb3a8](https://github.com/treetrum/treetrum-cli/commit/56cb3a82e9ac29a8cfffac7b8b4e806c33ff38e4))
+* **deps:** update oxc monorepo ([#228](https://github.com/treetrum/treetrum-cli/issues/228)) ([546a4a9](https://github.com/treetrum/treetrum-cli/commit/546a4a9b4c319f4036c7f7668364e7bcc044b794))
+* **deps:** update oxc monorepo ([#231](https://github.com/treetrum/treetrum-cli/issues/231)) ([ae80026](https://github.com/treetrum/treetrum-cli/commit/ae80026cf1e8c4288c3e0527cb5f27f6e16cea04))
+
 ## [1.3.5](https://github.com/treetrum/treetrum-cli/compare/v1.3.4...v1.3.5) (2026-05-24)
 
 
