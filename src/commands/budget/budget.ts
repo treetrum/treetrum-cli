@@ -2,8 +2,7 @@ import fs from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import { Listr, PRESET_TIMER } from "listr2";
-import { chromium } from "playwright-extra";
-import stealthPlugin from "puppeteer-extra-plugin-stealth";
+import { chromium } from "patchright";
 import { UpEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "@/utils/secrets.js";
 import { AmexConnector } from "./amex/index.js";
@@ -31,12 +30,15 @@ const initBrowser: TaskFn = async (ctx, task) => {
         task.skip("Browser not needed");
         return;
     }
-    chromium.use(stealthPlugin());
     ctx.chromium = await chromium.launchPersistentContext(
         path.join(homedir(), ".treetrum_cli_playwright_data"),
         {
+            channel: "chrome",
             headless: process.env.CI ? true : ctx.options.headless,
             recordVideo: { dir: videoDir },
+            viewport: null,
+            locale: "en-AU",
+            timezoneId: "Australia/Sydney",
         }
     );
 };

@@ -3,7 +3,7 @@ import { parse } from "csv-parse/sync";
 import { format } from "date-fns/format";
 import { sub } from "date-fns/sub";
 import moment from "moment";
-import type { Page } from "playwright";
+import type { Page } from "patchright";
 import { AmexEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "@/utils/secrets.js";
 import type { BankConnector, Transaction } from "../BankConnector.js";
@@ -48,10 +48,19 @@ export class AmexConnector implements BankConnector {
         ]);
 
         this.task.output = TaskMessages.loggingIn;
-        await this.page.fill("#eliloUserID", userId);
-        await this.page.fill("#eliloPassword", password);
-        await this.page.click("#loginSubmit");
-        await this.page.getByRole("button", { name: "Statements & Activity" }).waitFor();
+
+        const statementsButton = this.page.getByRole("button", {
+            name: "Statements & Activity",
+        });
+
+        const loginField = this.page.locator("#eliloUserID");
+        if (await loginField.isVisible().catch(() => false)) {
+            await loginField.fill(userId);
+            await this.page.fill("#eliloPassword", password);
+            await this.page.click("#loginSubmit");
+        }
+
+        await statementsButton.waitFor();
     };
 
     getTransactions = async () => {

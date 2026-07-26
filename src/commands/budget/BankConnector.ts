@@ -1,4 +1,4 @@
-import type { Page } from "playwright";
+import type { Page } from "patchright";
 import type { Task } from "./types.js";
 
 export type AccountName = string;

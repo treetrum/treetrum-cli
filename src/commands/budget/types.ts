@@ -1,5 +1,5 @@
 import type { DefaultRenderer, ListrTaskFn, ListrTaskWrapper, SimpleRenderer } from "listr2";
-import type { BrowserContext } from "playwright";
+import type { BrowserContext } from "patchright";
 import type { Account, BankConnector } from "./BankConnector.js";
 
 export type Options = {

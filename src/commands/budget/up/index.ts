@@ -1,6 +1,6 @@
 import _kebabCase from "lodash/kebabCase.js";
 import moment from "moment";
-import type { Page } from "playwright";
+import type { Page } from "patchright";
 import { UpEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../../utils/secrets.js";
 import type { BankConnector, Transaction } from "../BankConnector.js";
