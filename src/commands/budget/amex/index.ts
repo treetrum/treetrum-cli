@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { parse } from "csv-parse/sync";
 import { format } from "date-fns/format";
@@ -14,6 +15,16 @@ type AmexCsvDataRow = {
     Description: string;
     Amount: string;
     Reference: string;
+};
+
+const uuidNamespace = Buffer.from("6ba7b8119dad11d180b400c04fd430c8", "hex");
+
+const stableUuid = (value: string) => {
+    const hash = createHash("sha1").update(uuidNamespace).update(value).digest();
+    hash[6] = (hash[6] & 0x0f) | 0x50;
+    hash[8] = (hash[8] & 0x3f) | 0x80;
+    const hex = hash.subarray(0, 16).toString("hex");
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 };
 
 export class AmexConnector implements BankConnector {
@@ -75,6 +86,9 @@ export class AmexConnector implements BankConnector {
         await this.page.getByRole("button", { name: "Search", exact: true }).last().click();
         await this.page.getByRole("button", { name: "Download" }).click();
         await this.page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });
+        await this.page
+            .getByRole("checkbox", { name: /Include all additional transaction details/ })
+            .setChecked(true, { force: true });
 
         // Catch the download and process as path
         const downloadPath = this.page.waitForEvent("download").then((d) => d.path());
@@ -88,7 +102,7 @@ export class AmexConnector implements BankConnector {
 
     transformStatementData = (rawCSV: string): Transaction[] => {
         return (parse(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
-            id: r.Reference,
+            id: stableUuid(r.Reference.replace(/^'/, "")),
             date: moment(r.Date, "DD/MM/YYYY").toDate(),
             description: r.Description,
             amount: r.Amount,
