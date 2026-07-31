@@ -66,7 +66,12 @@ export class AmexConnector implements BankConnector {
         });
 
         const loginField = this.page.locator("#eliloUserID");
-        if (await loginField.isVisible().catch(() => false)) {
+        const pageState = await Promise.race([
+            loginField.waitFor({ state: "visible" }).then(() => "login"),
+            statementsButton.waitFor().then(() => "authenticated"),
+        ]);
+
+        if (pageState === "login") {
             await loginField.fill(userId);
             await this.page.fill("#eliloPassword", password);
             await this.page.click("#loginSubmit");
