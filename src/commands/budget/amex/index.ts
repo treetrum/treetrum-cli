@@ -19,6 +19,9 @@ type AmexCsvDataRow = {
 
 const uuidNamespace = Buffer.from("6ba7b8119dad11d180b400c04fd430c8", "hex");
 
+const flipAmountSign = (amount: string) =>
+    amount.startsWith("-") ? amount.slice(1) : `-${amount}`;
+
 const stableUuid = (value: string) => {
     const hash = createHash("sha1").update(uuidNamespace).update(value).digest();
     hash[6] = (hash[6] & 0x0f) | 0x50;
@@ -110,7 +113,7 @@ export class AmexConnector implements BankConnector {
             id: stableUuid(r.Reference.replace(/^'/, "")),
             date: moment(r.Date, "DD/MM/YYYY").toDate(),
             description: r.Description,
-            amount: r.Amount,
+            amount: flipAmountSign(r.Amount),
         }));
     };
 }
