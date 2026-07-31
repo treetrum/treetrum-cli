@@ -13,6 +13,7 @@ type AmexCsvDataRow = {
     Date: string;
     Description: string;
     Amount: string;
+    Reference: string;
 };
 
 export class AmexConnector implements BankConnector {
@@ -87,6 +88,7 @@ export class AmexConnector implements BankConnector {
 
     transformStatementData = (rawCSV: string): Transaction[] => {
         return (parse(rawCSV, { columns: true }) as AmexCsvDataRow[]).map((r) => ({
+            id: r.Reference,
             date: moment(r.Date, "DD/MM/YYYY").toDate(),
             description: r.Description,
             amount: r.Amount,

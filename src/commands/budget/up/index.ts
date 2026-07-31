@@ -43,6 +43,7 @@ export class UpConnector implements BankConnector {
 
             accountsToTransactions[_kebabCase(`${this.id} ${account.attributes.displayName}`)] =
                 transactions.data.map<Transaction>((t) => ({
+                    id: t.id,
                     date: moment(t.attributes.createdAt).toDate(),
                     amount: t.attributes.amount.value,
                     description: t.attributes.description,

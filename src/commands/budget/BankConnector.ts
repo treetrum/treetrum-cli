@@ -6,6 +6,7 @@ export type AccountName = string;
 export const createPending = (value: boolean) => (value ? "TRUE" : "FALSE");
 
 export type Transaction = {
+    id: string;
     description: string;
     date: Date;
     amount: string;
