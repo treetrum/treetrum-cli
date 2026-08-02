@@ -21,7 +21,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/lodash": "4.17.24",
+        "@types/lodash": "4.17.25",
         "@types/prompts": "2.4.9",
         "lefthook": "2.1.10",
         "oxfmt": "0.61.0",
