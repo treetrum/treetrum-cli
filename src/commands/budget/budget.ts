@@ -33,7 +33,6 @@ const initBrowser: TaskFn = async (ctx, task) => {
     ctx.chromium = await chromium.launchPersistentContext(
         path.join(homedir(), ".treetrum_cli_playwright_data"),
         {
-            channel: "chrome",
             headless: process.env.CI ? true : ctx.options.headless,
             recordVideo: { dir: videoDir },
             viewport: null,
