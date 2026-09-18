@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.1](https://github.com/treetrum/treetrum-cli/compare/v1.4.0...v1.4.1) (2026-09-18)
+
+
+### Fixes
+
+* **download-tv:** pass subprocess arguments safely ([a240840](https://github.com/treetrum/treetrum-cli/commit/a240840d22faf06a04d9d1b308e767f3e61cfd7f))
+
+
+### Dependencies
+
+* pin yt-dlp and enable renovate updates ([9db2c6e](https://github.com/treetrum/treetrum-cli/commit/9db2c6ea1768151e2498620cb6e2c36efed3868e))
+
 ## [1.4.0](https://github.com/treetrum/treetrum-cli/compare/v1.3.5...v1.4.0) (2026-09-16)
 
 
