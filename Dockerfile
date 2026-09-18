@@ -20,7 +20,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install yt-dlp
-RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/bin/yt-dlp \
+ARG YT_DLP_VERSION=2026.08.19
+RUN curl -fL "https://github.com/yt-dlp/yt-dlp/releases/download/${YT_DLP_VERSION}/yt-dlp" -o /usr/bin/yt-dlp \
     && chmod a+rx /usr/bin/yt-dlp
 
 # Install ttyd (web terminal)

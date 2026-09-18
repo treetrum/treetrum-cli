@@ -1,4 +1,14 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["github>treetrum/renovate-config"]
+    "extends": ["github>treetrum/renovate-config"],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "managerFilePatterns": ["/(^|/)Dockerfile$/"],
+            "matchStrings": ["ARG YT_DLP_VERSION=(?<currentValue>[^\\s]+)"],
+            "depNameTemplate": "yt-dlp/yt-dlp",
+            "datasourceTemplate": "github-releases",
+            "versioningTemplate": "loose"
+        }
+    ]
 }
