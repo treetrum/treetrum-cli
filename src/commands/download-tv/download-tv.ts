@@ -22,8 +22,6 @@ export const downloadTV = async (options: Options) => {
     const outputDir = path.join(tvDir, options.show, `Season ${options.season}`);
     const outputPath = path.join(outputDir, epName);
 
-    const execaInstance = execa({ shell: true });
-
     const tasks = new Listr([
         {
             title: "Checking server access",
@@ -48,11 +46,11 @@ export const downloadTV = async (options: Options) => {
                 const updateTaskOutput = throttle((msg) => {
                     task.output = msg;
                 }, 100);
-                const ytDlp = "yt-dlp";
-                const credentials = is10PlayUrl(options.url)
-                    ? `--username "${user}" --password "${pass}"`
-                    : "";
-                const process = execaInstance`${ytDlp} ${options.url} -o "${downloadPath}" --no-simulate ${credentials}`;
+                const args = [options.url, "-o", downloadPath, "--no-simulate"];
+                if (is10PlayUrl(options.url)) {
+                    args.push("--username", user, "--password", pass);
+                }
+                const process = execa("yt-dlp", args);
                 process.stdout.on("data", updateTaskOutput);
                 await process;
                 updateTaskOutput.cancel();
@@ -61,7 +59,7 @@ export const downloadTV = async (options: Options) => {
         {
             title: `Copying to ${outputPath}`,
             task: async (_, task) => {
-                const process = execaInstance`rsync -ah --progress "${downloadPath}" "${outputPath}"`;
+                const process = execa("rsync", ["-ah", "--progress", downloadPath, outputPath]);
                 process.stdout.on("data", (m) => {
                     task.output = m;
                 });
