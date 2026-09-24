@@ -12,7 +12,7 @@
         "csv-stringify": "6.8.3",
         "date-fns": "4.4.0",
         "dinero.js": "2.0.2",
-        "dotenv": "18.0.2",
+        "dotenv": "18.0.3",
         "execa": "10.0.1",
         "listr2": "11.1.0",
         "lodash": "4.18.1",
@@ -183,7 +183,7 @@
 
     "dinero.js": ["dinero.js@2.0.2", "", {}, "sha512-d+4egJTvNinkb66KSed11Daqz6MWaOHzyalLu6h3p+BLrsmwKFjHjvOKivOWeM7WyoX89te+xx4cKI6zrDtCfQ=="],
 
-    "dotenv": ["dotenv@18.0.2", "", { "bin": { "dotenv": "dist/index.cjs" } }, "sha512-wl0U3CxC0iobaryqEKpFJxzyp4AxQFYAKj/WWszXZr87vVHLi2yJv2syax5Vxt+u02xqNgE277rsc3lOKg9sPg=="],
+    "dotenv": ["dotenv@18.0.3", "", { "bin": { "dotenv": "dist/index.cjs" } }, "sha512-/8CJTyL817qPnfbQrJgOEcrU3fDrJkRIoXBE566wHuvIXKOCHUZhPqGPbCPi9SogjdGnreF0TlvnTgK6J/8zpA=="],
 
     "environment": ["environment@1.1.0", "", {}, "sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q=="],
 
