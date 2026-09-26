@@ -8,7 +8,7 @@
         "@1password/op-js": "0.1.13",
         "@commander-js/extra-typings": "15.0.0",
         "commander": "15.0.0",
-        "csv-parse": "7.0.2",
+        "csv-parse": "7.0.3",
         "csv-stringify": "6.8.3",
         "date-fns": "4.4.0",
         "dinero.js": "2.0.2",
@@ -175,7 +175,7 @@
 
     "commander": ["commander@15.0.0", "", {}, "sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg=="],
 
-    "csv-parse": ["csv-parse@7.0.2", "", {}, "sha512-uKZghv9UmPkMVLYy//KZ9HFAIJsl7wkhoEdIL0+rhuSY9pZQlhaeGEDPIe+/w7eh81MOql8Q/9+inAGWG6ZHYA=="],
+    "csv-parse": ["csv-parse@7.0.3", "", {}, "sha512-YFd3QM/yo17vH91L1IOZuvl09zM0zEEtdfTcOCKWcMdM++MNaQSyp09slXyFCLaPXvHstQFx/xC8myiFHSMUvw=="],
 
     "csv-stringify": ["csv-stringify@6.8.3", "", {}, "sha512-gIeSCvq5F4VtXV3naV3VAewLhBkiZBz+PPhTOA8H3Y8h/ELa+R1ml0GZck/4/Nzo9ep2lvOluilJ6MJlbZsKMA=="],
 
