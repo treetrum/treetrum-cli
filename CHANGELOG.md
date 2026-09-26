@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.2](https://github.com/treetrum/treetrum-cli/compare/v1.4.1...v1.4.2) (2026-09-26)
+
+
+### Fixes
+
+* **deps:** update dependency csv-parse to v7.0.3 ([#269](https://github.com/treetrum/treetrum-cli/issues/269)) ([8d74003](https://github.com/treetrum/treetrum-cli/commit/8d7400352c9a89b32161338ff15f8a242c6e6779))
+* **deps:** update dependency csv-stringify to v6.9.0 ([#270](https://github.com/treetrum/treetrum-cli/issues/270)) ([257b04d](https://github.com/treetrum/treetrum-cli/commit/257b04dcd5be6a685f6dab558c53107a41d1d593))
+* **deps:** update dependency dotenv to v18 ([#265](https://github.com/treetrum/treetrum-cli/issues/265)) ([706d1b5](https://github.com/treetrum/treetrum-cli/commit/706d1b5461a77c2a001da5a8d44cd9b97ded3fb7))
+* **deps:** update dependency dotenv to v18.0.3 ([#268](https://github.com/treetrum/treetrum-cli/issues/268)) ([dd7e478](https://github.com/treetrum/treetrum-cli/commit/dd7e478b4f412fcbd68d0967ea188c7bceb01830))
+* **deps:** update dependency dotenv to v18.0.4 ([#271](https://github.com/treetrum/treetrum-cli/issues/271)) ([74c7951](https://github.com/treetrum/treetrum-cli/commit/74c7951d0a2bcf12cdc9695e1ec0be62bf1ba63f))
+
+
+### Internal Changes
+
+* **deps:** update oxc monorepo ([#266](https://github.com/treetrum/treetrum-cli/issues/266)) ([f272e85](https://github.com/treetrum/treetrum-cli/commit/f272e851dcf057e8a9924776886065796939ac11))
+
 ## [1.4.1](https://github.com/treetrum/treetrum-cli/compare/v1.4.0...v1.4.1) (2026-09-18)
 
 
