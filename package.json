@@ -23,7 +23,7 @@
     "devDependencies": {
         "@types/lodash": "4.17.25",
         "@types/prompts": "2.4.9",
-        "lefthook": "2.1.14",
+        "lefthook": "2.1.15",
         "oxfmt": "0.71.0",
         "oxlint": "1.86.0",
         "typescript": "7.0.2"
