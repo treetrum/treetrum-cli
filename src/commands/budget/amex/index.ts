@@ -4,7 +4,7 @@ import { parse } from "csv-parse/sync";
 import { format } from "date-fns/format";
 import { sub } from "date-fns/sub";
 import moment from "moment";
-import type { Page } from "patchright";
+import type { Locator, Page, Request } from "patchright";
 import { AmexEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "@/utils/secrets.js";
 import type { BankConnector, Transaction } from "../BankConnector.js";
@@ -16,6 +16,8 @@ type AmexCsvDataRow = {
     Amount: string;
     Reference: string;
 };
+
+const MANUAL_LOGIN_TIMEOUT_MINUTES = 10;
 
 const uuidNamespace = Buffer.from("6ba7b8119dad11d180b400c04fd430c8", "hex");
 
@@ -68,29 +70,111 @@ export class AmexConnector implements BankConnector {
             name: "Statements & Activity",
         });
 
-        const loginField = this.page.locator("#eliloUserID");
+        const userField = this.page.locator("#eliloUserID");
+        const passwordField = this.page.locator("#eliloPassword");
         const pageState = await Promise.race([
-            loginField.waitFor({ state: "visible" }).then(() => "login"),
-            statementsButton.waitFor().then(() => "authenticated"),
+            userField.waitFor({ state: "visible" }).then(() => "login" as const),
+            statementsButton.waitFor().then(() => "authenticated" as const),
         ]);
+        if (pageState === "authenticated") return;
 
-        if (pageState === "login") {
-            await loginField.fill(userId);
-            await this.page.fill("#eliloPassword", password);
-            await this.page.click("#loginSubmit");
+        // Let the login scripts finish attaching before interacting.
+        await this.page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+        // Akamai scores keystroke/mouse telemetry, so behave like a person rather than using fill().
+        await this.pause(800, 2_000);
+        await this.humanType(userField, userId);
+        await this.pause(300, 900);
+        await this.humanType(passwordField, password);
+        // Best-effort: a remembered device tends to get fewer challenges.
+        const rememberMe = this.page.getByRole("checkbox", { name: /Remember Me/i });
+        if (!(await rememberMe.isChecked({ timeout: 2_000 }).catch(() => true))) {
+            await this.pause(300, 800);
+            await this.humanClick(this.page.getByText("Remember Me", { exact: true })).catch(
+                () => {}
+            );
         }
+        await this.pause(400, 1_200);
 
-        await statementsButton.waitFor();
+        // Akamai rejects flagged logins without CORS headers, so the fetch fails and the form sits idle.
+        let loginRequestBlocked = false;
+        const onRequestFailed = (request: Request) => {
+            if (request.url().includes("/myca/logon/")) loginRequestBlocked = true;
+        };
+        this.page.on("requestfailed", onRequestFailed);
+        try {
+            await this.humanClick(this.page.locator("#loginSubmit"));
+            const loggedIn = await statementsButton
+                .waitFor({ timeout: 30_000 })
+                .then(() => true)
+                .catch(() => false);
+            if (!loggedIn) {
+                // Usually a captcha; ask a human to solve it in the open browser.
+                console.error(
+                    `ACTION REQUIRED: Amex login is waiting for manual verification (captcha?). Solve it within ${MANUAL_LOGIN_TIMEOUT_MINUTES} minutes.`
+                );
+                await statementsButton.waitFor({
+                    timeout: MANUAL_LOGIN_TIMEOUT_MINUTES * 60_000,
+                });
+            }
+        } catch (e) {
+            if (loginRequestBlocked) {
+                throw new Error("Amex login request was blocked (likely Akamai bot detection)", {
+                    cause: e,
+                });
+            }
+            throw e;
+        } finally {
+            this.page.off("requestfailed", onRequestFailed);
+        }
+    };
+
+    private pause = (min: number, max: number) =>
+        this.page.waitForTimeout(min + Math.random() * (max - min));
+
+    // Glide the mouse to a random point inside the element, then click.
+    private humanClick = async (target: Locator) => {
+        await target.scrollIntoViewIfNeeded();
+        const box = await target.boundingBox();
+        if (!box) return target.click();
+        const x = box.x + box.width * (0.3 + Math.random() * 0.4);
+        const y = box.y + box.height * (0.3 + Math.random() * 0.4);
+        await this.page.mouse.move(x, y, { steps: 15 + Math.floor(Math.random() * 20) });
+        await this.pause(80, 250);
+        await this.page.mouse.down();
+        await this.pause(40, 120);
+        await this.page.mouse.up();
+    };
+
+    private humanType = async (field: Locator, value: string) => {
+        for (let attempt = 0; attempt < 3; attempt++) {
+            await this.humanClick(field);
+            await field.press("ControlOrMeta+a");
+            await field.press("Backspace");
+            for (const char of value) {
+                await field.pressSequentially(char);
+                await this.pause(50, 180);
+            }
+            if ((await field.inputValue()) === value) return;
+        }
+        throw new Error(`Could not type into ${await field.getAttribute("id")} reliably`);
     };
 
     getTransactions = async () => {
         const endDate = new Date();
         const startDate = sub(endDate, { days: 30 });
 
-        // Filter transactions
-        await this.page.goto(
-            `https://global.americanexpress.com/activity/search?from=${format(startDate, "yyyy-MM-dd")}&to=${format(endDate, "yyyy-MM-dd")}`
-        );
+        // Dashboard keeps navigating after login; let it settle and retry if our goto is aborted.
+        await this.page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+        const activityUrl = `https://global.americanexpress.com/activity/search?from=${format(startDate, "yyyy-MM-dd")}&to=${format(endDate, "yyyy-MM-dd")}`;
+        for (let attempt = 1; ; attempt++) {
+            try {
+                await this.page.goto(activityUrl);
+                break;
+            } catch (e) {
+                if (attempt >= 3 || !String(e).includes("ERR_ABORTED")) throw e;
+                await this.page.waitForTimeout(2_000);
+            }
+        }
         await this.page.getByRole("button", { name: "Search", exact: true }).last().click();
         await this.page.getByRole("button", { name: "Download" }).click();
         await this.page.getByRole("radio", { name: "CSV" }).setChecked(true, { force: true });

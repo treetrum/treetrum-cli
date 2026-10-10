@@ -33,11 +33,12 @@ const initBrowser: TaskFn = async (ctx, task) => {
     ctx.chromium = await chromium.launchPersistentContext(
         path.join(homedir(), ".treetrum_cli_playwright_data"),
         {
+            // Real Chrome is much less likely to trip Amex's Akamai bot detection.
+            channel: "chrome",
             headless: process.env.CI ? true : ctx.options.headless,
             recordVideo: { dir: videoDir },
+            // No locale/timezone overrides: emulation is a bot signal and the host already matches.
             viewport: null,
-            locale: "en-AU",
-            timezoneId: "Australia/Sydney",
         }
     );
 };
@@ -63,6 +64,8 @@ const downloadStatements =
                 await page.screenshot({
                     path: screenshotPath,
                     fullPage: true,
+                    // Keep credentials out of screenshots.
+                    mask: [page.locator("input:not([type=checkbox]):not([type=radio])")],
                 });
                 console.error("Screenshot written to", screenshotPath);
             }
