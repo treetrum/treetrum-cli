@@ -6,21 +6,33 @@ import throttle from "lodash/throttle.js";
 import { TVDownloadEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../utils/secrets.js";
 import type { Options } from "./schema.js";
-import { is10PlayUrl } from "./utils.js";
+import { findDownloadedFile, is10PlayUrl } from "./utils.js";
+
+const DOWNLOAD_DIR = "/tmp/treetrum-cli";
+
+const getCredentials = async (
+    label: string,
+    username: string | undefined,
+    password: string | undefined
+) => {
+    if (!username || !password) {
+        throw new Error(`Missing ${label} credentials in env`);
+    }
+    return ["--username", await readSecret(username), "--password", await readSecret(password)];
+};
 
 export const downloadTV = async (options: Options) => {
     const env = parseEnv(TVDownloadEnv);
-    const user = await readSecret(env.TENPLAY_USERNAME);
-    const pass = await readSecret(env.TENPLAY_PASSWORD);
 
     const zeroSeasonNumber = String(options.season).padStart(2, "0");
     const zeroEpNumber = String(options.episode).padStart(2, "0");
-    const epName = `${options.show} - S${zeroSeasonNumber}E${zeroEpNumber} - Episode ${options.episode}.mp4`;
+    const epName = `${options.show} - S${zeroSeasonNumber}E${zeroEpNumber} - Episode ${options.episode}`;
 
-    const downloadPath = path.join("/tmp/treetrum-cli", epName);
     const tvDir = path.join(options.path);
     const outputDir = path.join(tvDir, options.show, `Season ${options.season}`);
-    const outputPath = path.join(outputDir, epName);
+    // Resolved after download, as yt-dlp may pick a different extension
+    let downloadPath = "";
+    let outputPath = "";
 
     const tasks = new Listr([
         {
@@ -46,19 +58,40 @@ export const downloadTV = async (options: Options) => {
                 const updateTaskOutput = throttle((msg) => {
                     task.output = msg;
                 }, 100);
-                const args = [options.url, "-o", downloadPath, "--no-simulate"];
+                const args = [
+                    options.url,
+                    "-o",
+                    path.join(DOWNLOAD_DIR, `${epName}.%(ext)s`),
+                    "--merge-output-format",
+                    "mp4",
+                    "--no-simulate",
+                ];
                 if (is10PlayUrl(options.url)) {
-                    args.push("--username", user, "--password", pass);
+                    args.push(
+                        ...(await getCredentials(
+                            "10play",
+                            env.TENPLAY_USERNAME,
+                            env.TENPLAY_PASSWORD
+                        ))
+                    );
                 }
                 const process = execa("yt-dlp", args);
                 process.stdout.on("data", updateTaskOutput);
                 await process;
                 updateTaskOutput.cancel();
+
+                const file = findDownloadedFile(await fs.readdir(DOWNLOAD_DIR), epName);
+                if (!file) {
+                    throw new Error(`Couldn't find downloaded file for "${epName}"`);
+                }
+                downloadPath = path.join(DOWNLOAD_DIR, file);
+                outputPath = path.join(outputDir, file);
             },
         },
         {
-            title: `Copying to ${outputPath}`,
+            title: "Copying to server",
             task: async (_, task) => {
+                task.title = `Copying to ${outputPath}`;
                 const process = execa("rsync", ["-ah", "--progress", downloadPath, outputPath]);
                 process.stdout.on("data", (m) => {
                     task.output = m;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { is10PlayUrl, parseEpisodeNumberFromUrl } from "./utils.js";
+import { findDownloadedFile, is10PlayUrl, parseEpisodeNumberFromUrl } from "./utils.js";
 
 describe("parseEpisodeNumberFromUrl", () => {
     it("tenplay urls", () => {
@@ -50,5 +50,24 @@ describe(is10PlayUrl, () => {
         "https://www.netflix.com/watch/12345678",
     ])("identifies invalid: %s", (url: string) => {
         expect(is10PlayUrl(url)).toBe(false);
+    });
+});
+
+describe(findDownloadedFile, () => {
+    const base = "Show - S01E01 - Episode 1";
+
+    it("finds the final file regardless of extension", () => {
+        expect(findDownloadedFile([`${base}.mkv`], base)).toBe(`${base}.mkv`);
+        expect(findDownloadedFile([`${base}.mp4`], base)).toBe(`${base}.mp4`);
+    });
+
+    it("ignores partial and intermediate files", () => {
+        const files = [`${base}.mp4.part`, `${base}.f3051.mp4`, `${base}.f3051.mp4.ytdl`];
+        expect(findDownloadedFile(files, base)).toBeUndefined();
+        expect(findDownloadedFile([...files, `${base}.mp4`], base)).toBe(`${base}.mp4`);
+    });
+
+    it("ignores other episodes", () => {
+        expect(findDownloadedFile(["Show - S01E01 - Episode 10.mp4"], base)).toBeUndefined();
     });
 });

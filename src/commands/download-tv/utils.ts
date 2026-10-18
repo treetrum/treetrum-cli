@@ -33,3 +33,14 @@ export const parseEpisodeNumberFromUrl = (url: string): string | undefined => {
 
 export const is10PlayUrl = (url: string) =>
     ["10play", "10.com.au"].some((domain) => url.includes(domain));
+
+const PARTIAL_EXTENSIONS = [".part", ".ytdl", ".temp"];
+
+/** Finds the final yt-dlp output for `baseName`, ignoring partial/intermediate files. */
+export const findDownloadedFile = (files: string[], baseName: string): string | undefined =>
+    files.find(
+        (f) =>
+            f.startsWith(`${baseName}.`) &&
+            !PARTIAL_EXTENSIONS.some((ext) => f.endsWith(ext)) &&
+            !/\.f\d+\.\w+$/.test(f)
+    );
