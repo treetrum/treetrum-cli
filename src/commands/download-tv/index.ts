@@ -56,7 +56,7 @@ const validateOptions = async (options: object) => {
 export const DownloadTVCommand = new Command()
     .command("download-tv")
     .description("Downloads an episode TV using yt-dlp and moves it to a designated folder")
-    .option("-p, --path [string]", "Path for where shows are stored", "/Volumes/TV")
+    .option("-p, --path [string]", "Path for where shows are stored", "/Volumes/Media/TV")
     .action(async (options) => {
         const validated = await validateOptions(options);
         downloadTV(validated);
