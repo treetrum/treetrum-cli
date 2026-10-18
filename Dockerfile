@@ -53,4 +53,5 @@ EXPOSE 7681
 
 # Run web terminal (use bash; run `tt` inside)
 # -W/--writable enables interactive input
-CMD ["ttyd", "-p", "7681", "-W", "bash"]
+# -t titleFixed sets a fixed browser tab title
+CMD ["ttyd", "-p", "7681", "-W", "-t", "titleFixed=treetrum-cli", "bash"]
