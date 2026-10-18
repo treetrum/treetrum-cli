@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { findDownloadedFile, is10PlayUrl, parseEpisodeNumberFromUrl } from "./utils.js";
+import { findDownloadedFile, is10PlayUrl, isSbsUrl, parseEpisodeNumberFromUrl } from "./utils.js";
 
 describe("parseEpisodeNumberFromUrl", () => {
     it("tenplay urls", () => {
@@ -50,6 +50,23 @@ describe(is10PlayUrl, () => {
         "https://www.netflix.com/watch/12345678",
     ])("identifies invalid: %s", (url: string) => {
         expect(is10PlayUrl(url)).toBe(false);
+    });
+});
+
+describe(isSbsUrl, () => {
+    it.each([
+        "https://www.sbs.com.au/ondemand/watch/2514082371964",
+        "https://sbs.com.au/ondemand/watch/2514082371964",
+    ])("identifies valid: %s", (url: string) => {
+        expect(isSbsUrl(url)).toBe(true);
+    });
+
+    it.each([
+        "https://10play.com.au/the-cheap-seats/episodes/season-4/episode-25/tpv241015mrlsi",
+        "https://notsbs.com.au/ondemand/watch/1",
+        "not a url",
+    ])("identifies invalid: %s", (url: string) => {
+        expect(isSbsUrl(url)).toBe(false);
     });
 });
 

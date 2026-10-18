@@ -34,6 +34,14 @@ export const parseEpisodeNumberFromUrl = (url: string): string | undefined => {
 export const is10PlayUrl = (url: string) =>
     ["10play", "10.com.au"].some((domain) => url.includes(domain));
 
+export const isSbsUrl = (url: string) => {
+    try {
+        return /(^|\.)sbs\.com\.au$/.test(new URL(url).hostname);
+    } catch {
+        return false;
+    }
+};
+
 const PARTIAL_EXTENSIONS = [".part", ".ytdl", ".temp"];
 
 /** Finds the final yt-dlp output for `baseName`, ignoring partial/intermediate files. */

@@ -9,6 +9,10 @@ const zodEnv = z.object({
 export const TVDownloadEnv = z.object({
     TENPLAY_USERNAME: z.string(),
     TENPLAY_PASSWORD: z.string(),
+    SBS_USERNAME: z.string().optional(),
+    SBS_PASSWORD: z.string().optional(),
+    // Override yt-dlp binary (e.g. a patched build)
+    YT_DLP_PATH: z.string().optional(),
 });
 
 export const UpEnv = z.object({

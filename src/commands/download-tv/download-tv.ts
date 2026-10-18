@@ -6,7 +6,7 @@ import throttle from "lodash/throttle.js";
 import { TVDownloadEnv, parseEnv } from "@/utils/env.js";
 import { readSecret } from "../../utils/secrets.js";
 import type { Options } from "./schema.js";
-import { findDownloadedFile, is10PlayUrl } from "./utils.js";
+import { findDownloadedFile, is10PlayUrl, isSbsUrl } from "./utils.js";
 
 const DOWNLOAD_DIR = "/tmp/treetrum-cli";
 
@@ -74,8 +74,10 @@ export const downloadTV = async (options: Options) => {
                             env.TENPLAY_PASSWORD
                         ))
                     );
+                } else if (isSbsUrl(options.url)) {
+                    args.push(...(await getCredentials("SBS", env.SBS_USERNAME, env.SBS_PASSWORD)));
                 }
-                const process = execa("yt-dlp", args);
+                const process = execa(env.YT_DLP_PATH ?? "yt-dlp", args);
                 process.stdout.on("data", updateTaskOutput);
                 await process;
                 updateTaskOutput.cancel();
