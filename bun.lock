@@ -17,7 +17,7 @@
         "listr2": "11.2.0",
         "lodash": "4.18.1",
         "moment": "2.31.0",
-        "patchright": "1.64.0",
+        "patchright": "1.64.1",
         "prompts": "2.4.2",
         "zod": "4.6.7",
       },
@@ -252,9 +252,9 @@
 
     "parse-ms": ["parse-ms@4.0.0", "", {}, "sha512-TXfryirbmq34y8QBwgqCVLi+8oA3oWx2eAnSn62ITyEhEYaWRlVZ2DvMM9eZbMs/RfxPu/PK/aBLyGj4IrqMHw=="],
 
-    "patchright": ["patchright@1.64.0", "", { "dependencies": { "patchright-core": "1.64.0" }, "bin": { "patchright": "cli.js" } }, "sha512-DjQePnWfvYrNFB65SWhGp7aKKX1fuM7BRxoiaMvhUwrAbi1Ce/Vn4td0YwRq7GXT58op7zvqW6Jm+DF92xfWfg=="],
+    "patchright": ["patchright@1.64.1", "", { "dependencies": { "patchright-core": "1.64.1" }, "bin": { "patchright": "cli.js" } }, "sha512-uZYBmH3iofTHhUj9DvNQkdFYAY2weGJtoGIEjGJ9K0kNA/ycC4p9sx3QhioEutIzJjsAzBGKbNAaNNvf7Wyw4Q=="],
 
-    "patchright-core": ["patchright-core@1.64.0", "", { "bin": { "patchright-core": "cli.js" } }, "sha512-QTud+z8CkPVSAAQiT+C+MqENgoEAbzlJg2h1GxRn/M9KbfeUJp+apteC62B+mCCEbZh4VEVJnMpXYzXUC9SPsQ=="],
+    "patchright-core": ["patchright-core@1.64.1", "", { "bin": { "patchright-core": "cli.js" } }, "sha512-nUWuqaaUVd60qepdDPv+i5g257F8jywbzn7aKV8fPRur4dmkFLxYV/xus8f69gKAB7+S/zfdYe0zA3mJkO6+0w=="],
 
     "path-key": ["path-key@4.0.0", "", {}, "sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ=="],
 
