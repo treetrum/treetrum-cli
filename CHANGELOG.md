@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.6.0](https://github.com/treetrum/treetrum-cli/compare/v1.5.0...v1.6.0) (2026-10-23)
+
+
+### Features
+
+* **download-tv:** support SBS credentials ([409e381](https://github.com/treetrum/treetrum-cli/commit/409e38188edc2aeef689f9f38da2423e62723970))
+
+
+### Fixes
+
+* **deps:** update dependency dotenv to v18.0.8 ([#294](https://github.com/treetrum/treetrum-cli/issues/294)) ([5a3d436](https://github.com/treetrum/treetrum-cli/commit/5a3d4366d91f3de5d4038d39bdaae36fef692c3e))
+* **deps:** update dependency execa to v10.1.1 ([#289](https://github.com/treetrum/treetrum-cli/issues/289)) ([f874bbe](https://github.com/treetrum/treetrum-cli/commit/f874bbeed146975767b7113b05cd207c3b1b7888))
+* **deps:** update dependency listr2 to v11.2.0 ([#293](https://github.com/treetrum/treetrum-cli/issues/293)) ([7574a05](https://github.com/treetrum/treetrum-cli/commit/7574a05d5992d663d936e4f07d54015b0dc7b44c))
+* **deps:** update dependency patchright to v1.64.0 ([#295](https://github.com/treetrum/treetrum-cli/issues/295)) ([2dbce45](https://github.com/treetrum/treetrum-cli/commit/2dbce450386bb6e63ae9780600070b5df3ecf8c5))
+* **deps:** update dependency patchright to v1.64.1 ([#296](https://github.com/treetrum/treetrum-cli/issues/296)) ([cc1b873](https://github.com/treetrum/treetrum-cli/commit/cc1b8732cade1b88e3c04662015d9de7351fde15))
+* **deps:** update dependency zod to v4.6.6 ([#288](https://github.com/treetrum/treetrum-cli/issues/288)) ([cb650ab](https://github.com/treetrum/treetrum-cli/commit/cb650ab4c0253993d970078bdea6866c6018ab51))
+* **deps:** update dependency zod to v4.6.7 ([#290](https://github.com/treetrum/treetrum-cli/issues/290)) ([dd2b02b](https://github.com/treetrum/treetrum-cli/commit/dd2b02bfaba42201e5ca976deab2d192098e701b))
+* **download-tv:** handle yt-dlp output extension ([908ed17](https://github.com/treetrum/treetrum-cli/commit/908ed178efbff06536afc8fdc76a51e5ebe12c4c))
+
+
+### Internal Changes
+
+* **deps:** update dependency lefthook to v2.2.2 ([#291](https://github.com/treetrum/treetrum-cli/issues/291)) ([81e26ad](https://github.com/treetrum/treetrum-cli/commit/81e26adda029218d3bc72c85ef50dadfa5bb7bc3))
+* **deps:** update oxc monorepo ([#292](https://github.com/treetrum/treetrum-cli/issues/292)) ([0c7d747](https://github.com/treetrum/treetrum-cli/commit/0c7d747cb8a484f935b30a6b3d351ef2977ca026))
+* **download-tv:** update default TV path ([02e60f0](https://github.com/treetrum/treetrum-cli/commit/02e60f00de082a1b70339f2e1f051b614fed4bff))
+
 ## [1.5.0](https://github.com/treetrum/treetrum-cli/compare/v1.4.1...v1.5.0) (2026-10-18)
 
 
